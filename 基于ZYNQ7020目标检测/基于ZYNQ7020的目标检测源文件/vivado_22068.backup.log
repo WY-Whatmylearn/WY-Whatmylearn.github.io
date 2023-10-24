@@ -1,0 +1,23 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Wed Oct 11 21:35:23 2023
+# Process ID: 22068
+# Current directory: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent5776 F:\FPGA_project\V2_ov5640_hdmi\V2_ov5640_hdmi\ov5640_hdmi.xpr
+# Log file: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/vivado.log
+# Journal file: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ov5640_hdmi.xpr
+INFO: [Project 1-313] Project file moved from 'E:/ZYNQ/ZYNQ_ov5640_hdmi_frame_difference/24_ov5640_hdmi' since last save.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'f:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'F:/7_3/xilinx/Vivado/2018.3/data/ip'.
+open_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:12 . Memory (MB): peak = 770.453 ; gain = 192.055
+update_compile_order -fileset sources_1
+exit
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 11 23:34:43 2023...

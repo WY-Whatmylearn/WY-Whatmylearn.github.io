@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文包括多个IP核的学习，如：MMCM&#x2F;PLL、RAM、ROM、FIFO。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— IP核的调用">
+<meta property="og:url" content="http://example.com/2023/07/20/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AD%A6%E4%B9%A012/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="本文包括多个IP核的学习，如：MMCM&#x2F;PLL、RAM、ROM、FIFO。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/135.png">
+<meta property="og:image" content="http://example.com/blog_image/136.png">
+<meta property="og:image" content="http://example.com/blog_image/137.png">
+<meta property="og:image" content="http://example.com/blog_image/138.png">
+<meta property="og:image" content="http://example.com/blog_image/139.png">
+<meta property="og:image" content="http://example.com/blog_image/140.png">
+<meta property="og:image" content="http://example.com/blog_image/141.png">
+<meta property="og:image" content="http://example.com/blog_image/142.png">
+<meta property="og:image" content="http://example.com/blog_image/143.png">
+<meta property="og:image" content="http://example.com/blog_image/144.png">
+<meta property="og:image" content="http://example.com/blog_image/145.png">
+<meta property="og:image" content="http://example.com/blog_image/146.png">
+<meta property="og:image" content="http://example.com/blog_image/147.png">
+<meta property="og:image" content="http://example.com/blog_image/148.png">
+<meta property="og:image" content="http://example.com/blog_image/149.png">
+<meta property="og:image" content="http://example.com/blog_image/150.png">
+<meta property="og:image" content="http://example.com/blog_image/151.png">
+<meta property="og:image" content="http://example.com/blog_image/152.png">
+<meta property="og:image" content="http://example.com/blog_image/153.png">
+<meta property="og:image" content="http://example.com/blog_image/154.png">
+<meta property="og:image" content="http://example.com/blog_image/155.png">
+<meta property="og:image" content="http://example.com/blog_image/156.png">
+<meta property="og:image" content="http://example.com/blog_image/157.png">
+<meta property="og:image" content="http://example.com/blog_image/158.png">
+<meta property="og:image" content="http://example.com/blog_image/159.png">
+<meta property="og:image" content="http://example.com/blog_image/160.png">
+<meta property="og:image" content="http://example.com/blog_image/161.png">
+<meta property="og:image" content="http://example.com/blog_image/162.png">
+<meta property="og:image" content="http://example.com/blog_image/163.png">
+<meta property="og:image" content="http://example.com/blog_image/164.png">
+<meta property="article:published_time" content="2023-07-20T05:40:55.000Z">
+<meta property="article:modified_time" content="2023-10-06T10:34:08.958Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/135.png">
+
+<link rel="canonical" href="http://example.com/2023/07/20/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AD%A6%E4%B9%A012/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— IP核的调用 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/20/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AD%A6%E4%B9%A012/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— IP核的调用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-20 13:40:55" itemprop="dateCreated datePublished" datetime="2023-07-20T13:40:55+08:00">2023-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-06 18:34:08" itemprop="dateModified" datetime="2023-10-06T18:34:08+08:00">2023-10-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文包括多个IP核的学习，如：MMCM&#x2F;PLL、RAM、ROM、FIFO。</p>
+<span id="more"></span>   
+
+<h1 id="PLL核"><a href="#PLL核" class="headerlink" title="PLL核"></a>PLL核</h1><p>PLL 的英文全称是 Phase Locked Loop，即锁相环，是一种反馈控制电路。PLL 对时钟网络进行<strong>系统级的时钟管理和偏移控制</strong>，具有<strong>时钟倍频、分频、相位偏移和可编程占空比的功能</strong>。Xilinx 7 系列器件中的时钟资源<strong>包含了时钟管理单元 CMT</strong>，每个 CMT 由<strong>一个 MMCM 和一个 PLL</strong> 组成。对于一个简单的设计来说，FPGA 整个系统使用一个时钟或者通过编写代码的方式对时钟进行分频是可以完成的，但是对于稍微复杂一点的系统来说，系统中往往需要使用<strong>多个时钟和时钟相位的偏移，且通过编写代码输出的时钟无法实现时钟的倍频</strong>，因此学习 Xilinx MMCM&#x2F;PLL IP 核的使用方法是我们学习 FPGA 的一个重要内容。本章我们将通过一个简单的例程来向大家介绍一下 MMCM&#x2F;PLL IP 核的使用方法。   </p>
+<h2 id="IP核调用"><a href="#IP核调用" class="headerlink" title="IP核调用"></a>IP核调用</h2><p>我们首先创建一个空的工程，工程名为“ip_clk_wiz”。接下来添加 PLL IP 核。在 Vivado 软件的左侧“Flow Navigator”栏中单击“IP Catalog”，“IP Catalog”按钮以及单击后弹出的“IP Catalog”窗口如下图所示。<br><img src="/../blog_image/135.png" alt="image.png"><br>打开“IP Catalog”窗口后，在搜索栏中输入“clock”关键字，可以看到 Vivado 已经自动查找出了与关键字匹配的 IP 核名称，如下图所示。<br><img src="/../blog_image/136.png" alt="image.png"><br>我们双击“FPGA Features and Design”→“Clocking”下的“Clocking Wizard”，弹出“Customize IP”窗口，如下图所示。<br><img src="/../blog_image/137.png" alt="image.png"><br>接下来就是配置 IP 核的时钟参数。最上面的“Component Name”一栏设置该 IP 元件的名称，这里保持默认即可。在第一个“Clocking Options”选项卡中，“Primitive”选项用于选择是使用 MMCM 还是 PLL 来输出不同的时钟，对于我们的本次实验来说，MMCM 和 PLL 都可以完成，这里我们可以保持默认选择MMCM。需要修改的是最下面的“Input Clock Information”一栏，把“Primary”时钟的输入频率修改为我们开发板的核心板上的晶振频率 50MHz，其他的设置保持默认即可，如下图所示。<br><img src="/../blog_image/138.png" alt="image.png"><br>接下来切换至“Output Clocks”选项卡，在“Output Clock”选项卡中，勾选前 4 个时钟，并且将其“Output Freq(MHz)”分别设置为 100、100、50、25，注意，第 2 个 100MHz 时钟的相移“Phase(degrees)”一栏要设置为 180。其他设置保持默认即可，如下图所示。<br><img src="/../blog_image/139.png" alt="image.png"><br>Port Renaming”选项卡主要是对一些控制信号的重命名。这里我们只用到了锁定指示 locked 信号，其名称保持默认即可，如下图所示。<br><img src="/../blog_image/140.png" alt="image.png"><br>“MMCM Setting”选项卡展示了对整个 MMCM&#x2F;PLL 的最终配置参数，这些参数都是根据之前用户输入的时钟需求由 Vivado 来自动配置，Vivado 已经对参数进行了最优的配置，在绝大多数情况下都不需要用户对它们进行更改，也不建议更改，所以这一步保持默认即可，如下图所示<br><img src="/../blog_image/141.png" alt="image.png"><br>最后的“Summary”选项卡是对前面所有配置的一个总结，在这里我们直接点击“OK”按钮即可，如下图所示。<br><img src="/../blog_image/142.png" alt="image.png"><br>接着就弹出了“Genarate Output Products”窗口，我们直接点击“Generate”即可，如下图所示。<br><img src="/../blog_image/143.png" alt="image.png"><br>之后我们就可以在“Design Run”窗口的“Out-of-Context Module Runs”一栏中出现了该 IP 核对应的run“clk_wiz_0_synth_1”，其综合过程独立于顶层设计的综合，所以在我们可以看到其正在综合，如下图所示。<br><img src="/../blog_image/144.png" alt="image.png"><br>在其 Out-of-Context 综合的过程中，我们就可以开始编写代码了。首先打开 IP 核的例化模板，在“Source”窗口中的“IP Sources”选项卡中，依次用鼠标单击展开“IP”-“clk_wiz_0”-“Instantitation Template”，我们可以看到“clk_wiz.veo”文件，它是由 IP 核自动生成的只读的 verilog 例化模板文件，双击就可以打开它，在例化时钟 IP 核模块的时钟，可以直接从这里拷贝，如下图所示。<br><img src="/../blog_image/145.png" alt="image.png">  </p>
+<h2 id="例化"><a href="#例化" class="headerlink" title="例化"></a>例化</h2><pre><code> module  ip_clk_wiz(
+input               sys_clk        ,  //系统时钟 
+input               sys_rst_n      ,  //系统复位，低电平有效    //输出时钟     
+output              clk_100m       ,  //100Mhz 时钟频率 
+output              clk_100m_180deg,  //100Mhz 时钟频率,相位偏移 180 度 
+output              clk_50m        ,  //50Mhz 时钟频率    
+output              clk_25m           //25Mhz 时钟频率   
+）；                   
+
+wire        locked;
+//MMCM/PLL IP 核的例化 
+clk_wiz_0  clk_wiz_0
+ // Clock out ports 
+.clk_out1_100m     (clk_100m),         // output clk_out1_100m 
+.clk_out2_100m_180 (clk_100m_180deg),  // output clk_out2_100m_180 
+.clk_out3_50m      (clk_50m),          // output clk_out3_50m 
+.clk_out4_25m      (clk_25m),          // output clk_out4_25m   
+ .reset             (~sys_rst_n),        // input reset 
+.locked            (locked),           // output locked   
+// Clock in ports 
+.clk_in1           (sys_clk)            // input clk_in1 
+ );      
+
+ endmodule   
+</code></pre>
+<p>程序中例化了 clk_wiz_0，把 FPGA 的系统时钟 50Mhz 连接到 clk_wiz_0 的 clk_in1，系统复位信号连接到 clk_wiz_0 的 reset，由于时钟 IP 核默认是高电平复位，而输入的系统复位信号 sys_rst_n 是低电平复位，因此要对系统复位信号进行取反。clk_wiz_0 输出的 4 个时钟信号直接连接到顶层端口的四个时钟输出信号。     </p>
+<p>TestBench 代码如下：<br><img src="/../blog_image/146.png" alt="image.png"><br><img src="/../blog_image/147.png" alt="image.png"><br>对模块进行仿真的方法这里不再赘述，仿真后得到的波形如下图所示：<br><img src="/../blog_image/148.png" alt="image.png"><br>由上图可知，locked 信号拉高之后，锁相环开始输出 4 个稳定的时钟。clk_100m 和 clk_100m_180deg周期都为 10ns，即时钟频率都为 100Mhz，但两个时钟相位偏移 180 度，所以这两个时钟刚好反相；clk_50m 周期为 20ns，时钟频率为 50Mhz；clk_25m 周期为 40ns，时钟频率为 25Mhz。也就是说，我们创建的锁相环从仿真结果上来看是正确的。   </p>
+<h1 id="RAM核"><a href="#RAM核" class="headerlink" title="RAM核"></a>RAM核</h1><p>RAM 的英文全称是 Random Access Memory，即随机存取存储器，它可以<strong>随时把数据写入任一指定地址的存储单元，也可以随时从任一指定地址中读出数据</strong>，其读写速度是由时钟频率决定的。<strong>RAM 主要用来存放程序及程序执行过程中产生的中间数据、运算结果</strong>等。<br>Xilinx 7 系列器件具有嵌入式存储器结构，满足了设计对片上存储器的需求。嵌入式存储器结构由一列列 BRAM（块 RAM）存储器模块组成，通过对这些 BRAM 存储器模块进行配置，可以实现各种存储器的功能，例如：<strong>RAM、移位寄存器、ROM 以及 FIFO 缓冲器</strong>。Vivado 软件自带了 BMG IP 核（Block Memory Generator，块 RAM 生成器），<strong>可以配置成 RAM 或者ROM</strong>。这两者的区别是 RAM 是一种随机<strong>存取</strong>存储器，<strong>不仅仅可以存储数据，同时支持对存储的数据进行修改</strong>；而 ROM 是一种<strong>只读存储器，也就是说，在正常工作时只能读出数据，而不能写入数据</strong>。需要注意的是，配置成 RAM 或者 ROM 使用的资源都是 <strong>FPGA 内部的 BRAM，只不过配置成 ROM 时只用到了嵌入式 BRAM 的读数据端口</strong>。本章我们主要介绍通过 BRAM IP 核配置成 RAM 的使用方法。  </p>
+<p>Xilinx 7 系列器件内部的 BRAM 全部是真双端口 RAM（True Dual-Port ram，TDP），这两个端口都可以独立地对 BRAM 进行读&#x2F;写。但也可以被配置成伪双端口 RAM（Simple Dual-Port ram，SDP）（有两个端口，但是其中一个只能读，另一个只能写）或单端口 RAM（只有一个端口，读&#x2F;写只能通过这一个端口来进行）。单端口 RAM 只有一组数据总线、地址总线、时钟信号以及其他控制信号，而双端口 RAM 具有两组数据总线、地址总线、时钟信号以及其他控制信号。<br><img src="/../blog_image/149.png" alt="image.png"><br>各个端口的功能描述如下：<br>DINA：RAM 端口 A 写数据信号。<br>ADDRA：RAM 端口 A 读写地址信号，对于单端口 RAM 来说，读地址和写地址共用同该地址线。<br>WEA：RAM 端口 A 写使能信号，高电平表示向 RAM 中写入数据，低电平表示从 RAM 中读出数据。<br>ENA：端口 A 的使能信号，高电平表示使能端口 A，低电平表示端口 A 被禁止，禁止后端口 A 上的读写操作都会变成无效。另外 ENA 信号是可选的，当取消该使能信号后，RAM 会一直处于有效状态。<br>RSTA：RAM 端口 A 复位信号，可配置成高电平或者低电平复位，该复位信号是一个可选信号。<br>REGCEA：RAM 端口 A 输出寄存器使能信号，当 REGCEA 为高电平时，DOUTA 保持最后一次输出的数据，REGCEA 同样是一个可选信号。<br>CLKA：RAM 端口 A 的时钟信号。<br>DOUTA：RAM 端口 A 读出的数据。  </p>
+<h2 id="RAM核调用"><a href="#RAM核调用" class="headerlink" title="RAM核调用"></a>RAM核调用</h2><p>具体调用方式同上，打开IP核，搜索“Block Memory”，双击“Block Memory Generator”后弹出 IP 核的配置界面，接下来对 BMG IP 核进行配置，“Basic”选项页配置界面如下图所示。<br><img src="/../blog_image/150.png" alt="image.png"><br>Component Name：设置该 IP 核的名称，这里保持默认即可。<br>Interface Type：RAM 接口总线。这里保持默认，选择 Native 接口类型（标准 RAM 接口总线）；<br>Memory Type：存储器类型。可配置成 Single Port RAM（单端口 RAM）、Simple Dual Port RAM（伪双端口 RAM）、True Dual Port RAM（真双端口 RAM）、Single Port ROM（单端口 ROM）和 Dual Port ROM（双端口 ROM），这里选择 Single Port RAM，即配置成单端口 RAM。<br>ECC Options：Error Correction Capability，纠错能力选项，单端口 RAM 不支持 ECC。<br>Write Enable：字节写使能选项，勾中后可以单独将数据的某个字节写入 RAM 中，这里不使能。<br>Algorithm Options：算法选项。可选择 Minimum Area（最小面积）、Low Power（低功耗）和 Fixed Primitives（固定的原语），这里选择默认的 Minimum Area。<br>接下来切换至“Port A”选项页，设置端口 A 的参数，该页面配置如下：<br><img src="/../blog_image/151.png" alt="image.png"><br>Write Width：端口 A 写数据位宽，单位 Bit，这里设置成 8。<br>Read Width：端口 A 读数据位宽，一般和写数据位宽保持一致，设置成 8。<br>Write Depth：写深度，这里设置成 32，即 RAM 所能访问的地址范围为 0-31。<br>Read Depth：读深度，默认和写深度保持一致。<br>Operating Mode：RAM 读写操作模式。共分为三种模式，分别是 Write First（写优先模式）、Read First（读优先模式）和 No Change（不变模式）。写优先模式指数据先写入 RAM 中，然后在下一个时钟输出该数据；读优先模式指数据先写入 RAM 中，同时输出 RAM 中同地址的上一次数据；不变模式指读写分开操作，不能同时进行读写，这里选择 No Change 模式。<br>Enable Port Type：使能端口类型。Use ENA pin（添加使能端口 A 信号）；Always Enabled（取消使能信号，端口 A 一直处于使能状态），这里选择默认的 Use ENA pin。<br>Port A Optional Output Register：端口 A 输出寄存器选项。其中“Primitives Output Register”默认是选中状态，作用是打开 BRAM 内部位于输出数据总线之后的输出流水线寄存器，虽然在一般设计中为了改善时序性能会保持此选项的默认勾选状态，但是这会使得 BRAM 输出的数据延迟一拍，这不利于我们在Vivado 的 ILA 调试窗口中直观清晰地观察信号；而且在本实验中我们仅仅是把 BRAM 的数据输出总线连接到了 ILA 的探针端口上来进行观察，除此之外数据输出总线没有别的负载，不会带来难以满足的时序路径，因此这里取消勾选。<br>Port A Output Reset Options：RAM 复位信号选项，这里不添加复位信号，保持默认即可。另外，需要注意的是，下面的“Primitives Output Register”默认是选中状态的，此选项的作用是打开块 RAM 内部的位于输出数据总线之后的输出流水线寄存器，虽然在一般设计中为了改善时序性能会保持此选项的默认勾选状态，但是这会使得块 RAM 输出的数据延迟一拍，这不利于我们在 Vivado 的 ILA 调试窗口中直观清晰地观察信号；而且在本实验中我们仅仅是把块 RAM 的数据输出总线连接到了 ILA 的探针端口上来进行观察，除此之外数据输出总线没有别的负载，不会带来难以满足的时序路径。接下来的“Other Options”选项页用于设置 RAM 的初始值等，本次实验不需要设置，直接保持默认即可。<br>最后一个是“Summary”选项页，该页面显示了存储器的类型，消耗的 BRAM 资源等，我们直接点击“OK”按钮完成 BMG IP 核的配置，如下图所示：<br><img src="/../blog_image/152.png" alt="image.png"><br>接下来会弹出询问是否在工程目录下创建存放 IP 核的文件，我们点击“OK”按钮即可。紧接着会弹出“Genarate Output Products”窗口，我们直接点击“Generate”，如下图所示。<br><img src="/../blog_image/153.png" alt="image.png"><br>之后我们就可以在“Design Run”窗口的“Out-of-Context Module Runs”一栏中出现了该 IP 核对应的run“blk_mem_gen_0_synth_1”，其综合过程独立于顶层设计的综合，所以在我们可以看到其正在综合，如下图所示。<br><img src="/../blog_image/154.png" alt="image.png"><br>在其 Out-of-Context 综合的过程中，我们就可以进行 RTL 编码了。首先打开 IP 核的例化模板，在“Source”窗口中的“IP Sources”选项卡中，依次用鼠标单击展开“IP”-“blk_mem_gen_0”-“Instantitation Template”，我们可以看到“blk_mem_gen_0.veo”文件，它是由 IP 核自动生成的只读的verilog 例化模板文件，双击就可以打开它，如下图所示。<br><img src="/../blog_image/155.png" alt="image.png"><br>接下来我们创建一个新的设计文件，命名为 ram_rw.v，代码如下：   </p>
+<pre><code>`timescale 1ns / 1ps
+
+
+
+module ram_rw(
+    input            Clk,
+    input            Reset_n,
+    
+    output           ram_en,// ram使能信号
+    output           ram_wea,//ram读写选择
+    output reg [4:0] ram_addr,//ram读写地址
+    output reg [7:0] ram_wr_data,//ram写数据
+    input      [7:0] ram_rd_data//ram读数据
+    
+
+    );
+
+reg [5:0] rw_cnt;  //读写控制计数器
+
+//控制Ram使能信号  
+assign ram_en = Reset_n; 
+//rw_cnt 计数范围在 0~31,写入数据;32~63 时,读出数据
+assign ram_wea = (rw_cnt &lt;= 6&#39;d31 &amp;&amp; ram_en == 1&#39;b1) ? 1&#39;b1 : 1&#39;b0;  
+//读写控制计数器,计数器范围 0~63  
+always @(posedge Clk or negedge Reset_n)begin
+    if (!Reset_n)
+        rw_cnt &lt;= 1&#39;b0;
+    else if(rw_cnt == 6&#39;d63)
+        rw_cnt &lt;= 1&#39;b0;
+    else 
+        rw_cnt &lt;= rw_cnt + 1&#39;b1;
+end
+
+//产生 RAM 写数据  
+always @(posedge Clk or negedge Reset_n)begin
+    if (!Reset_n)
+        ram_wr_data &lt;= 1&#39;b0;
+    else if(rw_cnt &lt; 6&#39;d31)
+        ram_wr_data &lt;= ram_wr_data + 1&#39;b1;
+    else 
+        ram_wr_data &lt;= 1&#39;b0;
+end
+
+always @(posedge Clk or negedge Reset_n)begin
+    if (!Reset_n)
+        ram_addr &lt;= 1&#39;b0;
+    else if(ram_addr == 5&#39;d31)
+        ram_addr &lt;= 1&#39;b0;
+    else 
+        ram_addr &lt;= ram_addr + 1&#39;b1;
+end 
+  
+
+endmodule
+</code></pre>
+<p>模块中定义了一个读写控制计数器（rw_cnt），当计数范围在 0<del>31 之间时，向 ram 中写入数据；当计数范围在 32</del>63 之间时，从 ram 中读出数据。<br>接下来例化创建的 RAM IP 核以及 ram_rw 模块，文件名为 ram_rw_tp.v，编写的 verilog 代码如下。   </p>
+<pre><code>`timescale 1ns / 1ps
+
+
+
+module ram_rw_tp(
+    input Clk,
+    input Reset_n
+
+    );
+    
+    wire           ram_en;// ram使能信号
+    wire           ram_wea;//ram读写选择
+    wire  [4:0] ram_addr;//ram读写地址
+    wire  [7:0] ram_wr_data;//ram写数据
+    wire  [7:0] ram_rd_data;//ram读数据
+    
+ ram_rw  ram_rw(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+
+    .ram_en(ram_en),// ram使能信号
+    .ram_wea(ram_wea),//ram读写选择
+    .ram_addr(ram_addr),//ram读写地址
+    .ram_wr_data(ram_wr_data),//ram写数据
+    .ram_rd_data(ram_rd_data)
+    );//ram读数据
+    
+blk_mem_gen_0 blk_mem_gen_0(
+  .clka(Clk),    // input wire clka
+  .ena(ram_en),      // input wire ena
+  .wea(ram_wea),      // input wire [0 : 0] wea
+  .addra(ram_addr),  // input wire [4 : 0] addra
+  .dina(ram_wr_data),    // input wire [7 : 0] dina
+  .douta(ram_rd_data)  // output wire [7 : 0] douta
+);   
+
+endmodule
+</code></pre>
+<p>程序中例化了 ram_rw 模块和 ram IP 核 blk_mem_gen_0，其中 ram_rw 模块负责产生对 ram IP 核读&#x2F;写所需的所有数据、地址以和读写使能信号，同时从 ram IP 读出的数据也连接至 ram_rw 模块。接下来对 RAM IP 核进行仿真，来验证对 RAM 的读写操作是否正确。仿真文件源代码如下：  </p>
+<pre><code>`timescale 1ns / 1ps
+
+
+
+module ram_rw_tb();
+
+reg Clk;
+reg Reset_n;
+
+initial Clk = 1&#39;b1;
+always #10 Clk = !Clk;
+
+
+ram_rw_tp ram_rw_tp (
+    .Clk(Clk),
+    .Reset_n(Reset_n)
+    );
+    
+initial begin
+        Reset_n = 1&#39;b0;
+        #200
+        Reset_n = 1&#39;b1;
+end
+
+
+endmodule
+</code></pre>
+<h2 id="仿真波形"><a href="#仿真波形" class="headerlink" title="仿真波形"></a>仿真波形</h2><p><img src="/../blog_image/156.png" alt="image.png"><br>上 为 RAM 的写操作仿真波形图，由上图可知，ram_wea 信号拉高，说明此时是对 ram 进行写操作。ram_wea 信号拉高之后，地址和数据都是从 0 开始累加，也就说当 ram 地址为 0 时，写入的数据也是 0；当 ram 地址为 1 时，写入的数据也是 1，我们总共向 ram 中写入 32 个数据。<br><img src="/../blog_image/157.png" alt="image.png"><br>由上图可知，ram_wea 信号拉低，说明此时是对 ram 进行读操作。ram_wea 信号拉低之后，ram_addr从 0 开始增加，也就是说从 ram 的地址 0 开始读数据；ram 中读出的数据 ram_rd_data 在延时一个时钟周期之后，开始输出数据，输出的数据为 0，1，2……，和我们写入的值是相等的， 也就是说，我们创建的RAM IP 核从仿真结果上来看是正确的。  </p>
+<h1 id="FIFO核"><a href="#FIFO核" class="headerlink" title="FIFO核"></a>FIFO核</h1><p>FIFO 的英文全称是 First In First Out，即先进先出。FPGA 使用的 FIFO 一般指的是对数据的存储具有先进先出特性的一个缓存器，常被用于数据的缓存,或者高速异步数据的交互也即所谓的跨时钟域信号传递。它与 FPGA 内部的 RAM 和 ROM 的区别是没有外部读写地址线，采取顺序写入数据，顺序读出数据的方式，使用起来简单方便，由此带来的缺点就是不能像 RAM 和 ROM 那样可以由地址线决定读取或写入某个指定的地址。  </p>
+<p>根据 FIFO 工作的时钟域，可以将 FIFO 分为同步 FIFO 和异步 FIFO。同步 FIFO 是指读时钟和写时钟为同一个时钟，在时钟沿来临时同时发生读写操作。异步 FIFO 是指读写时钟不一致，读写时钟是互相独立的。Xilinx 的 FIFO IP 核可以被配置为同步 FIFO 或异步 FIFO，其信号框图如下图所示。从图中可以了解到，当被配置为同步 FIFO 时，只使用 wr_clk,所有的输入输出信号都同步于 wr_clk 信号。而当被配置为异步 FIFO 时，写端口和读端口分别有独立的时钟，所有与写相关的信号都是同步于写时钟 wr_clk，所有与读相关的信号都是同步于读时钟 rd_clk。<br><img src="/../blog_image/158.png" alt="image.png"><br>对于 FIFO 需要了解一些常见参数：<br>FIFO 的宽度：FIFO 一次读写操作的数据位 N。<br>FIFO 的深度：FIFO 可以存储多少个宽度为 N 位的数据。<br>将空标志：almost_empty。FIFO 即将被读空。<br>空标志：empty。FIFO 已空时由 FIFO 的状态电路送出的一个信号，以阻止 FIFO 的读操作继续从FIFO 中读出数据而造成无效数据的读出。<br>将满标志：almost_full。FIFO 即将被写满。<br>满标志：full。FIFO 已满或将要写满时由 FIFO 的状态电路送出的一个信号，以阻止 FIFO 的写操作继续向 FIFO 中写数据而造成溢出。<br>读时钟：读 FIFO 时所遵循的时钟，在每个时钟的上升沿触发。<br>写时钟：写 FIFO 时所遵循的时钟，在每个时钟的上升沿触发。<br>这里请注意，“almost_empty”和“almost_full”这两个信号分别被看作“empty”和“full”的警告信号，他们相对于真正的空（empty）和满（full）都会提前一个时钟周期拉高。   </p>
+<p>之所以有同步 FIFO 和异步 FIFO 是因为各自的作用不同。同步 FIFO 常用于同步时钟的数据缓存，异步 FIFO 常用于跨时钟域的数据信号的传递，例如时钟域 A 下的数据 data1 传递给异步时钟域 B，当 data1 为连续变化信号时，如果直接传递给时钟域 B 则可能会导致收非所送的情况，即在采集过程中会出现包括亚稳态问题在内的一系列问题，使用异步 FIFO 能够将不同时钟域中的数据同步到所需的时钟域中。  </p>
+<h2 id="FIFO核调用"><a href="#FIFO核调用" class="headerlink" title="FIFO核调用"></a>FIFO核调用</h2><p>同上，首先创建一个名为 ip_fifo 的工程，接下来我们创建 fifo IP 核。在 Vivado 软件的左侧“Flow Navigator”栏中单击“IP Catalog”，在“IP Catalog”窗口中，在搜索栏中输入“fifo”关键字，这时 Vivado 会自动查找出与关键字匹配的IP核名称，我们双击“FIFO Generator”，弹出“Customize IP”窗口，如下图所示。<br><img src="/../blog_image/159.png" alt="image.png">  </p>
+<p>接下来就是配置 IP 核的时钟参数的过程。最上面的“Component Name”一栏设置该 IP 元件的名称，这里保持默认即可。在第一个“Basic”选项<br>卡中，“Interface Type”选项用于选择 FIFO 接口的类型，这里我们选择默认的“Native”，即传统意义上的FIFO 接口。“Fifo Implementation”选项用于选择我们想要实现的是同步 FIFO 还是异步 FIFO 以及使用哪种资源实现 FIFO，这里我们选择“Independent Clocks Block RAM”,即使用块 RAM 来实现的异步 FIFO。如下图所示。</p>
+<p><img src="/../blog_image/160.png" alt="image.png"><br>接下来是“Native Ports”选项卡，用于设置 FIFO 端口的参数。“Read Mode”选项用于设置读 FIFO时的读模式，这里我们选择默认的“Standard FIFO”。“Data Port Parameters”一栏用于设置读写端口的数据总线的宽度以及 FIFO 的深度，写宽度“Write Width”我们设置为 8 位，写深度“Write Depth”我们设置为 256，注意此时 FIFO IP 核所能实现的实际深度却是 255；虽然读宽度“Read Width”能够设置成和写宽度不一样的位宽，且此时读深度“Read Depth”会根据上面三个参数被动地自动设置成相应的值；但是我们还是将读宽度“Read Width”设置成和写宽度“Write Width”一样的位宽，这也是在实际应用中最常用的情况。由于我们只是观察 FIFO 的读写，所以最下面的“Reset Pin”选项我们可以不使用，把它取消勾选。其他设置保持默认即可，如下图所示。<br><img src="/../blog_image/161.png" alt="image.png"><br>“Status Flags”选项卡，用于设置用户自定义接口或者用于设定专用的输入口。这里我们使用“即将写满”和“即将读空”这两个信号，所以我们把它们勾选上，其他保持默认即可，如下图所示。<br><img src="/../blog_image/162.png" alt="image.png"><br>“Data Counts”选项卡用于设置 FIFO 内数据计数的输出信号，此信号表示当前在 FIFO 内存在多少个有效数据。为了更加方便地观察读&#x2F;写过程，这里我们把读&#x2F;写端口的数据计数都打开，且计数值总线的位宽设置为满位宽，即 8 位，如下图所示。<br><img src="/../blog_image/163.png" alt="image.png"><br>最后的“Summary”选项卡是对前面所有配置的一个总结，在这里我们直接点击“OK”按钮即可。接着就弹出了“Genarate Output Products”窗口，我们直接点击“Generate”即可。<br>在其 Out-of-Context 综合的过程中，我们就可以进行 RTL 编码了。首先打开 IP 核的例化模板，在“Source”窗口中的“IP Sources”选项卡中，依次用鼠标单击展开“IP”-“fifo_generator _0”-“Instantitation Template”，我们可以看到“fifo_generator_0.veo”文件，它是由 IP 核自动生成的只读的verilog 例化模板文件，双击就可以打开它。<br><img src="/../blog_image/164.png" alt="image.png"><br>我们创建一个 verilog 源文件，其名称为 fifo_tp.v，作为顶层模块，其代码如下：  </p>
+<pre><code>module fifo_tp(
+    input Clk,
+    input Reset_n,
+    
+    );
+    
+wire fifo_wr_en ;//FIFO核写使能
+wire fifo_rd_en ;//FIFO核读使能
+wire [7:0] fifo_din;//写入到FIFO的数据
+wire [7:0] fifo_dout;//从FIFO读出的数据
+wire almost_full;//FIFO将满信号
+wire almost_empty;//FIFO将空信号
+wire fifo_full;//FIFO满信号
+wire fifo_empty;//FIFO空信号
+wire [7:0] fifo_wr_data_count;//FIFO写时钟域的数据计数
+wire [7:0] fifo_rd_data_count;//FIFO读时钟域的数据计数
+    
+
+fifo_generator_0 fifo_generator_0 (
+  .wr_clk(Clk),                // input wire wr_clk
+  .rd_clk(Clk),                // input wire rd_clk
+  .din(fifo_din),                      // input wire [7 : 0] din
+  .wr_en(fifo_wr_en),                  // input wire wr_en
+  .rd_en(fifo_rd_en),                  // input wire rd_en
+  .dout(fifo_dout),                    // output wire [7 : 0] dout
+  .full(fifo_full),                    // output wire full
+  .almost_full(almost_full),      // output wire almost_full
+  .empty(fifo_empty),                  // output wire empty
+  .almost_empty(almost_empty),    // output wire almost_empty
+  .rd_data_count(fifo_rd_data_count),  // output wire [7 : 0] rd_data_count
+  .wr_data_count(fifo_wr_data_count)  // output wire [7 : 0] wr_data_count
+);
+
+fifo_wr fifo_wr(
+
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+
+    .almost_empty(almost_empty),
+    .almost_full(almost_full),
+    .fifo_wr_en(fifo_wr_en),
+    .fifo_wr_data(fifo_din)
+
+);
+
+fifo_rd fifo_rd(
+
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+
+    .almost_empty(almost_empty),
+    .almost_full(almost_full),
+    .fifo_rd_en(fifo_rd_en),
+    .fifo_rd_data(fifo_dout)
+);
+
+endmodule
+</code></pre>
+<p>顶层模块主要是对 FIFO IP 核、写 FIFO 模块、读 FIFO 模块进行例化。  </p>
+<p>写 FIFO 模块 fifo_wr.v 源文件的代码如下：    </p>
+<pre><code>module fifo_wr(
+
+input Clk,
+input Reset_n,
+
+input almost_empty,
+input almost_full,
+output reg fifo_wr_en,
+output reg [7:0]fifo_wr_data
+);
+
+reg [1:0]state;  //动作状态
+reg almost_empty_d0; //almost_empty延迟一拍
+reg almost_empty_syn;//almost_empty延迟两拍
+reg [3:0] dly_cnt;//延迟计数器
+
+
+always@(posedge Clk or negedge Reset_n)begin
+if(!Reset_n)begin
+    almost_empty_d0 &lt;= 1&#39;b0;
+    almost_empty_syn &lt;= 1&#39;b0;
+    
+end
+else begin
+    almost_empty_d0 &lt;= almost_empty;
+    almost_empty_syn &lt;= almost_empty_d0;
+end
+end
+
+always@(posedge Clk or negedge Reset_n)begin
+if（!Reset_n）begin
+    fifo_wr_en &lt;= 1&#39;b0;
+    fifo_wr_data &lt;= 8&#39;d0;
+    state &lt;= 2&#39;d0;
+    dly_cnt &lt;= 4&#39;d0;
+end
+else begin
+    case(state)
+        2&#39;d0:begin
+            if(almost_empty_syn)begin  //如果检测到FIFO将被读空，下一拍就会空，下下拍进入延时状态
+                state &lt;= 2&#39;d1;
+            end
+            else
+                state &lt;= state;
+        end
+    
+        2&#39;d1:begin
+            if(dly_cnt == 4&#39;d10)begin //延迟10拍 ，原因是FIFO IP核内部信号的更新存在延时，延迟10拍等待状态信号更新完毕
+            
+                dly_cnt &lt;= 4&#39;d0;
+                state &lt;= 2&#39;d2;   //开始写操作
+                fifo_wr_en &lt;= 1&#39;b1;  //打开写使能
+            end
+            else
+                dly_cnt &lt;= dly_cnt +4&#39;d1;
+            end
+        
+        2&#39;d2:begin
+            if(almost_full)begin     //等待FIFO将被写满，下一拍就会满
+                fifo_wr_en &lt;= 1&#39;b0;  //关闭写使能
+                fifo_wr_data &lt;= 8&#39;d0;
+                state &lt;= 2&#39;d0;       //回到第一个状态
+            end
+            else begin
+                fifo_wr_en &lt;= 1&#39;b1;    //如果没有写满，持续打开写使能
+                fifo_wr_data &lt;= fifo_wr_data + 1&#39;d1;
+            end
+        end
+        default :state &lt;= 2&#39;d0;
+        endcase
+    end
+end
+endmodule  
+</code></pre>
+<p>fifo_wr 模块的核心部分是一个不断进行状态循环的小状态机，如果检测到 FIFO 为空，则先延时 10拍，这里注意，由于 FIFO 的内部信号的更新比实际的数据读&#x2F;写操作有所延时，所以延时 10 拍的目的是等待 FIFO 的空&#x2F;满状态信号、数据计数信号等信号的更新完毕之后再进行 FIFO 写操作，如果写满，则回到状态 0，即等待 FIFO 被读空，以进行下一轮的写操作。<br>读 FIFO 模块 fifo_rd.v 源文件的代码如下：   </p>
+<pre><code>module fifo_rd(
+    input Clk,
+    input Reset_n,
+    
+    input [7:0] fifo_dout,
+    input almost_full,
+    input almost_empty,
+    output reg fifo_rd_en
+    
+);
+
+reg [1:0] state ;
+reg almost_full_d0;
+reg almost_full_syn;
+reg [3:0] dly_cnt;
+
+
+always@(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        almost_full_d0 &lt;= 1&#39;b0;
+        almost_full_syn &lt;= 1&#39;b0;
+    end	
+    else begin 
+        almost_full_d0 &lt;= almost_full;
+        almost_full_syn &lt;= almost_full_d0;
+    end
+end
+
+always@(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        fifo_rd_en &lt;= 1&#39;b0;
+        state &lt;=2&#39;d0;
+        dly_cnt &lt;= 4&#39;d0;
+    end
+    else begin
+        case(state)
+            2&#39;d0:begin
+                if(almost_full_syn)
+                    state &lt;= 2&#39;d1;
+                else 
+                    state &lt;= state;
+            end
+            
+            2&#39;d1:begin
+                if(dly_cnt == 4&#39;d10)begin
+                    dly_cnt &lt;= 4&#39;d0;
+                    state &lt;= 2&#39;d2;
+                end
+                else 
+                    dly_cnt&lt;= dly_cnt +4&#39;d1;
+                end
+            
+            2&#39;d2:begin
+                if(almost_empty)begin
+                    fifo_rd_en &lt;= 1&#39;b0;
+                    state &lt;= 2&#39;d0;
+                end
+                else
+                    fifo_rd_en &lt;= 1&#39;b1;
+                end
+                
+            defaul:state &lt;= 2&#39;d0;
+        endcase
+    end
+end  
+</code></pre>
+<p>读模块的代码结构与写模块几乎一样，也是使用一个不断进行状态循环的小的状态机来控制操作过程。</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/18/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A011/" rel="prev" title="中科院实习—— 按键消抖">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— 按键消抖
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PLL%E6%A0%B8"><span class="nav-number">1.</span> <span class="nav-text">PLL核</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP%E6%A0%B8%E8%B0%83%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">IP核调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%8C%96"><span class="nav-number">1.2.</span> <span class="nav-text">例化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RAM%E6%A0%B8"><span class="nav-number">2.</span> <span class="nav-text">RAM核</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#RAM%E6%A0%B8%E8%B0%83%E7%94%A8"><span class="nav-number">2.1.</span> <span class="nav-text">RAM核调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%BF%E7%9C%9F%E6%B3%A2%E5%BD%A2"><span class="nav-number">2.2.</span> <span class="nav-text">仿真波形</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FIFO%E6%A0%B8"><span class="nav-number">3.</span> <span class="nav-text">FIFO核</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FIFO%E6%A0%B8%E8%B0%83%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">FIFO核调用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

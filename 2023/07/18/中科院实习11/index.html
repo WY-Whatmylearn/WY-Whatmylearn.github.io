@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FPGA开发。该篇包括按键消抖。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— 按键消抖">
+<meta property="og:url" content="http://example.com/2023/07/18/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A011/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="FPGA开发。该篇包括按键消抖。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/99.png">
+<meta property="og:image" content="http://example.com/blog_image/100.png">
+<meta property="og:image" content="http://example.com/blog_image/101.png">
+<meta property="og:image" content="http://example.com/blog_image/102.png">
+<meta property="article:published_time" content="2023-07-18T05:40:55.000Z">
+<meta property="article:modified_time" content="2023-10-06T10:34:07.588Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/99.png">
+
+<link rel="canonical" href="http://example.com/2023/07/18/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A011/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— 按键消抖 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/18/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A011/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— 按键消抖
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-18 13:40:55" itemprop="dateCreated datePublished" datetime="2023-07-18T13:40:55+08:00">2023-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-10-06 18:34:07" itemprop="dateModified" datetime="2023-10-06T18:34:07+08:00">2023-10-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FPGA开发。该篇包括按键消抖。</p>
+<span id="more"></span>   
+<h1 id="按键消抖"><a href="#按键消抖" class="headerlink" title="按键消抖"></a>按键消抖</h1><p>按键的一般示意图如下图所示：<br><img src="/../blog_image/99.png" alt="image.png"><br>原理图如下：<br><img src="/../blog_image/100.png" alt="image.png"><br>由原理图可以看出，按键未按下时 IO 口为高电平，按键按下时则变为低电平，<br>因此系统即可通过检测 IO 的电平来判断按键的状态。<br>按键结构示意图中可以看到按键存在一个反作用弹簧，因此当按下或者松开时均会产生<br>额外的物理抖动，<strong>物理抖动便会产生电平的抖动</strong>。在按键从按下再到松开的过程中，其电平<br>变化如下图所示，上为理想波形输出，下为实际波形输出。 如下图所示：<br><img src="/../blog_image/101.png" alt="image.png"><br>上图中，产生的抖动次数以及间隔时间均是不可预期的，这就需要通过滤波来消除抖动<br>可能对外部其他设备造成的影响。一般情况下抖动的总时间会持续 20ms 以内。这种抖动，<br>可以通过硬件电路或者逻辑设计的方式来消除，也可以通过软件的方式完成。其中硬件电路<br>消除抖动适用于按键数目较少的场合。<br>硬件消抖此处不展开解释。</p>
+<h2 id="按键状态"><a href="#按键状态" class="headerlink" title="按键状态"></a>按键状态</h2><p>按键一般有一下几种状态：</p>
+<ul>
+<li>没有被按下，按键处于空闲状态，高电平；  </li>
+<li>按下，按键抖动，高低电平来回切换多次；</li>
+<li>抖动结束，按键处于静止状态，输出低电平；  </li>
+<li>释放，按键抖动，高低电平来回切换，最终输出低电平。</li>
+</ul>
+<p>一般情况下抖动的总时间会持续 20ms 以内。  </p>
+<p>在单片机中，我们对于按键抖动的问题常常是加入一个延时，但是20ms只是一个大概的时间，我们无法保证在20ms之后按键不再抖动。因此，在FPGA中我们常常使用状态机来解决这个问题。  </p>
+<h2 id="不用状态机的程序"><a href="#不用状态机的程序" class="headerlink" title="不用状态机的程序"></a>不用状态机的程序</h2><pre><code>module Key_debounce(
+    input  Clk,
+    input  Reset_n,
+    
+    input  Key, //外部输入的按键值
+    output Key_vlaue, //消抖后的按键值
+    output key_flag //消抖后的按键值的有效标志
+    );
+
+reg [19:0] cnt;    //延时计数器，设定的有效阈值
+reg 	   key_reg;
+
+
+always @(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        cnt &lt;= 20&#39;d0;
+        key_reg &lt;= 1&#39;b1; //低电平有效
+    end
+    else begin
+        key_reg &lt;= key; //延迟一拍
+        if(key_reg != key)begin //按键此时已经按下
+            cnt &lt;= 20&#39;d100_0000; //一旦按下，开始计时
+        end
+        else begin
+            if(cnt &gt; 20&#39;d0) //按下，因此检测到当前的key_reg与key不同
+                cnt &lt;= cnt - 1&#39;b1; //倒计时
+            else  //没有按下
+                cnt &lt;= 20&#39;d0; //保持0
+        end
+    end
+end
+
+always @(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        key_value &lt;= 1&#39;b1; //低位有效
+        key_flag  &lt;= 1&#39;b0; 
+    end
+    else if(cnt == 20&#39;d1)begin
+        key_value &lt;= key; //倒计时结束，消抖，认定key_value值是当前值
+        key_flag  &lt;= 1&#39;b1; //消抖后，key_flag置1
+    end
+    else begin  
+        key_vlaue &lt;= key_value; //没有消抖，保持当前值
+        key_flag  &lt;= 1&#39;b0; //有效标志位仍为0
+    end
+end
+
+endmodule
+</code></pre>
+<h2 id="状态机消抖"><a href="#状态机消抖" class="headerlink" title="状态机消抖"></a>状态机消抖</h2><p>核心思想：在20ms内如果检测到按键按下或松开对应的信号则认定为抖动，恢复到上一状态继续消抖，直到检测到按键按下或松开对应的信号超过20ms则认定为消抖完成。状态转移过程如下图所示：<br><img src="/../blog_image/102.png" alt="image.png"><br>综上，本实验主要分为以下几点：<br>检测边缘、计数（计数20ms)、状态机的设计。</p>
+<h3 id="按键边缘检测"><a href="#按键边缘检测" class="headerlink" title="按键边缘检测"></a>按键边缘检测</h3><p>这和之前串口接收时相同，具体代码如下：  </p>
+<pre><code>//使用D触发器存储两个相邻时钟上升沿时外部输入信号（已经同步到系统时钟域中）的电平状态
+always@(posedge clk or negedge Reset_n)
+if(！Reset_n)begin
+key_in_reg1 &lt;= 1&#39;b0;
+key_in_reg2 &lt;= 1&#39;b0;
+end
+else begin
+key_in_reg1 &lt;= key_in;
+key_in_reg2 &lt;= key_in_reg1;
+end
+//产生跳变沿信号
+assign key_in_nedge = !key_in_reg1 &amp; key_in_reg2;
+assign key_in_pedge = key_in_reg1 &amp; (!key_in_reg2)
+</code></pre>
+<h3 id="计数器设计"><a href="#计数器设计" class="headerlink" title="计数器设计"></a>计数器设计</h3><pre><code>always@(posedge clk or negedge Reset_n)
+    if(!Reset_n)
+        cnt &lt;= 20&#39;d0;
+    else if(en_cnt)
+        cnt &lt;= cnt + 1&#39;b1; //en_cnt=1，开始计时；不满20ms，或者未按下都不会计时（看状态机）
+    else
+        cnt &lt;= 20&#39;d0;
+        
+always@(posedge clk or negedge Reset_n)
+    if(reset)begin
+        cnt_full &lt;= 1&#39;b0;
+    else if(cnt == 20&#39;d999_999) //只有满20ms才跳转下个状态，否则不满20ms，归零
+        cnt_full &lt;= 1&#39;b1;
+    else
+        cnt_full &lt;= 1&#39;b0;
+</code></pre>
+<h3 id="状态机设计"><a href="#状态机设计" class="headerlink" title="状态机设计"></a>状态机设计</h3><p>现在开始状态机设计，首先用本地参数化对状态机的状态进行定义。   </p>
+<pre><code>localparam
+    IDLE= 4&#39;b0001,
+    FILTER0= 4&#39;b0010,
+    DOWN= 4&#39;b0100,
+    FILTER1= 4&#39;b1000;
+</code></pre>
+<p>由于状态以及判断条件较少，此处先用一段式状态机来进行描述。当复位时候将计数器清零，状态回到 IDLE，key_flag 与 key_state 也回到初始态。  </p>
+<pre><code>always@(posedge clk or negedge Reset_n)
+    if(!Reset_n)begin
+        en_cnt &lt;= 1&#39;b0;
+        state &lt;= IDLE;
+        key_flag &lt;= 1&#39;b0;
+        key_state &lt;= 1&#39;b1;
+    end
+    else begin
+        case(state)
+            default:begin
+                    state &lt;= IDLE;
+                    en_cnt &lt;= 1&#39;b0;
+                    key_flag &lt;= 1&#39;b0;
+                    key_state &lt;= 1&#39;b1;
+            end
+        endcase
+    end
+</code></pre>
+<p>在未按下时状态为IDLE时，如果检测到下降沿则状态进入按下抖动滤除状态FILTER0，并使能计数器，否则继续保持 IDLE 状态。  </p>
+<pre><code>IDLE :begin
+    key_flag &lt;= 1&#39;b0;
+    if(key_in_nedge)begin
+        state &lt;= FILTER0;
+        en_cnt &lt;= 1&#39;b1;
+    end
+    else
+        state &lt;= IDLE;
+end
+</code></pre>
+<p>当在 FILTER0 状态时，如果 20ms 尚未计时结束就有上升沿到来，则认为此时还是按键按下抖动过程，状态回到 IDLE 并清 0 计数器。按下过程中当最后一次抖动后，不会存在上升沿，计数器则可以一直计数，计数满后则将 key_flag 置 1、key_state 置 0，状态进入按下稳定状态 DOWN 并将计数器清 0。这样就可以通过判断 key_flag &amp;&amp; !key_state 来确定按键的状态，为 1 则按下。 </p>
+<pre><code>FILTER0:begin
+    if(cnt_full)begin
+        key_flag &lt;= 1&#39;b1;
+        key_state &lt;= 1&#39;b0;
+        en_cnt &lt;= 1&#39;b0;
+        state &lt;= DOWN;
+    end
+    else if(key_in_pedge)begin
+        state &lt;= IDLE;
+        en_cnt &lt;= 1&#39;b0;
+    end
+    else
+        state &lt;= FILTER0;
+    end  
+</code></pre>
+<p>进入按键稳定状态 DOWM 后，将 key_flag 清 0。如果检测到上升沿则进入释放抖动滤除状态 FILTER1，否则保持当前态。</p>
+<pre><code>DOWN:begin
+    key_flag &lt;= 1&#39;b0;
+    if(key_in_pedge)begin
+        state &lt;= FILTER1;
+        en_cnt &lt;= 1&#39;b1;
+    end
+    else
+        state &lt;= DOWN;
+    end  
+</code></pre>
+<p>进入 FILTER1 状态后，如果 20ms 计数尚未结束就检测到下降沿，则认为此时还是按键释放抖动过程，状态回到 DOWN 并清 0 计数器。释放过程中当最后一次抖动后，不会存在下降沿，计数器则可以一直计数，计数满后则将 key_flag 与 key_state 均置 1，状态进入 IDLE并将计数器清 0，等待下一次按键被按下。  </p>
+<pre><code>FILTER1:begin
+    if(cnt_full)begin
+        key_flag &lt;= 1&#39;b1;
+        key_state &lt;= 1&#39;b1;
+        state &lt;= IDLE;
+        en_cnt &lt;= 1&#39;b0;
+    end
+    else if(key_in_nedge)begin
+        en_cnt &lt;= 1&#39;b0;
+        state &lt;= DOWN;
+    end
+    else
+        state &lt;= FILTER1;
+    end  
+</code></pre>
+<h1 id="练习：按键控制蜂鸣器"><a href="#练习：按键控制蜂鸣器" class="headerlink" title="练习：按键控制蜂鸣器"></a>练习：按键控制蜂鸣器</h1><h2 id="按键消抖（这里使用不使用状态机的）"><a href="#按键消抖（这里使用不使用状态机的）" class="headerlink" title="按键消抖（这里使用不使用状态机的）"></a>按键消抖（这里使用不使用状态机的）</h2><pre><code>module key_ctrl(
+    input  Clk,
+    input  Reset_n,
+    
+    input  key, //外部输入的按键值
+    output reg key_value, //消抖后的按键值
+    output reg key_flag //消抖后的按键值的有效标志
+    );
+
+reg [19:0] cnt;    //延时计数器，设定的有效阈值
+reg 	   key_reg;
+
+
+always @(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        cnt &lt;= 20&#39;d0;
+        key_reg &lt;= 1&#39;b1; //低电平有效
+    end
+    else begin
+        key_reg &lt;= key; //延迟一拍
+        if(key_reg != key)begin //按键此时已经按下
+            cnt &lt;= 20&#39;d100_0000; //一旦按下，开始计时
+        end
+        else begin
+            if(cnt &gt; 20&#39;d0) //按下，因此检测到当前的key_reg与key不同
+                cnt &lt;= cnt - 1&#39;b1; //倒计时
+            else  //没有按下
+                cnt &lt;= 20&#39;d0; //保持0
+        end
+    end
+end
+
+always @(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)begin
+        key_value &lt;= 1&#39;b1; //低位有效
+        key_flag  &lt;= 1&#39;b0; 
+    end
+    else if(cnt == 20&#39;d1)begin
+        key_value &lt;= key; //倒计时结束，消抖，认定key_value值是当前值
+        key_flag  &lt;= 1&#39;b1; //消抖后，key_flag置1
+    end
+    else begin  
+        key_value &lt;= key_value; //没有消抖，保持当前值
+        key_flag  &lt;= 1&#39;b0; //有效标志位仍为0
+    end
+end
+
+endmodule
+    
+
+        
+</code></pre>
+<h2 id="蜂鸣器控制"><a href="#蜂鸣器控制" class="headerlink" title="蜂鸣器控制"></a>蜂鸣器控制</h2><pre><code>module beep_ctrl(
+    input Clk,
+    input Reset_n,
+    
+    input key_value,
+    input key_flag,
+    output reg beep
+    );
+    
+always @(posedge Clk or negedge Reset_n)begin
+    if(!Reset_n)
+        beep &lt;= 1&#39;b1;
+    else if(key_flag &amp;&amp; (key_value == 1&#39;b0))
+        beep &lt;= ~beep;
+end
+endmodule
+</code></pre>
+<h2 id="顶层程序"><a href="#顶层程序" class="headerlink" title="顶层程序"></a>顶层程序</h2><pre><code>module key_beep_ctrl_top(
+
+input Clk,
+input Reset_n,
+
+input key,
+output beep
+
+);
+
+wire key_value;
+wire key_flag;
+
+key_ctrl key_ctrl(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .key(key),
+    .key_value(key_value), 
+    .key_flag(key_flag) 
+    );
+    
+beep_ctrl beep_ctrl(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .key_value(key_value),
+    .key_flag(key_flag),
+    .beep(beep)
+    );
+endmodule
+</code></pre>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/15/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A010/" rel="prev" title="中科院实习—— VIO核与ILA核的使用">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— VIO核与ILA核的使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/20/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AD%A6%E4%B9%A012/" rel="next" title="中科院实习—— IP核的调用">
+      中科院实习—— IP核的调用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8C%89%E9%94%AE%E6%B6%88%E6%8A%96"><span class="nav-number">1.</span> <span class="nav-text">按键消抖</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%89%E9%94%AE%E7%8A%B6%E6%80%81"><span class="nav-number">1.1.</span> <span class="nav-text">按键状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E7%94%A8%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.2.</span> <span class="nav-text">不用状态机的程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E6%B6%88%E6%8A%96"><span class="nav-number">1.3.</span> <span class="nav-text">状态机消抖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E9%94%AE%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">按键边缘检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E5%99%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text">计数器设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.3.</span> <span class="nav-text">状态机设计</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%83%E4%B9%A0%EF%BC%9A%E6%8C%89%E9%94%AE%E6%8E%A7%E5%88%B6%E8%9C%82%E9%B8%A3%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">练习：按键控制蜂鸣器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%89%E9%94%AE%E6%B6%88%E6%8A%96%EF%BC%88%E8%BF%99%E9%87%8C%E4%BD%BF%E7%94%A8%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">按键消抖（这里使用不使用状态机的）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%9C%82%E9%B8%A3%E5%99%A8%E6%8E%A7%E5%88%B6"><span class="nav-number">2.2.</span> <span class="nav-text">蜂鸣器控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B6%E5%B1%82%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.3.</span> <span class="nav-text">顶层程序</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

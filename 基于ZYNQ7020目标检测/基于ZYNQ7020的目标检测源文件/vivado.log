@@ -1,0 +1,45 @@
+#-----------------------------------------------------------
+# Vivado v2018.3 (64-bit)
+# SW Build 2405991 on Thu Dec  6 23:38:27 MST 2018
+# IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+# Start of session at: Tue Oct 24 22:35:17 2023
+# Process ID: 27660
+# Current directory: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent16916 F:\FPGA_project\V2_ov5640_hdmi\V2_ov5640_hdmi\ov5640_hdmi.xpr
+# Log file: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/vivado.log
+# Journal file: F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ov5640_hdmi.xpr
+INFO: [Project 1-313] Project file moved from 'E:/ZYNQ/ZYNQ_ov5640_hdmi_frame_difference/24_ov5640_hdmi' since last save.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'f:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ip_repo'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'F:/7_3/xilinx/Vivado/2018.3/data/ip'.
+open_project: Time (s): cpu = 00:00:17 ; elapsed = 00:00:31 . Memory (MB): peak = 777.676 ; gain = 197.766
+update_compile_order -fileset sources_1
+open_bd_design {F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ov5640_hdmi.srcs/sources_1/bd/design_1/design_1.bd}
+Adding cell -- openedv.com:user:DVI_Transmitter:1.0 - DVI_Transmitter_0
+Adding cell -- digilentinc.com:ip:axi_dynclk:1.0 - axi_dynclk_0
+Adding cell -- xilinx.com:ip:smartconnect:1.0 - axi_smc
+Adding cell -- xilinx.com:ip:axi_vdma:6.3 - axi_vdma_0
+Adding cell -- alientek.com:user:ov5640_capture_data:1.0 - ov5640_capture_data_0
+Adding cell -- xilinx.com:ip:processing_system7:5.5 - processing_system7_0
+Adding cell -- xilinx.com:ip:axi_interconnect:2.1 - ps7_0_axi_periph
+Adding cell -- xilinx.com:ip:axi_crossbar:2.1 - xbar
+Adding cell -- xilinx.com:ip:axi_protocol_converter:2.1 - auto_pc
+Adding cell -- xilinx.com:ip:proc_sys_reset:5.0 - rst_ps7_0_50M
+Adding cell -- xilinx.com:ip:v_axi4s_vid_out:4.0 - v_axi4s_vid_out_0
+Adding cell -- xilinx.com:ip:v_tc:6.1 - v_tc_0
+Adding cell -- xilinx.com:ip:v_vid_in_axi4s:4.0 - v_vid_in_axi4s_0
+Adding cell -- xilinx.com:ip:axi_vdma:6.3 - axi_vdma_1
+Adding cell -- xilinx.com:ip:axis_broadcaster:1.1 - axis_broadcaster_0
+Adding cell -- xilinx.com:module_ref:AXI_VIP_Frame_Difference:1.0 - AXI_VIP_Frame_Differ_0
+WARNING: [BD 41-1731] Type mismatch between connected pins: /ov5640_capture_data_0/cmos_frame_ce(undef) and /v_vid_in_axi4s_0/vid_io_in_ce(ce)
+WARNING: [BD 41-1731] Type mismatch between connected pins: /axi_dynclk_0/LOCKED_O(undef) and /DVI_Transmitter_0/reset_n(rst)
+WARNING: [BD 41-1731] Type mismatch between connected pins: /axi_dynclk_0/LOCKED_O(undef) and /ov5640_capture_data_0/rst_n(rst)
+Successfully read diagram <design_1> from BD file <F:/FPGA_project/V2_ov5640_hdmi/V2_ov5640_hdmi/ov5640_hdmi.srcs/sources_1/bd/design_1/design_1.bd>
+open_bd_design: Time (s): cpu = 00:00:03 ; elapsed = 00:00:06 . Memory (MB): peak = 916.797 ; gain = 0.000
+exit
+INFO: [Common 17-206] Exiting Vivado at Tue Oct 24 22:44:06 2023...

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Verilog语言强化。包括可综合语句与不可综合语句、initial与always语句、组合语句与时序逻辑 、assign语句与always语句。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— Verilog语言重点内容解析">
+<meta property="og:url" content="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A05/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="Verilog语言强化。包括可综合语句与不可综合语句、initial与always语句、组合语句与时序逻辑 、assign语句与always语句。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/62.png">
+<meta property="og:image" content="http://example.com/blog_image/63.png">
+<meta property="og:image" content="http://example.com/blog_image/64.png">
+<meta property="og:image" content="http://example.com/blog_image/65.png">
+<meta property="og:image" content="http://example.com/blog_image/66.png">
+<meta property="og:image" content="http://example.com/blog_image/67.png">
+<meta property="og:image" content="http://example.com/blog_image/68.png">
+<meta property="og:image" content="http://example.com/blog_image/69.png">
+<meta property="og:image" content="http://example.com/blog_image/70.png">
+<meta property="og:image" content="http://example.com/blog_image/71.png">
+<meta property="article:published_time" content="2023-07-11T01:56:55.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:16:21.695Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/62.png">
+
+<link rel="canonical" href="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A05/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— Verilog语言重点内容解析 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A05/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— Verilog语言重点内容解析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-11 09:56:55" itemprop="dateCreated datePublished" datetime="2023-07-11T09:56:55+08:00">2023-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-09 14:16:21" itemprop="dateModified" datetime="2023-08-09T14:16:21+08:00">2023-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Verilog语言强化。包括可综合语句与不可综合语句、initial与always语句、组合语句与时序逻辑 、assign语句与always语句。</p>
+<span id="more"></span>
+
+
+<h1 id="Verilog语言重点内容解析"><a href="#Verilog语言重点内容解析" class="headerlink" title="Verilog语言重点内容解析"></a>Verilog语言重点内容解析</h1><h2 id="可综合语句与不可综合语句"><a href="#可综合语句与不可综合语句" class="headerlink" title="可综合语句与不可综合语句"></a>可综合语句与不可综合语句</h2><p>Verilog硬件描述语言有很完整的语法结构和系统，类似高级语言，这些语法结构的应用给我们的设计描述带来很多方便。但是，我们知道，Verilog是描述硬件电路的，它是建立在硬件电路的基础上的。有些语法结构是<strong>不能与实际硬件电路对应起来的</strong>，也就是说我们在把一个语言描述的程序映射成<strong>实际硬件电路中的结构时是不能实现</strong>的,<strong>这些语句称为不可综合语句，反之为可综合</strong>。</p>
+<h2 id="initial与always语句"><a href="#initial与always语句" class="headerlink" title="initial与always语句"></a>initial与always语句</h2><p>与C语言不通，verilog在本质上是<strong>并发而非顺序</strong>的。verilog中的各个执行流程（进程）并发执行，而不是顺序执行的。每个initial语句和always语句代表一个独立的执行过程，<strong>每个执行过程从仿真时间0开始执行</strong>并且<strong>两种语句不能嵌套使用</strong>。下面举例解释之：</p>
+<h3 id="initial语句-转自link"><a href="#initial语句-转自link" class="headerlink" title="initial语句 转自link"></a>initial语句 转自<a target="_blank" rel="noopener" href="https://blog.csdn.net/liming0931/article/details/7039680">link</a></h3><p>所有的initial语句内的语句构成了一个initial块。<strong>initial块从仿真0时刻开始执行</strong>，在整个仿真过程中<strong>只执行一次</strong>。如果一个模块中<strong>包括了若干个initial块</strong>，则这些initial块<strong>从仿真0时刻开始并发执行</strong>，且每<strong>个块的执行是各自独立的</strong>。如果在块内包含了多<strong>条行为语句，那么需要将这些语句组成一组，一般式使用关键字begin和end将他们组合在一个块语句</strong>；如果块内<strong>只有一条语句</strong>，则<strong>不必使用begin和end</strong>.下面给出了initial语句的例子：  </p>
+<pre><code>module stimulus
+ 
+reg x,y, a,b, m
+ 
+initial
+    m = 1&#39;b0;
+    
+initial
+begin
+    #5 a = 1&#39;b1;
+    #25 b = 1&#39;b0;
+end
+ 
+initial
+begin
+    #10 x = 1&#39;b0;
+    #25 y = 1&#39;b1;
+end
+ 
+initial
+    #50 $finish;
+    
+endmodule
+</code></pre>
+<p>在上面例子中，三条initial语句在仿真0时刻开始并行执行。如果在某一条语句前面存在延迟#<delay>，那么这条initial语句的仿真将会停顿下来，在经过指定的延迟时间之后再继续执行。因此上面的initial语句执行顺序为：  </p>
+<pre><code>时间				所执行的语句
+0					m = 1&#39;b0;
+5					a = 1&#39;b1;
+10					x = 1&#39;b0;
+30					b = 1&#39;b0;
+35					y = 1&#39;b1;
+50					$finish;
+</code></pre>
+<p>initial块常用于测试文件和虚拟模块的编写，用来产生仿真测试信号和设置信号记录等仿真环境。它是一种<strong>不可综合的语句</strong>。</p>
+<h2 id="always语句-转自link"><a href="#always语句-转自link" class="headerlink" title="always语句 转自link"></a>always语句 转自<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/72078544">link</a></h2><p>always语句在仿真过程中是不断重复执行的。<br><img src="/../blog_image/62.png" alt="image.png"><br>其声明格式如下：  </p>
+<pre><code>always &lt;时序控制&gt;  &lt;语句&gt;   
+</code></pre>
+<p>always语句由于其不断重复执行的特性，<strong>只有和一定的时序控制结合在一起才有用</strong>。如果一个always语句没有时序控制，则这个always语句将会发成一个<strong>仿真死锁</strong>。见下例：<br>[例1]：   </p>
+<pre><code>always areg = ~areg;  
+</code></pre>
+<p>这个always语句<strong>将会生成一个0延迟的无限循环跳变过程</strong>，这时会<strong>发生仿真死锁</strong>。如果加上时序控制，则这个always语句将变为一条非常有用的描述语句。见下例：<br>[例2]：</p>
+<pre><code>always #10  areg = ~areg;  
+</code></pre>
+<p>这个例子生成了一<strong>个周期为20 的无限延续的信号波形</strong>，常用这种方法来描述时钟信号，作为激励信号来测试所设计的电路。</p>
+<p>[例3]：</p>
+<pre><code>reg[7:0] counter;
+reg tick;
+
+always @(posedge areg) 
+    begin
+        tick = ~tick;
+        counter = counter + 1;
+    end 
+</code></pre>
+<p>这个例子中,<strong>每当areg信号的上升沿出现时把tick信号反相，并且把counter增加1。</strong>这种时间控制是always语句最常用的。   </p>
+<p>always 的<strong>时间控制可以是沿触发也可以是电平触发的</strong>，<strong>可以单个信号也可以多个信号</strong>，中间<strong>需要用关键字 or 连接</strong>，如：</p>
+<pre><code> always @(posedge clock or posedge reset) //由两个沿触发的always块
+ begin
+ ……
+ end
+ always @( a or b or c ) //由多个电平触发的always块
+ begin
+ ……
+ end  
+</code></pre>
+<p><strong>沿触发的always块常常描述时序逻辑</strong>，如果符合可综合风格要求可用综合工具自动转换为<strong>表示时序逻辑的寄存器组和门级逻辑</strong>，而电平触发的always块常常用来<strong>描述组合逻辑和带锁存器的组合逻辑</strong>，如果符合可综合风格要求可转换为表示组合逻辑的门级逻辑或带锁存器的组合逻辑。<strong>一个模块中可以有多个always块，它们都是并行运行的</strong>。 </p>
+<p>always是一个极高频的语法，always@（）用法总结如下<br>① always@(信号名)</p>
+<p>• 信号名有变化就触发事件</p>
+<p>例:  </p>
+<pre><code>always@( clock) 
+a=b;  
+</code></pre>
+<p>② always@( posedge信号名)</p>
+<p>• 信号名有上升沿就触发事件</p>
+<p>例:  </p>
+<pre><code>always@( posedge clock) 
+a=b; 
+</code></pre>
+<p>③ always@(negedge信号名)</p>
+<p>• 信号名有下降沿就触发事件</p>
+<p>例:  </p>
+<pre><code>always@( negedge clock) 
+a=b; 
+</code></pre>
+<p>④ always@(敏感事件1or敏感事件2or…)</p>
+<p>• 敏感事件之一触发事件</p>
+<p>• 没有其它组合触发</p>
+<p>例:  </p>
+<pre><code>always@(posedge reset or posedge clear) 
+reg_out=0;  
+</code></pre>
+<p>⑤ always@(*)</p>
+<p>• 无敏感列表，描述组合逻辑，和assign语句是有区别的</p>
+<p>例:  </p>
+<pre><code>always@(*) 
+b= 1&#39;b0;  
+</code></pre>
+<p>assign赋值语句和always@(*)语句。两者之间的差别有：</p>
+<p>1.被assign赋值的信号定义为wire型，被always@( * )结构块下的信号定义为reg型，值得注意的是，这里的reg并不是一个真正的触发器，只有敏感列表为上升沿触发的写法才会综合为触发器，在仿真时才具有触发器的特性。</p>
+<p>2.另外一个区别则是更细微的差别：举个例子,</p>
+<pre><code>wire a;
+reg b;
+
+assign a = 1&#39;b0;
+
+always@(*)
+b= 1&#39;b0;  
+</code></pre>
+<p><strong>在这种情况下，做仿真时a将会正常为0，但是b却是不定态。这是为什么？verilog规定，always@( * )中的 * 是指该always块内的所有输入信号的变化为敏感列表，也就是仿真时只有当always@( * )块内的输入信号产生变化，该块内描述的信号才会产生变化，而像always@( * )b &#x3D; 1’b0;这种写法由于1’b0一直没有变化，所以b的信号状态一直没有改变，由于b是组合逻辑输出，所以复位时没有明确的值（不定态），而又因为always@( * )块内没有敏感信号变化，因此b的信号状态一直保持为不定态。事实上该语句的综合结果有可能跟assign一样，但是在功能仿真时就差之千里了</strong>。</p>
+<h2 id="组合逻辑的assign和always语句"><a href="#组合逻辑的assign和always语句" class="headerlink" title="组合逻辑的assign和always语句"></a>组合逻辑的assign和always语句</h2><h3 id="组合语句与时序逻辑"><a href="#组合语句与时序逻辑" class="headerlink" title="组合语句与时序逻辑"></a>组合语句与时序逻辑</h3><h4 id="组合逻辑电路"><a href="#组合逻辑电路" class="headerlink" title="组合逻辑电路"></a>组合逻辑电路</h4><p>特点：是任意时刻的输出<strong>仅仅取决于当前时刻的输入，与电路之前的历史状态无关（即无记忆能力）</strong></p>
+<p>组合逻辑电路的设计通常包含以下几个步骤：  </p>
+<ul>
+<li>进行逻辑抽象。分析事件的因果关系，确定输入变量和输出变量，列出输入变量和输出变量的逻辑真值表。  </li>
+<li>写出逻辑函数。将真值表转换为对应的逻辑函数式，或者直接画出卡诺图，然后使用第三章中介绍的卡诺图将逻辑函数进行化简。  </li>
+<li><pre><code>根据化简后的逻辑函数，画出逻辑电路图。
+</code></pre>
+</li>
+</ul>
+<h4 id="时序逻辑电路"><a href="#时序逻辑电路" class="headerlink" title="时序逻辑电路"></a>时序逻辑电路</h4><p> <strong>时序逻辑电路的输出不仅取决于当前的输入，还取决于电路的历史状态。 <strong>因此我们需要</strong>一种元件能保存电路的状态信息。如果一个元件带有内部存储功能，它就包含状态，也称之为状态单元（State Element）</strong>。  </p>
+<ul>
+<li>锁存器：锁存器在E的高(低)电平期间对信号敏感   </li>
+<li>触发器：触发器在CP的上升沿(下降沿)对信号敏感</li>
+</ul>
+<p>共同点：<br>具有<strong>0 和1两个稳定状态，一旦状态被确定，就能自行保持。一个锁存器或触发器能存储一位二进制码。</strong></p>
+<p>不同点：<br>锁存器—<strong>对脉冲电平敏感的存储电路，在特定输入脉冲电平作用下改变状态</strong>。<br>触发器—对脉冲边沿敏感的存储电路，在<strong>时钟脉冲的上升沿或下降沿的变化瞬间改变状态</strong>。  </p>
+<h4 id="组合逻辑的assign和always语句-1"><a href="#组合逻辑的assign和always语句-1" class="headerlink" title="组合逻辑的assign和always语句"></a>组合逻辑的assign和always语句</h4><p>always 是“一直、总是”的意思， @后面跟着事件。整个 always 的意思是：<strong>当敏感事件的条件满足时，就执行一次“程序语句”</strong>。敏感事件每满足一次，就执行“程序语句”一次。 （敏感事件中的敏感条件出现变化时，执行always条件循环语句中的内容）<br><img src="/../blog_image/63.png" alt="image.png"><br>这段程序的意思是： 当信号 a 或者信号 b 或者信号 d 发生变化时，就执行一次下面语句。在执行该段语句时，首先判断信号 sel 是否为 0，如果为 0，则执行第 3 行代码。 如果 sel 不为 0，则执行第 5 行代码。需要强调的是， a、 b、 c 任意一个发生变化一次， 2 行至 5 行也只执行一次，不会执行第二次。</p>
+<p>此处需要注意，仅仅 <strong>sel 这个信号发生变化是不会执行第 2 行到 5 行代码的</strong>， 通常这并不符合设计者的想法。例如，<strong>一般设计者的想法是： 当 sel 为 0 时 c 的结果是 a+b；当 sel 不为 0 时 c 的结果是 a+d。</strong>但如果触发条件没有发生改变， 虽然 sel 由 0 变 1， 但此时 c 的结果仍是 a+b。 因此， 这并不是一个规范的设计思维。</p>
+<p>因此，按照设计者的想法重新对代码进行设计：当信号 a 或者信号 b 或者信号 d 或者信号 sel发生变化时，就执行 2 行至 5 行。这样就可以确保 sel 信号值为 0 时， c 的结果一定为 a+b， 当 sel 不为 0 时， c 的结果一定是 a+d。 因此要在敏感列表中加入 sel， 其代码如下所示。<br><img src="/../blog_image/64.png" alt="image.png"><br>当敏感信号非常多时很容易就会把敏感信号遗漏，为避免这种情况可以用“ * ”来代替。这个“ *”是指“程序语句”中所有的条件信号， 即 a、 b、 d、 sel（不包括 c） ， 也推荐这种写法，其具体代码如下所示。<br><img src="/../blog_image/65.png" alt="image.png"><br>这种条件信号变化结果立即变化的 always 语句被称为“组合逻辑”。  </p>
+<h2 id="延时-转自link"><a href="#延时-转自link" class="headerlink" title="延时   转自link"></a>延时   转自<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43214511/article/details/111874481?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168904508916800185830978%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fall.%2522%257D&request_id=168904508916800185830978&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~first_rank_ecpm_v1~rank_v31_ecpm-1-111874481-null-null.142%5Ev88%5Econtrol_2,239%5Ev2%5Einsert_chatgpt&utm_term=assign%20%E5%BB%B6%E6%97%B6%20%E4%BB%BF%E7%9C%9F%E4%B8%8E%E6%9D%BF%E6%9C%BA%E5%8C%BA%E5%88%AB&spm=1018.2226.3001.4187">link</a></h2><h3 id="电路延时"><a href="#电路延时" class="headerlink" title="电路延时"></a>电路延时</h3><p>在实际电路中存在两种延迟，惯性延迟 (Inertial delay) 和传导延迟 (Transport delay)  </p>
+<p>惯性延迟<br>定义：若元件的输入信号的脉冲宽度小于一定值时，元件的输出没有响应，也就是说元件具有一定的惯性。<br>产生原因：当脉冲到达时，由于脉冲宽度小于元件本身的延迟，当脉冲结束时，元件的新输出还未建立起来。考虑了电路中存在的大量分布电容。  </p>
+<p>传导延迟<br>定义：输入信号变化到对应输出信号变化经过的时间，类似于物理传输线的延迟。<br>产生原因：载流子运动的速度有限，通过导线需要一定的时间。</p>
+<h3 id="Verilog-中的时序模型"><a href="#Verilog-中的时序模型" class="headerlink" title="Verilog 中的时序模型"></a>Verilog 中的时序模型</h3><p>在分析 Verilog HDL 的仿真行为前，我们需要了解 Verilog 中时序模型。<br>时序模型分为：门级时序模型、过程时序模型。  </p>
+<p>门级时序模型<br>适用范围：所有的连续赋值语句、过程连续赋值语句、门原语、用户自定义原语。<br>特点：<br>任意时刻输入发生变化，将重新计算输出。<br>当之前的的事件未执行完毕时又发生的新的变化，则会撤销之前的事件，开始新的事件。  </p>
+<p>过程时序模型  </p>
+<p>适用范围：过程语句。<br>特点：<br>当敏感列表发生变化时触发执行。<br>当之前的的事件未执行完毕时又发生的新的变化，则不撤销原有事件，同时开始新的事件，如果同时有几个更新事件，它们的执行顺序是不确定的。</p>
+<h3 id="Verilog-中的仿真延迟语句"><a href="#Verilog-中的仿真延迟语句" class="headerlink" title="Verilog 中的仿真延迟语句"></a>Verilog 中的仿真延迟语句</h3><p>Verilog 中的仿真延时语句为 #n，n 表示延时时间，将该语句加在语句中，延迟 n 个时间单位。<br>延时的添加方法有两种：正规延迟和内定延迟<br>正规延迟 (#在外面)<br>   <code>#5 C = A +B</code> </p>
+<p>在 T 时刻执行到该语句时，等待 5 个时间单位，然后计算等号右边的值赋给 C，此时使用的 A B 的值是 T+5 时刻的值。</p>
+<p>内定延迟 (#在里面)  </p>
+<pre><code>C = #5 A +B  
+</code></pre>
+<p>在 T 时刻执行到该语句时，先计算 A+B 的值，计算后等待 5 个时间单位将值赋给 C，使用的 A B 的值是 T 时刻的值。 </p>
+<h3 id="阻塞赋值与非阻塞赋值"><a href="#阻塞赋值与非阻塞赋值" class="headerlink" title="阻塞赋值与非阻塞赋值"></a>阻塞赋值与非阻塞赋值</h3><p>阻塞（blocking）赋值方式（如 b&#x3D;a）<br>①赋值语句立即执行，执行完毕后才执行下一条语句（即为阻塞的含义，依次顺序执行）；  </p>
+<p>②左侧值在赋值语句执行完后立即改变    </p>
+<p>非阻塞（Non_blocking）赋值方式（如 b&lt;&#x3D;a）</p>
+<p>①语句执行到此时，先计算“&lt;&#x3D;”右侧值，但不立即赋值给左侧；<br>②always块结束后才完成此次赋值操作；<br>③这是时序逻辑模块最常用的赋值方法。  </p>
+<h3 id="在-Verilog-建模中增加延时"><a href="#在-Verilog-建模中增加延时" class="headerlink" title="在 Verilog 建模中增加延时"></a>在 Verilog 建模中增加延时</h3><pre><code>// 1. 连续赋值+ 正规延迟
+assign #5 C = A +B;
+
+// 2. 连续赋值+ 内定延迟
+assign C = #5 A +B;
+
+// 3. 阻塞赋值 + 正规延迟
+always @(*) begin
+    #5 C = A +B;
+end
+
+// 4. 阻塞赋值 + 内定延迟
+always @(*) begin
+    C = #5 A +B;
+end
+
+// 5. 非阻塞赋值 + 正规延迟
+always @(*) begin
+    #5 C &lt;= A +B;
+end
+
+// 6. 非阻塞赋值 + 内定延迟
+always @(*) begin
+    C &lt;= #5 A +B;
+end
+</code></pre>
+<p>下面对这六种方式逐一分析：  </p>
+<p>1.连续赋值+ 正规延迟<br>在 T 时刻执行到该语句时，等待 5 个时间单位，然后计算等号右边的值赋给 C1。<br>使用的 A B 的值是 T+5 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 assign block，根据 assign block 的门级时序模型特点，仿真器会撤销先前的等待事件，然后重新执行语句。<br>当变化脉冲小于 5 个时间单位时，等待事件会被撤销，该脉冲将不起作用。<br>仿真结果<br><img src="/../blog_image/66.png" alt="image.png"><br>可以看出在 6ns、8ns、9ns、10ns 时刻 A 发生了变化，但皆因持续时间小于 5ns，所以都没有对 C1 产生影响，只有在 12ns 和 18ns 的变化持续时间超过 5ns，作用到 C1 上。<br>2.连续赋值+ 内定延迟<br>在 T 时刻执行到该语句时，计算等号右边的值，等待 5 个时间单位后赋给 C2。<br>使用的 A B 的值是 T 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 assign block，根据 assign block 的门级时序模型特点，仿真器会撤销先前的等待事件，然后重新执行语句。<br>当变化脉冲小于 5 个时间单位时，等待事件会被撤销，该脉冲将不起作用。<br><strong>该种方式有记忆属性，与连续赋值原则不符，为非法语句，编译不能通过</strong>。<br>3.阻塞赋值 + 正规延迟<br>在 T 时刻执行到该语句时，等待 5 个时间单位，然后计算等号右边的值阻塞赋给 C3。<br>使用的 A B 的值是 T+5 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 always block，根据 always block 的过程时序模型特点，此时还在等待过程，always 语句还未执行结束，不会开始新一轮的事件，仿真器不会对敏感列表反应。<br>仿真器忽略延迟时间段的数据变化。<br>仿真结果<br><img src="/../blog_image/67.png" alt="image.png"><br>在 6ns 时刻 A 的值发生变化，always block 开始执行，经过 5ns，用 11ns 时刻的 A B 的值计算出结果赋给 C3，而忽略了 8ns 和 10ns 时刻的变化。<br>4.阻塞赋值 + 内定延迟<br>在 T 时刻执行到该语句时，计算等号右边的值，等待 5 个时间单位后赋给 C4。<br>使用的 A B 的值是 T 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 always block，根据 always block 的过程时序模型特点，由于赋值方式为阻塞赋值，此时 always 语句还未执行结束，不会开始新一轮的事件，仿真器不会对敏感列表反应。<br>仿真器忽略延迟时间段的数据变化。<br>仿真结果：<br><img src="/../blog_image/68.png" alt="image.png"><br>在 6ns 时刻 A 的值发生变化，always block 开始执行，经过 5ns，用 6ns 时刻的 A B 的变化后的值计算出结果赋给 C4，而忽略了 8ns 和 10ns 时刻的变化。<br>5.非阻塞赋值 + 正规延迟<br>在 T 时刻执行到该语句时，等待 5 个时间单位，然后计算等号右边的值非阻塞赋给 C5。<br>使用的 A B 的值是 T+5 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 always block，根据 always block 的过程时序模型特点，此时还在等待过程，always 语句还未执行结束，不会开始新一轮的事件，仿真器不会对敏感列表反应。<br>仿真器忽略延迟时间段的数据变化。<br>仿真结果：<br><img src="/../blog_image/69.png" alt="image.png"><br>在 6ns 时刻 A 的值发生变化，always block 开始执行，经过 5ns，用 11ns 时刻的 A B 的值计算出结果赋给 C5，而忽略了 8ns 和 10ns 时刻的变化。<br>6.非阻塞赋值 + 内定延迟<br>在 T 时刻执行到该语句时，计算等号右边的值，等待 5 个时间单位后赋给 C6。<br>使用的 A B 的值是 T 时刻的值。<br>若在等待过程中 A B 的值发生变化再次触发 always block，根据 always block 的过程时序模型特点，由于赋值方式为非阻塞赋值，将赋值事件放进事件队列后，always 语句执行结束，等待下一次的触发，触发来到时开始新一轮的事件。<br>仿真器接受延迟时间段的数据变化，输入的变化延迟会全部反应在输出上。<br>仿真结果：<br><img src="/../blog_image/70.png" alt="image.png"><br>A B 的每一次变化都触发 always block 的执行，每一次变化都延时 5ns 后反应在 C6 上。  </p>
+<p>下图为 always block 中的四种延时方式的仿真流程：<br><img src="/../blog_image/71.png" alt="image.png">  </p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/10/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A04/" rel="prev" title="中科院实习——FPGA">
+      <i class="fa fa-chevron-left"></i> 中科院实习——FPGA
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A06/" rel="next" title="中科院实习—— 参数化设计实现模块的重用与可控线性序列机">
+      中科院实习—— 参数化设计实现模块的重用与可控线性序列机 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Verilog%E8%AF%AD%E8%A8%80%E9%87%8D%E7%82%B9%E5%86%85%E5%AE%B9%E8%A7%A3%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">Verilog语言重点内容解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E7%BB%BC%E5%90%88%E8%AF%AD%E5%8F%A5%E4%B8%8E%E4%B8%8D%E5%8F%AF%E7%BB%BC%E5%90%88%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.1.</span> <span class="nav-text">可综合语句与不可综合语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#initial%E4%B8%8Ealways%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.2.</span> <span class="nav-text">initial与always语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#initial%E8%AF%AD%E5%8F%A5-%E8%BD%AC%E8%87%AAlink"><span class="nav-number">1.2.1.</span> <span class="nav-text">initial语句 转自link</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#always%E8%AF%AD%E5%8F%A5-%E8%BD%AC%E8%87%AAlink"><span class="nav-number">1.3.</span> <span class="nav-text">always语句 转自link</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E7%9A%84assign%E5%92%8Calways%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.4.</span> <span class="nav-text">组合逻辑的assign和always语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E8%AF%AD%E5%8F%A5%E4%B8%8E%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91"><span class="nav-number">1.4.1.</span> <span class="nav-text">组合语句与时序逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">组合逻辑电路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">时序逻辑电路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E7%9A%84assign%E5%92%8Calways%E8%AF%AD%E5%8F%A5-1"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">组合逻辑的assign和always语句</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6-%E8%BD%AC%E8%87%AAlink"><span class="nav-number">1.5.</span> <span class="nav-text">延时   转自link</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF%E5%BB%B6%E6%97%B6"><span class="nav-number">1.5.1.</span> <span class="nav-text">电路延时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Verilog-%E4%B8%AD%E7%9A%84%E6%97%B6%E5%BA%8F%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.5.2.</span> <span class="nav-text">Verilog 中的时序模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Verilog-%E4%B8%AD%E7%9A%84%E4%BB%BF%E7%9C%9F%E5%BB%B6%E8%BF%9F%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.5.3.</span> <span class="nav-text">Verilog 中的仿真延迟语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC"><span class="nav-number">1.5.4.</span> <span class="nav-text">阻塞赋值与非阻塞赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8-Verilog-%E5%BB%BA%E6%A8%A1%E4%B8%AD%E5%A2%9E%E5%8A%A0%E5%BB%B6%E6%97%B6"><span class="nav-number">1.5.5.</span> <span class="nav-text">在 Verilog 建模中增加延时</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

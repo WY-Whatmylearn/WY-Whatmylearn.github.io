@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="第一个任务：关于数据的读取与保存的任务。使用C语言对二进制文件进行读取：找到包头后找到第80位数据，将获得的二进制文件转换为角度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习——文件提取与保存">
+<meta property="og:url" content="http://example.com/2023/07/06/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A02/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="第一个任务：关于数据的读取与保存的任务。使用C语言对二进制文件进行读取：找到包头后找到第80位数据，将获得的二进制文件转换为角度。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-07-06T03:08:54.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:16:50.509Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="C语言">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/07/06/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习——文件提取与保存 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/06/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习——文件提取与保存
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-06 11:08:54" itemprop="dateCreated datePublished" datetime="2023-07-06T11:08:54+08:00">2023-07-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-09 14:16:50" itemprop="dateModified" datetime="2023-08-09T14:16:50+08:00">2023-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>第一个任务：关于数据的读取与保存的任务。<br>使用C语言对二进制文件进行读取：找到包头后找到第80位数据，将获得的二进制文件转换为角度。</p>
+<span id="more"></span>  
+
+<h1 id="任务简介"><a href="#任务简介" class="headerlink" title="任务简介"></a>任务简介</h1><p>第一个任务是，有这样一组文件，文件的内容是采集的轮船惯导数据。需要将轮船的航向、俯摇及横摇数据提取出来转换成角度加以分析。</p>
+<h1 id="任务拆解"><a href="#任务拆解" class="headerlink" title="任务拆解"></a>任务拆解</h1><p>其实这个任务就是简单的文件进行读取以及保存。用惯了python的调用pandas库进行读取，在C语言中，文件的读取相对复杂一点。  </p>
+<ol>
+<li>文件的打开<br>fopen()：打开文件  </li>
+<li>文件的关闭<br>fclose()：关闭文件<br>3.文件的读写<br>fgetc()：读取一个字符<br>fputc()：写入一个字符<br>fgets()：读取一个字符串<br>fputs()：写入一个字符串<br>fprintf()：写入格式化数据<br>fscanf()：格式化读取数据<br>fread()：二进制输入<br>fwrite()：二进制输出<br>4.文件状态检查<br>feof()：文件是否结束<br>ferror()：文件读&#x2F;写是否出错<br>clearerr()：清除文件错误标志<br>ftell()：文件指针的当前位置<br>5.文件指针定位<br>rewind()：把文件指针移到开始处<br>fseek()：重定位文件指针<br>6.参数解释：<br>“r”：以只读的形式打开文本文件(不存在则出错)<br>“w”：以只写的形式打开文本文件(若不存在则新建，反之，则从文件起始位置写，覆盖原内容)<br>“a”：以追加的形式打开文本文件(若不存在，则新建；反之，在原文件后追加)<br>“r+”：以读写的形式打开文本文件(读时，从头开始；写时，新数据只覆盖所占的空间)<br>“wb”：以只写的形式打开二进制文件<br>“rb”：以只读的形式打开二进制文件<br>“ab”：以追加的形式打开一个二进制文件<br>“rb+”：以读写的形式打开二进制文件。<br>“w+”：首先建立一个新文件，进行写操作，然后从头开始读(若文件存在，原内容将全部消失)<br>“a+”：功能与”a”相同。只是在文件尾部追加数据后，可以从头开始读<br>“wb+”：功能与”w+”相同。只是在读写时，可以由位置函数设置读和写的起始位置<br>“ab+”：功能与”a+”相同。只是在文件尾部追加数据之后，可以由位置函数设置开始读的起始位置<br>7.打开文件<br>FILE *fopen( const char *filename, const char *mode );<br>filename：文件的路径<br>mode：打开模式</li>
+</ol>
+<h1 id="任务执行"><a href="#任务执行" class="headerlink" title="任务执行"></a>任务执行</h1><p>一开始我使用了字符读取函数，但是发现无法读取我们的文件。之后知道文件保存时是转为二进制保存的，因此本文档是一个二进制保存的文件。<br>修改后具体代码如下：<br>     # include &lt;stdio.h&gt;<br>     # include &lt;stdint.h&gt;    </p>
+<pre><code>void saveDataToCSV(const char* filename, float a, float b, float c) &#123;
+// 打开文件用于追加写入
+FILE* file = fopen(filename, &quot;a&quot;);
+if (file == NULL) &#123;
+    printf(&quot;can&#39;t open!\n&quot;);
+    return;
+&#125;
+
+// 如果文件为空，则写入列名
+long fileSize;
+fseek(file, 0, SEEK_END);
+fileSize = ftell(file);
+if (fileSize == 0) &#123;
+    fprintf(file, &quot;v,x,y\n&quot;);
+&#125;
+
+// 写入数据到文件
+fprintf(file, &quot;%f,%f,%f\n&quot;, a, b, c);
+
+// 关闭文件
+fclose(file);
+
+
+&#125;
+
+int main() &#123;
+FILE *file;
+uint8_t buffer[1024];
+size_t bytesRead;
+int found = 0;
+int position = 0;
+short a;
+unsigned short b;
+float angel;
+float angel1;
+float angel2;
+
+// 打开文件
+file = fopen(&quot;F:/7_3/data/H16_0-2023-06-13-11-41-09.IRDV&quot;, &quot;rb&quot;);
+if (file == NULL) &#123;
+    printf(&quot;No file\n&quot;);
+    return 1;
+&#125;
+
+
+
+// 读取文件数据
+while (!feof(file)) &#123;
+    bytesRead = fread(buffer, sizeof(uint8_t), sizeof(buffer), file);
+    for (size_t i = 0; i &lt; bytesRead; i++) &#123;
+        if (found) &#123;
+
+            position++;
+            if (position == 81*2-2 ) &#123;
+                b = ((short)buffer[i+1] &lt;&lt; 8) |(short) buffer[i];
+      
+
+                angel = b * 360.0 / 65535;
+                if (angel&lt;180)&#123;
+                    angel = angel + 360.0;
+                &#125;
+
+
+
+
+
+                printf(&quot;Angle = %.2f degrees\n&quot;, angel);
+
+
+            &#125;
+            if (position == 82*2-2 ) &#123;
+                a = ((short)buffer[i+1] &lt;&lt; 8) |(short) buffer[i];
+             
+
+                angel1 =a * 180.0 / 32767;
+
+     
+                printf(&quot;Angle = %.2f degrees\n&quot;, angel1);
+
+
+            &#125;
+
+            if (position == 83*2-2 ) &#123;
+                a = ((short)buffer[i+1] &lt;&lt; 8) |(short) buffer[i];
+  
+
+                angel2 = a * 180.0 / 32767;
+
+       
+
+                printf(&quot;Angle = %.2f degrees\n&quot;, angel2);
+                printf(&quot;-----------------------------------\n&quot;);
+                found = 0;
+                position = 0;
+                saveDataToCSV(&quot;F:/Project/Angel_get/Angel_get/data1.csv&quot;, angel, angel1,angel2);
+
+            &#125;
+
+
+        &#125; else if (buffer[i] == 0x3D &amp;&amp; i + 3 &lt; bytesRead &amp;&amp; buffer[i + 1] == 0xFE &amp;&amp;
+                   buffer[i + 2] == 0xFA &amp;&amp; buffer[i + 3] == 0xA5) &#123;
+            found = 1; //找到开始的位置，标志位置为1，开始往后计数。
+        &#125;
+    &#125;
+&#125;
+
+// 如果未找到数据
+//printf(&quot;No find\n&quot;);
+fclose(file);
+
+return 0;
+&#125;
+</code></pre>
+<p>(short)buffer[i+1] &lt;&lt; 8这里要注意一个有符号short型在左移八位时，比如#0X80左移后低位会变成FF，也就是位数不够，低位扩充的是符号位。</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag"># C语言</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/05/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0/" rel="prev" title="中科院实习——C语言回顾">
+      <i class="fa fa-chevron-left"></i> 中科院实习——C语言回顾
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/06/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A03/" rel="next" title="中科院实习——FPGA">
+      中科院实习——FPGA <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">任务简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%8B%86%E8%A7%A3"><span class="nav-number">2.</span> <span class="nav-text">任务拆解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">任务执行</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

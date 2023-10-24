@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FPGA开发。包括偶数分频电路练习、阻塞与非阻塞、状态机。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— 知识补充">
+<meta property="og:url" content="http://example.com/2023/07/12/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A07/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="FPGA开发。包括偶数分频电路练习、阻塞与非阻塞、状态机。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/76.png">
+<meta property="og:image" content="http://example.com/blog_image/77.png">
+<meta property="og:image" content="http://example.com/blog_image/78.png">
+<meta property="og:image" content="http://example.com/blog_image/79.png">
+<meta property="og:image" content="http://example.com/blog_image/80.png">
+<meta property="og:image" content="http://example.com/blog_image/81.png">
+<meta property="og:image" content="http://example.com/blog_image/82.png">
+<meta property="og:image" content="http://example.com/blog_image/83.png">
+<meta property="og:image" content="http://example.com/blog_image/84.png">
+<meta property="og:image" content="http://example.com/blog_image/85.png">
+<meta property="og:image" content="http://example.com/blog_image/86.png">
+<meta property="og:image" content="http://example.com/blog_image/87.png">
+<meta property="og:image" content="http://example.com/blog_image/88.png">
+<meta property="og:image" content="http://example.com/blog_image/89.png">
+<meta property="og:image" content="http://example.com/blog_image/90.png">
+<meta property="article:published_time" content="2023-07-12T05:38:55.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:15:31.256Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/76.png">
+
+<link rel="canonical" href="http://example.com/2023/07/12/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A07/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— 知识补充 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/12/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A07/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— 知识补充
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-12 13:38:55" itemprop="dateCreated datePublished" datetime="2023-07-12T13:38:55+08:00">2023-07-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-09 14:15:31" itemprop="dateModified" datetime="2023-08-09T14:15:31+08:00">2023-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FPGA开发。包括偶数分频电路练习、阻塞与非阻塞、状态机。</p>
+<span id="more"></span> 
+<h1 id="偶数分频电路"><a href="#偶数分频电路" class="headerlink" title="偶数分频电路"></a>偶数分频电路</h1><pre><code>module Clk_div(
+    Clk,
+    Reset_n,
+
+    clk_div
+
+    );
+    input Clk;
+    input Reset_n;
+    output reg clk_div;
+    
+    parameter num_div = 4;
+    
+    reg [3:0]cnt;
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        cnt &lt;= 0;
+    else if (cnt &lt; (num_div/2 - 1))
+        cnt &lt;= cnt + 1&#39;b1;
+     else
+        cnt &lt;= 0;
+        
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        clk_div &lt;= 0;
+    else if (cnt &lt; (num_div/2 - 1))
+        clk_div &lt;=  clk_div;
+    else
+        clk_div = !clk_div;
+    
+endmodule
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  </p>
+<pre><code>`timescale 1ns / 1ns
+
+
+module Clk_div_tb();
+
+    reg Clk;
+    reg Reset_n;
+    wire clk_div;
+    
+    Clk_div  
+    #(
+        .num_div(4)
+        )
+    Clk_div(
+            .Clk(Clk),
+            .Reset_n(Reset_n),
+            .clk_div(clk_div)
+            );
+            
+        initial Clk = 1;
+        always #10 Clk = !Clk;
+        
+        initial begin
+           Reset_n = 0;
+           #201;
+           Reset_n = 1;
+           #2000000;
+           $stop;
+        end
+
+    
+    endmodule
+</code></pre>
+<h1 id="重讲阻塞与非阻塞-转自link"><a href="#重讲阻塞与非阻塞-转自link" class="headerlink" title="重讲阻塞与非阻塞 转自link"></a>重讲阻塞与非阻塞 转自<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/72034401">link</a></h1><h2 id="非阻塞与阻塞"><a href="#非阻塞与阻塞" class="headerlink" title="非阻塞与阻塞"></a>非阻塞与阻塞</h2><p>(1).非阻塞(Non_Blocking)赋值方式( 如 b &lt;&#x3D; a; )</p>
+<ul>
+<li>块结束后才完成赋值操作。</li>
+<li>b的值并不是立刻就改变的。</li>
+<li>这是一种比较常用的赋值方法。（特别在编写可综合模块时）</li>
+</ul>
+<p>(2).阻塞(Blocking)赋值方式( 如 b &#x3D; a; )</p>
+<ul>
+<li>赋值语句执行完后,块才结束。</li>
+<li>b的值在赋值语句执行完后立刻就改变的。</li>
+<li>可能会产生意想不到的结果。</li>
+</ul>
+<p>非阻塞赋值方式和阻塞赋值方式的区别常给设计人员带来问题。问题主要是给”always”块内的reg型信号的赋值方式不易把握。  </p>
+<p>到目前为止，前面所举的例子中的”always”模块内的reg型信号都是采用下面的这种赋值方式:<br>    b &lt;&#x3D; a;<br><strong>这种方式的赋值并不是马上执行的</strong>，也就是说”<strong>always”块内的下一条语句执行后，b并不等于a，而是保持原来的值</strong>。”always”块<strong>结束后</strong>，才进行赋值。而另一种赋值方式阻塞赋值方式，如下所示:</p>
+<pre><code> b = a;
+</code></pre>
+<p>这种赋值方式是马上执行的。也就是说执行下一条语句时，b已等于a。尽管这种方式看起来很直观，但是可能引起麻烦。下面举例说明:<br>[例1]   </p>
+<pre><code>always @( posedge clk )
+begin
+    b&lt;=a;
+    c&lt;=b;
+end    
+</code></pre>
+<p>[例1] 中的”always”块中用了非阻塞赋值方式，定义了两个reg型信号b和c，<strong>clk信号的上升沿到来时，b就等于a，c就等于b，</strong>这里应该用到了两个触发器。请注意：<strong>赋值是在”always”块结束后执行的，c应为原来b的值</strong>。这个”always”块实际描述的电路功能如下图所示:<br><img src="/../blog_image/76.png" alt="image.png">  </p>
+<p>[例2]:</p>
+<pre><code>always @(posedge clk)
+begin
+    b=a;
+    c=b;
+end
+</code></pre>
+<p>[例2]中的 “always”块用了阻塞赋值方式。<strong>clk信号的上升沿到来时，将发生如下的变化：b马上取a的值，c马上取b的值(即等于a)，</strong>生成的电路图如下所示只用了一个触发器来寄存器a的值，又输出给b和c。这大概不是设计者的初衷，如果采用[例1]所示的非阻塞赋值方式就可以避免这种错误。<br><img src="/../blog_image/77.png" alt="image.png">   </p>
+<h2 id="深入理解阻塞和非阻塞赋值的不同"><a href="#深入理解阻塞和非阻塞赋值的不同" class="headerlink" title="深入理解阻塞和非阻塞赋值的不同"></a>深入理解阻塞和非阻塞赋值的不同</h2><p><strong>在描述组合逻辑的always 块中用阻塞赋值，则综合成组合逻辑的电路结构。</strong><br>**在描述时序逻辑的always 块中用非阻塞赋值，则综合成时序逻辑的电路结构。 **<br>为什么一定要这样做呢？这是因为要使综合前仿真和综合后仿真一致的缘故。</p>
+<p>首先了解两个定义：</p>
+<p>RHS – 方程式右手方向的表达式或变量可分别缩写为： RHS 表达式或 RHS 变量。</p>
+<p>LHS – 方程式左手方向的表达式或变量可分别缩写为： LHS 表达式或 LHS 变量。  </p>
+<h3 id="阻塞赋值的执行可以认为是只有一个步骤的操作："><a href="#阻塞赋值的执行可以认为是只有一个步骤的操作：" class="headerlink" title="阻塞赋值的执行可以认为是只有一个步骤的操作："></a>阻塞赋值的执行可以认为是只有一个步骤的操作：</h3><p><strong>计算RHS 并更新LHS，此时不能允许有来自任何其他Verilog 语句的干扰</strong>。 所谓阻塞的概念是指<strong>在同一个always块中</strong>，其后面的赋值语句从概念上（<strong>即使不设定延迟</strong>）是在<strong>前一句赋值语句结束后再开始赋值的</strong>。<br>[例1]用阻塞赋值的反馈振荡器(不好的例子）</p>
+<pre><code>module fbosc1 (y1, y2, clk, rst);
+ output y1, y2; 
+ input clk, rst;
+ reg y1, y2;
+
+ always @(posedge clk or posedge rst)
+ begin
+     if (rst) y1 = 0; // reset
+     else y1 = y2;
+ end
+
+ always @(posedge clk or posedge rst)
+ begin
+     if (rst) y2 = 1; // preset
+     else y2 = y1;
+ end
+endmodule
+</code></pre>
+<p>例1中，如果前一个always块的复位信号先到0 时刻，则y1 和y2 都会取1，而如果后一个always 块的复位信号先到0 时刻，则y1 和y2 都会取0。这清楚地说明这个Verilog 模块<strong>是不稳定的会产生冒险和竞争的情况</strong>。<br><strong>如果在一个过程块中阻塞赋值的RHS 变量正好是另一个过程块中阻塞赋值的LHS 变量，这两个过程块又用同一个时钟沿触发，如果阻塞赋值的次序安排不好，就会出现竞争。若这两个阻塞赋值操作用同一个时钟沿触发，则执行的次序是无法确定的。</strong>  </p>
+<h3 id="非阻塞赋值的操作可以看作为两个步骤的过程："><a href="#非阻塞赋值的操作可以看作为两个步骤的过程：" class="headerlink" title="非阻塞赋值的操作可以看作为两个步骤的过程："></a>非阻塞赋值的操作可以看作为两个步骤的过程：</h3><ol>
+<li><p>在赋值时刻开始时，计算非阻塞赋值RHS 表达式。</p>
+</li>
+<li><p>在赋值时刻结束时，更新非阻塞赋值LHS 表达式。</p>
+</li>
+</ol>
+<p>[例2] 用非阻塞赋值的反馈振荡器（正确示范）</p>
+<pre><code>module fbosc2 (y1, y2, clk, rst);
+ output y1, y2;
+ input clk, rst;
+ reg y1, y2;
+ 
+ always @(posedge clk or posedge rst)
+ begin
+     if (rst) y1 &lt;= 0; // reset
+     else y1 &lt;= y2;
+ end
+
+ always @(posedge clk or posedge rst)
+ begin
+     if (rst) y2 &lt;= 1; // preset
+     else y2 &lt;= y1;
+ end
+endmodule
+</code></pre>
+<p>例2中，无论哪一个always 块的复位信号先到， 两个always <strong>块中的非阻塞赋值都在赋值开始时刻计算RHS 表达式，而在结束时刻才更新LHS 表达式</strong>。所以这两个always 块在复位信号到来后,在always 块结束时 <strong>y1 为0 而y2为1 是确定的。从用户的角度看这两个非阻塞赋值正好是并行执行的</strong>。  </p>
+<h3 id="通过几个通过移位寄存器的例子来更好的理解阻塞赋值与非阻塞赋值"><a href="#通过几个通过移位寄存器的例子来更好的理解阻塞赋值与非阻塞赋值" class="headerlink" title="通过几个通过移位寄存器的例子来更好的理解阻塞赋值与非阻塞赋值"></a>通过几个通过移位寄存器的例子来更好的理解阻塞赋值与非阻塞赋值</h3><p>下图表示是一个简单的移位寄存器方框图：<br><img src="/../blog_image/78.png" alt="image.png"><br>[例3] 不正确地使用的阻塞赋值来描述移位寄存器。（方式 #1）</p>
+<pre><code> module pipeb1 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk)
+ begin
+ q1 = d;
+ q2 = q1;
+ q3 = q2;
+ end
+
+endmodule
+</code></pre>
+<p>在上面的模块中，按顺序进行的阻塞赋值将使得在下一个时钟上升沿时刻，所有的寄存器输出值都等于输入值d。在每个时钟上升沿，输入值d 将无延时地直接输出到q3。</p>
+<p>[例4] 用阻塞赋值来描述移位寄存器也是可行的，但这种风格并不好。（方式 #2）  </p>
+<pre><code>  module pipeb2 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk)
+ begin
+ q3 = q2;
+ q2 = q1;
+ q1 = d;
+ end
+
+endmodule
+</code></pre>
+<p>在上面的模块中，阻塞赋值的次序是经过<strong>仔细安排的</strong>，以使仿真的结果与移位寄存器相一致。<strong>虽然该模块可被综合成移位寄存器，但我们不建议使用这种风格的模块来描述时序逻辑。</strong></p>
+<p>[例5] 不好的用阻塞赋值来描述移位时序逻辑的风格（方式 #3）</p>
+<pre><code>module pipeb3 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk) q1 = d;
+ always @(posedge clk) q2 = q1;
+ always @(posedge clk) q3 = q2;
+
+endmodule
+</code></pre>
+<p>本例中，阻塞赋值分别被放在不同的always 块里。仿真时，<strong>这些块的先后顺序是随机的，因此可能会出现错误的结果</strong>。这是Verilog 中的竞争冒险。按不同的顺序执行这些块将导致不同的结果。但是， 这些代码的综合结果却是正确的流水线寄存器。也就是说，前仿真和后仿真结果可能会不一致。</p>
+<p>[例6] 不好的用阻塞赋值来描述移位时序逻辑的风格（方式 #4）</p>
+<pre><code>module pipeb4 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk) q2 = q1;
+ always @(posedge clk) q3 = q2;
+ always @(posedge clk) q1 = d;
+
+endmodule
+</code></pre>
+<p>[例7] 正确使用非阻塞赋值来描述时序逻辑的设计风格 （方式 #1）</p>
+<pre><code>module pipen1 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk) 
+ begin
+ q1 &lt;= d;
+ q2 &lt;= q1;
+ q3 &lt;= q2;
+ end
+
+ endmodule
+</code></pre>
+<p>[例8] 正确使用非阻塞赋值来描述时序逻辑的设计风格 (方式 #2）</p>
+<pre><code> module pipen2 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk)
+ begin
+ q3 &lt;= q2;
+ q2 &lt;= q1;
+ q1 &lt;= d;
+ end
+endmodule
+</code></pre>
+<p>[例9] 正确使用非阻塞赋值来描述时序逻辑的设计风格 （方式 #3）</p>
+<pre><code>module pipen3 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk) q1 &lt;= d;
+ always @(posedge clk) q2 &lt;= q1;
+ always @(posedge clk) q3 &lt;= q2;
+ endmodule
+</code></pre>
+<p>[例10] 正确使用非阻塞赋值来描述时序逻辑的设计风格 （方式 #4）</p>
+<pre><code>module pipen4 (q3, d, clk);
+ output [7:0] q3;
+ input [7:0] d;
+ input clk;
+ reg [7:0] q3, q2, q1;
+
+ always @(posedge clk) q2 &lt;= q1;
+ always @(posedge clk) q3 &lt;= q2;
+ always @(posedge clk) q1 &lt;= d;
+ endmodule     
+</code></pre>
+<h2 id="以上移位寄存器时序逻辑电路设计的例子表明："><a href="#以上移位寄存器时序逻辑电路设计的例子表明：" class="headerlink" title="以上移位寄存器时序逻辑电路设计的例子表明："></a>以上移位寄存器时序逻辑电路设计的例子表明：</h2><p>•4种阻塞赋值设计方式中有1种可以保证仿真正确</p>
+<p>•4种阻塞赋值设计方式中有3种可以保证综合正确</p>
+<p>•4种非阻塞赋值设计方式全部可以保证仿真正确</p>
+<p>•4种非阻塞赋值设计方式全部可以保证综合正确</p>
+<h2 id="阻塞赋值和非阻塞赋值的原则归纳如下："><a href="#阻塞赋值和非阻塞赋值的原则归纳如下：" class="headerlink" title="阻塞赋值和非阻塞赋值的原则归纳如下："></a>阻塞赋值和非阻塞赋值的原则归纳如下：</h2><p>原则1：<strong>时序电路建模时，用非阻塞赋值。</strong><br>原则2：<strong>锁存器电路建模时，用非阻塞赋值。</strong><br>原则3：<strong>用always 块写组合逻辑时，采用阻塞赋值。</strong><br>原则4：<strong>在同一个always 块中同时建立时序和组合逻辑电路时，用非阻塞赋值。</strong><br>原则5：<strong>在同一个always 块中不要同时使用非阻塞赋值和阻塞赋值。</strong><br>原则6：<strong>不要在多个always 块中为同一个变量赋值。</strong>  </p>
+<h1 id="状态机-转自link"><a href="#状态机-转自link" class="headerlink" title="状态机  转自link"></a>状态机  转自<a target="_blank" rel="noopener" href="https://blog.csdn.net/wuzhikaidetb/article/details/119421783">link</a></h1><h2 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h2><p>FPGA不同于CPU的一点特点就是<strong>CPU是顺序执行的，而FPGA是同步执行（并行）</strong>的。那么FPGA如何处理明显具有时间上先后顺序的事件呢？这个时候我们就需要使用到状态机了。</p>
+<p>状态机简写为 FSM（Finite State Machine），也称为<strong>同步有限状态机</strong>，我们一般简称为状态机，之所以说<strong>“同步”是因为状态机中所有的状态跳转都是在时钟的作用下进行的</strong>，而<strong>“有限”则是说状态的个数是有限的</strong>。状态机的<strong>每一个状态代表一个事件</strong>，从<strong>执行当前事件到执行另一事件我们称之为状态的跳转或状态的转移，我们需要做的就是执行该事件然后跳转到一下时间</strong>，这样我们的系统就“活”了，可以正常的运转起来了。状态机通过控制各个<strong>状态的跳转</strong>来控制流程，使得整个代码看上去更加清晰易懂，在控制复杂流程的时候，状态机优势明显。</p>
+<h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><h3 id="根据状态机的输出是否与输入条件相关，可将状态机分为两大类，即摩尔-Moore-型状态机和米勒-Mealy-型状态机。"><a href="#根据状态机的输出是否与输入条件相关，可将状态机分为两大类，即摩尔-Moore-型状态机和米勒-Mealy-型状态机。" class="headerlink" title="根据状态机的输出是否与输入条件相关，可将状态机分为两大类，即摩尔(Moore)型状态机和米勒(Mealy) 型状态机。"></a>根据状态机的输出是否与输入条件相关，可将状态机分为两大类，即摩尔(Moore)型状态机和米勒(Mealy) 型状态机。</h3><p>（1）Mealy 状态机：<strong>输出不仅取决于当前状态，还取决于输入状态</strong>。<br>米勒状态机的模型如下图所示，模型中第一个方框是指产生下一状态的组合逻辑 F，F 是当前状态和输 入信号的函数，状态是否改变、如何改变，取决于组合逻辑 F 的输出；第二框图是指状态寄存器，其由一 组触发器组成，用来记忆状态机当前所处的状态，状态的改变只发生在时钟的跳边沿；第三个框图是指产生输出的组合逻辑 G，状态机的输出是由输出组合逻辑 G 提供的，G 也是当前状态和输入信号的函数。<br><img src="/../blog_image/79.png" alt="image.png"><br>（2）Moore 状态机：组合逻辑的输出只取决于当前状态，而与输入状态无关。<br>摩尔状态机的模型如下图所示，对比米勒状态机的模型可以发现，其区别在于米勒状态机的输出由当 前状态和输入条件决定的，而摩尔状态机的输出只取决于当前状态。<br><img src="/../blog_image/80.png" alt="image.png">     </p>
+<h3 id="实例分析"><a href="#实例分析" class="headerlink" title="实例分析"></a>实例分析</h3><p>接下来对一个简单的可乐售卖系统使用状态机的思想进行分析。</p>
+<p>可乐售卖系统：可乐机每次只能投入 1 枚 1 元硬币，且每瓶可乐卖 3 元钱，即投入 3 个硬币就可以让可乐机出可乐，如果投币不够 3 元想放弃投币需要按复位键，否则之前投入的钱不能退回。</p>
+<p>首先分析会有哪些输入、输出信号：  </p>
+<p>输入信号：<br>sys_clk_n：既然是同步状态机，那么时钟是肯定少不了的，这里设定时钟是50MHz；<br>sys_rst_n：一个稳健的系统肯定需要一个复位，这里设定位低电平有效；<br>money：投币输入，高电平表示投入一元，低电平表示没有投币；<br>输出信号：<br>cola：可乐输出，高电平表示掉落一瓶可乐，低电平表示没有可乐掉落；<br>根据以上输入、输出可以画出状态机模块的示意框图：<br><img src="/../blog_image/81.png" alt="image.png"><br>接下来需要想一想这个状态机是怎么运作的，也就是要绘制这个系统的状态转移图。前面提到，状态机的状态转移有和输入挂钩的Mealy 状态机，也有和输入无关的Moore 状态机。所以接下来分别用Moore 状态机、Mealy 状态机的思想来绘制状态转移图：<br>（1）Moore 状态机（输出和输入无关）：<br>IDLE：首先是系统复位后的默认状态，这个状态下售卖机里没有钱，没有可乐输出；接下来的状态有两种情况：投了1元硬币则跳转状态ONE、没有投硬币则保持IDLE状态；<br>ONE：这个状态下售卖机里有1元硬币，所以也没有可乐输出；接下来的状态有两种情况：投了1元硬币则跳转状态TWO、没有投硬币则保持ONE状态；<br>TWO：这个状态下售卖机里有2元硬币，所以也没有可乐输出；接下来的状态有两种情况：投了1元硬币则跳转状态THREE、没有投硬币则保持TWO状态；<br>THREE：这个状态下售卖机里有3元硬币，但是因为是使用的时序逻辑，所以在这个时钟周期，是不会有可乐输出的，可乐会在状态跳转后（下一个时钟周期输出）；接下来的状态有两种情况：投了1元硬币则跳转状态ONE、没有投硬币则跳转状态IDLE状态；而且状态跳转后会输出一瓶可乐（实际上可以理解为THREE状态来自于TWO状态投的一元硬币，也<strong>就是这个时钟周期如果输出发生了变化，则输出是和输入有关的了，那就不是Moore 状态机了</strong>）。<br>加黑字体的意思就是，输出必须在下个时钟周期到来时才能发生变化，不能与当前的输入有关。<br>根据上面列出的这些状态可以绘制出如下的状态转移图（1&#x2F;0：前面的1代表输入，后面的0代表输出）：<br><img src="/../blog_image/82.png" alt="image.png"><br>（2） Mealy 状态机（输出和输入相关）：<br>IDLE：首先是系统复位后的默认状态，没有可乐输出（分两种情况，投币和不投币）；接下来的状态有两种情况：投了1元硬币则跳转状态ONE且没有可乐输出、没有投硬币则保持IDLE状态且没有可乐输出；<br>ONE：这个状态下售卖机里有1元硬币；接下来的状态有两种情况：投了1元硬币则跳转状态TWO且没有可乐输出、没有投硬币则保持ONE状态且没有可乐输出；<br>TWO：这个状态下售卖机里有2元硬币；接下来的状态有两种情况：<strong>投了1元硬币则跳转状态IDLE且输出可乐（根据和输入相关要求，此时输入一元，加上原来的2元，一共有三元，满足输出可乐的条件）、没有投硬币则保持TWO状态且没有可乐输出。</strong><br>根据上面列出的这些状态可以绘制出如下的状态转移图（1&#x2F;0：前面的1代表输入，后面的0代表输出）：<br><img src="/../blog_image/83.png" alt="image.png"><br>从上面的分析可以得到以下结论：<br>Mealy 状态机比Moore状态机的状态个数要少<br>Mealy 状态机比Moore状态机的输出要早一个时钟周期   </p>
+<h2 id="写法"><a href="#写法" class="headerlink" title="写法"></a>写法</h2><p>根据状态机的实际写法，状态机可以分为一段式、二段式和三段式状态机。  </p>
+<h3 id="一段式状态机：整个状态机写到一个-always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。"><a href="#一段式状态机：整个状态机写到一个-always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。" class="headerlink" title="一段式状态机：整个状态机写到一个 always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。"></a>一段式状态机：整个状态机写到一个 always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。</h3><h4 id="Moore型（摩尔型）一段式状态机"><a href="#Moore型（摩尔型）一段式状态机" class="headerlink" title="Moore型（摩尔型）一段式状态机"></a>Moore型（摩尔型）一段式状态机</h4><pre><code>//==================================================================
+//--    1段式状态机（Moore）
+//==================================================================
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Moore_1(
+    input 		sys_clk		,		//输入系统时钟、50M
+    input 		sys_rst_n	,		//复位信号、低电平有效
+    input 		money		,		//投币输入，高电平有效
+    
+    output reg	cola				//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+//这里使用独热码编码节省组合逻辑资源
+//此外还可以使用格雷码 、二进制码
+localparam	IDLE  = 4&#39;b0001,
+            ONE   = 4&#39;b0010,
+            TWO   = 4&#39;b0100,
+            THREE = 4&#39;b1000;
+            
+//------------&lt;reg定义&gt;-------------------------------------------------
+reg	[3:0]	state;					//定义状态寄存器
+ 
+//-----------------------------------------------------------------------
+//--    1段式状态机（Moore）
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)begin
+        cola &lt;= 1&#39;b0;				//复位初始状态
+        state &lt;= IDLE;
+    end
+    else
+        case(state)					//根据当前状态、输入进行状态转换判断
+                                    //根据当前状态进行输出
+            IDLE:begin
+                cola &lt;= 1&#39;b0;		//初始状态无可乐输出
+                if(money)				
+                    state &lt;= ONE;	//投币1元则状态跳转到ONE
+                else
+                    state &lt;= IDLE;	//否则保持原有状态
+            end				
+            ONE:begin
+                cola &lt;= 1&#39;b0;		//该状态只有1元，无可乐输出
+                if(money)
+                    state &lt;= TWO;	//投币1元则状态跳转到TWO
+                else
+                    state &lt;= ONE;	//否则保持原有状态
+            end
+            TWO:begin
+                cola &lt;= 1&#39;b0;		//该状态只有2元，无可乐输出
+                if(money)
+                    state &lt;= THREE;	//投币1元则状态跳转到THREE
+                else
+                    state &lt;= TWO;	//否则保持原有状态
+            end 
+            THREE:begin
+                cola &lt;= 1&#39;b1;		//该状态有3元，有可乐输出
+                                    //但是时序逻辑输出会落后一个时钟周期
+                if(money)
+                    state &lt;= ONE;	//投币1元则状态跳转到ONE
+                else
+                    state &lt;= IDLE;	//否则状态跳转到IDLE
+            end			
+            default:begin			//默认状态同IDLE
+                cola &lt;= 1&#39;b0;
+                if(money)
+                    state &lt;= ONE;
+                else
+                    state &lt;= IDLE;
+            end	
+        endcase
+end
+ 
+endmodule    
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;   </p>
+<pre><code>//-------------------------------------------------------------------
+//--    1段式状态机（Moore）
+//-------------------------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Moore_1();
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Moore_1	FSM_Moore_1_inst(
+    .sys_clk	(sys_clk)	,
+    .sys_rst_n	(sys_rst_n)	,
+    .money		(money)		,
+ 
+    .cola       (cola)
+);
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------&lt;状态机名称查看器&gt;----------------------------------------
+reg [39:0]	state_name;				//每字符8位宽，这里最多5个字符40位宽
+ 
+always @(*) begin
+    case(FSM_Moore_1_inst.state)
+        4&#39;b0001:	state_name = &quot;IDLE&quot;;
+        4&#39;b0010: 	state_name = &quot;ONE&quot;;
+        4&#39;b0100: 	state_name = &quot;TWO&quot;;
+        4&#39;b1000: 	state_name = &quot;THREE&quot;;
+        default:	state_name = &quot;IDLE&quot;;
+    endcase
+end
+ 
+endmodule  
+</code></pre>
+<p>使用ModelSim执行仿真，仿真出来的波形如下所示：<br><img src="/../blog_image/84.png" alt="image.png"><br>可以看到：<br>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>第1次输出可乐滞后THREE状态一个时钟周期，且当前的输入为1；第2次输出可乐滞后THREE状态一个时钟周期，且当前的输入为0；这说明输出会滞后当前状态一个时钟周期，且与输入无关（输入不管是0还是1都有输出）；<br>状态的跳转符合我们绘制的状态转移图。          </p>
+<h4 id="Mealy型（米勒型）一段式状态机"><a href="#Mealy型（米勒型）一段式状态机" class="headerlink" title="Mealy型（米勒型）一段式状态机"></a>Mealy型（米勒型）一段式状态机</h4><pre><code>//==================================================================
+//--    1段式状态机（Mealy）
+//==================================================================
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Mealy_1(
+    input 		sys_clk		,			//输入系统时钟、50M
+    input 		sys_rst_n	,       	//复位信号、低电平有效
+    input 		money		,       	//投币输入，高电平有效
+                                        
+    output reg	cola                	//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+//这里使用独热码编码节省组合逻辑资源
+//此外还可以使用格雷码 、二进制码
+localparam	IDLE  = 3&#39;b001,
+            ONE   = 3&#39;b010,
+            TWO   = 3&#39;b100;
+//------------&lt;reg定义&gt;------------------------------------------------
+reg	[2:0]	state;						//定义状态寄存器
+//-----------------------------------------------------------------------
+//--    1段式状态机（Mealy）
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)begin
+        cola &lt;= 1&#39;b0;					//复位初始状态
+        state &lt;= IDLE;					//复位初始状态
+    end
+    else
+        case(state)						//根据当前状态、输入进行状态转换判断
+                                        //根据当前状态、输入进行输出
+            IDLE:begin				
+                if(money)begin			//投入1元
+                    state &lt;= ONE;		//状态跳转到ONE
+                    cola &lt;= 1&#39;b0;		//一共1元 ，没有可乐输出
+                end	
+                else begin				//没有投入
+                    state &lt;= IDLE;		//保持原有状态
+                    cola &lt;= 1&#39;b0;		//一共0元 ，没有可乐输出
+                end	
+            end				
+            ONE:begin				
+                if(money)begin			//投入1元
+                    state &lt;= TWO;		//状态跳转到TWO
+                    cola &lt;= 1&#39;b0;       //一共2元 ，没有可乐输出
+                end                     
+                else begin              //没有投入
+                    state &lt;= ONE;       //保持原有状态
+                    cola &lt;= 1&#39;b0;       //一共1元 ，没有可乐输出
+                end
+            end
+            TWO:begin					
+                if(money)begin			//投入1元
+                    state &lt;= IDLE;      //状态跳转到IDLE（一共3元了，需要输出可乐）
+                    cola &lt;= 1&#39;b1;       //一共3元 ，输出可乐
+                end                     
+                else begin              //没有投入
+                    state &lt;= TWO;       //保持原有状态
+                    cola &lt;= 1&#39;b0;       //一共2元 ，没有可乐输出
+                end
+            end 		
+            default:begin				//默认状态同初始状态
+                if(money)begin
+                    state &lt;= ONE;
+                    cola &lt;= 1&#39;b0;
+                end
+                else begin
+                    state &lt;= IDLE;
+                    cola &lt;= 1&#39;b0;
+                end	
+            end		
+        endcase
+end
+ 
+endmodule   
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;   </p>
+<pre><code>//-------------------------------------------------------------------
+//--    1段式状态机（Mealy）
+//-------------------------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Mealy_1();
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Mealy_1	FSM_Mealy_1_inst(
+    .sys_clk	(sys_clk)	,
+    .sys_rst_n	(sys_rst_n)	,
+    .money		(money)		,
+ 
+    .cola       (cola)
+);
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------&lt;状态机名称查看器&gt;----------------------------------------
+reg [31:0]	state_name;				//每字符8位宽，这里最多4个字符32位宽
+ 
+always @(*) begin
+    case(FSM_Mealy_1_inst.state)
+        3&#39;b001:		state_name = &quot;IDLE&quot;;
+        3&#39;b010: 	state_name = &quot;ONE&quot;;
+        3&#39;b100: 	state_name = &quot;TWO&quot;;
+        default:	state_name = &quot;IDLE&quot;;
+    endcase
+end
+endmodule  
+</code></pre>
+<p>使用ModelSim执行仿真，仿真出来的波形如下所示：<br><img src="/../blog_image/85.png" alt="image.png"><br>从仿真结果可以看到：<br>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>第1次输出可乐滞后TWO状态一个时钟周期，且当前的输入为1；第2次输出可乐滞后TWO状态一个时钟周期，且当前的输入也为1；这说明输出会之后当前状态一个时钟周期，且与输入相关（只有输入为 1才有输出，在第4个时钟是，输入为0，所以没有输出）；<br>状态的跳转符合我们绘制的状态转移图。<br>通过以上，针对一段式状态机可以得出如下小结：<br>Moore型状态机输出滞后Mealy型状态机一个时钟周期；<br>一段式状态机将所有状态转移与输出全写在一个always块里，如果状态多的话就会看起来十分臃肿，且不利于维护。  </p>
+<h3 id="二段式状态机：用两个-always-模块来描述状态机，其中一个-always-模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。不同于一段式状态机的是，它需要定义两个状态，现态和次态，然后通过现态和次态的转换来实现时序逻辑。"><a href="#二段式状态机：用两个-always-模块来描述状态机，其中一个-always-模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。不同于一段式状态机的是，它需要定义两个状态，现态和次态，然后通过现态和次态的转换来实现时序逻辑。" class="headerlink" title="二段式状态机：用两个 always 模块来描述状态机，其中一个 always 模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。不同于一段式状态机的是，它需要定义两个状态，现态和次态，然后通过现态和次态的转换来实现时序逻辑。"></a>二段式状态机：用两个 always 模块来描述状态机，其中一个 always 模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。不同于一段式状态机的是，它需要定义两个状态，现态和次态，然后通过现态和次态的转换来实现时序逻辑。</h3><h4 id="Moore型（摩尔型）二段式状态机"><a href="#Moore型（摩尔型）二段式状态机" class="headerlink" title="Moore型（摩尔型）二段式状态机"></a>Moore型（摩尔型）二段式状态机</h4><pre><code>//==================================================================
+//--    2段式状态机（Moore）
+//==================================================================
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Moore_2(
+    input 		sys_clk		,		//输入系统时钟、50M
+    input 		sys_rst_n	,   	//复位信号、低电平有效
+    input 		money		,   	//投币输入，高电平有效
+                                    
+    output reg	cola            	//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+localparam	IDLE  = 4&#39;b0001,
+            ONE   = 4&#39;b0010,
+            TWO   = 4&#39;b0100,
+            THREE = 4&#39;b1000;
+//------------&lt;reg定义&gt;-------------------------------------------------
+reg	[3:0]	cur_state;				//定义现态寄存器
+reg	[3:0]	next_state;				//定义次态寄存器
+ 
+//-----------------------------------------------------------------------
+//--状态机第一段：同步时序描述状态转移
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cur_state &lt;= IDLE;			//复位初始状态
+    else
+        cur_state &lt;= next_state;	//次态转移到现态
+end
+ 
+//-----------------------------------------------------------------------
+//--状态机第二段：组合逻辑判断状态转移条件，描述状态转移规律以及输出
+//-----------------------------------------------------------------------
+always@(*)begin						//组合逻辑
+    case(cur_state)					//根据当前状态、输入进行状态转换判断
+                                    //根据当前状态进行输出
+        IDLE:begin
+            cola = 1&#39;b0;			//初始状态无可乐输出
+            if(money)				//投币1元
+                next_state = ONE;	//次态（下个状态）为ONE		
+            else 
+                next_state = IDLE;	//次态为现态	
+        end					
+        ONE:begin
+            cola = 1&#39;b0;			//无可乐输出
+            if(money)				//投币1元
+                next_state = TWO;	//次态（下个状态）为TWO
+            else 
+                next_state = ONE;	//次态为现态			
+        end
+        TWO:begin					
+            cola = 1&#39;b0;	        //无可乐输出
+            if(money)               //投币1元
+                next_state = THREE; //次态（下个状态）为THREE
+            else                    			
+                next_state = TWO;	//次态为现态
+        end	
+        THREE:begin	
+            cola = 1&#39;b1;			//输出可乐输出
+            if(money)               //投币1元
+                next_state = ONE;	//次态（下个状态）为ONE		
+            else                    			
+                next_state = IDLE;  //次态为IDLE
+        end
+        default:begin				//默认状态同IDLE
+            cola = 1&#39;b0;		
+            if(money)
+                next_state = ONE;
+            else 
+                next_state = IDLE;
+        end	
+    endcase
+end
+endmodule  
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;   </p>
+<pre><code>//------------------------------------------------
+//--    2段式状态机（Moore）
+//------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Moore_2();
+ 
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+ 
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Moore_2	FSM_Moore_2_inst(
+    .sys_clk	(sys_clk)	,
+    .sys_rst_n	(sys_rst_n)	,
+    .money		(money)		,
+ 
+    .cola       (cola)
+);
+ 
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------------------------------------------
+//--    状态机名称查看器
+//------------------------------------------------
+reg [39:0]	state_name_cur;			//每字符8位宽，这里最多5个字符40位宽
+reg [39:0]	state_name_next;		//每字符8位宽，这里最多5个字符40位宽
+ 
+always @(*) begin
+    case(FSM_Moore_2_inst.cur_state)
+         4&#39;b0001:    	state_name_cur = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_cur = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_cur = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_cur = &quot;THREE&quot;; 
+         default:		state_name_cur = &quot;IDLE&quot;;
+    endcase
+end
+ 
+always @(*) begin
+    case(FSM_Moore_2_inst.next_state)
+         4&#39;b0001:    	state_name_next = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_next = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_next = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_next = &quot;THREE&quot;; 
+         default:		state_name_next = &quot;IDLE&quot;;
+    endcase
+end
+ 
+endmodule    
+</code></pre>
+<p><img src="/../blog_image/86.png" alt="image.png"><br>从仿真结果可以看到：</p>
+<p>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>现态落后次态一个时钟周期，这是因为需要用次态去描述现态；<br>与一段式状态机不同，可乐的输出不会滞后一个时钟周期，这是因为采用了组合逻辑来描述输出；<br>第1次输出可乐的输入为1，第2次输出可乐的输入为0；这说明输出与输入无关（输入不管是0还是1都有输出）；<br>状态的跳转符合我们绘制的状态转移图。   </p>
+<h4 id="Mealy型（米勒型）二段式状态机"><a href="#Mealy型（米勒型）二段式状态机" class="headerlink" title="Mealy型（米勒型）二段式状态机"></a>Mealy型（米勒型）二段式状态机</h4><pre><code>//------------------------------------------------
+//--    2段式状态机（Mealy ）
+//------------------------------------------------
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Mealy_2(
+    input 		sys_clk		,			//输入系统时钟、50M
+    input 		sys_rst_n	,   		//复位信号、低电平有效
+    input 		money		,   		//投币输入，高电平有效
+                                        
+    output reg	cola            		//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+localparam	IDLE  = 3&#39;b001,
+            ONE   = 3&#39;b010,
+            TWO   = 3&#39;b100;
+//------------&lt;reg定义&gt;------------------------------------------------
+reg	[2:0]	cur_state;					//定义现态
+reg	[2:0]	next_state;					//定义次态
+//-----------------------------------------------------------------------
+//--状态机第一段：同步时序描述状态转移
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cur_state &lt;= IDLE;				//复位初始状态
+    else                                
+        cur_state &lt;= next_state;        //次态转移到现态
+end
+//-----------------------------------------------------------------------
+//--状态机第二段：组合逻辑判断状态转移条件，描述状态转移规律以及输出
+//-----------------------------------------------------------------------
+always@(*)begin
+    case(cur_state)						//组合逻辑
+        IDLE:begin				        //根据当前状态、输入进行状态转换判断
+                                        //根据当前状态、输入进行输出
+            if(money)begin				//当前输入为1
+                next_state = ONE;		//次态为ONE
+                cola = 1&#39;b0;			//一共1元 ，没有可乐输出
+            end
+            else begin					//当前输入为0
+                next_state = IDLE;		//次态为IDLE
+                cola = 1&#39;b0;			//一共0元 ，没有可乐输出
+            end	
+        end					
+        ONE:begin				
+            if(money)begin				//当前输入为1
+                next_state = TWO;       //次态为TWO
+                cola = 1&#39;b0;            //一共2元 ，没有可乐输出
+            end                         
+            else begin                  //当前输入为0
+                next_state = ONE;       //次态为ONE
+                cola = 1&#39;b0;            //一共1元 ，没有可乐输出
+            end	
+        end
+        TWO:begin				
+            if(money)begin				//当前输入为1
+                next_state = IDLE;		//次态为IDLE
+                cola = 1&#39;b1;            //一共3元 ，输出可乐
+            end                         
+            else begin                  //当前输入为0
+                next_state = TWO;       //次态为TWO
+                cola = 1&#39;b0;            //一共2元 ，没有可乐输出
+            end	
+        end		
+        default:begin					//默认状态同初始状态
+            if(money)begin
+                next_state = ONE;
+                cola = 1&#39;b0;
+            end
+            else begin
+                next_state = IDLE;
+                cola = 1&#39;b0;
+            end	
+        end
+    endcase
+end
+endmodule   
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  </p>
+<pre><code>//------------------------------------------------
+//--    2段式状态机（Mealy）
+//------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Mealy_2();
+ 
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Mealy_2		FSM_Mealy_2_inst(
+    .sys_clk	(sys_clk),
+    .sys_rst_n	(sys_rst_n),
+    .money		(money),
+ 
+    .cola       (cola)
+);
+ 
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------------------------------------------
+//--    状态机名称查看器
+//------------------------------------------------
+//1字符8位宽
+reg [31:0]	state_name_cur;			//每字符8位宽，这里最多4个字符32位宽
+reg [31:0]	state_name_next;		//每字符8位宽，这里最多4个字符32位宽
+ 
+always @(*) begin
+    case(FSM_Mealy_2_inst.cur_state)
+        3&#39;b001:    	state_name_cur = &quot;IDLE&quot;;
+        3&#39;b010:   	state_name_cur = &quot;ONE&quot;;
+        3&#39;b100:   	state_name_cur = &quot;TWO&quot;;
+        default:	state_name_cur = &quot;IDLE&quot;;
+    endcase
+end
+always @(*) begin
+    case(FSM_Mealy_2_inst.next_state)
+        3&#39;b001:    	state_name_next = &quot;IDLE&quot;;
+        3&#39;b010:   	state_name_next = &quot;ONE&quot;;
+        3&#39;b100:   	state_name_next = &quot;TWO&quot;;
+        default:	state_name_next = &quot;IDLE&quot;;
+    endcase
+end
+ 
+endmodule   
+</code></pre>
+<p><img src="/../blog_image/87.png" alt="image.png">  </p>
+<p>从仿真结果可以看到：</p>
+<p>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>现态落后次态一个时钟周期，这是因为需要用次态去描述现态；<br>与一段式状态机不同，可乐的输出不会滞后一个时钟周期，这是因为采用了组合逻辑来描述输出；<br>第1次输出可乐的输入为1，第2次输出可乐的输入也为1；这说明输出与输入有关；<br>状态的跳转符合我们绘制的状态转移图。  </p>
+<p>通过以上，针对二段式状态机可以得出如下小结：<br>Moore型状态机输出滞后Mealy型状态机一个时钟周期；<br>二段式状态机的输出使用组合逻辑输出，而使用组合逻辑则无法避免的会引入“毛刺”问题。  </p>
+<h3 id="三段式状态机：在两个-always-模块描述方法基础上，使用三个always-模块，一个always-模块采用同步时序描述状态转移，一个-always-采用组合逻辑判断状态转移条件，描述状态转移规律，另一个-always-模块描述状态输出。"><a href="#三段式状态机：在两个-always-模块描述方法基础上，使用三个always-模块，一个always-模块采用同步时序描述状态转移，一个-always-采用组合逻辑判断状态转移条件，描述状态转移规律，另一个-always-模块描述状态输出。" class="headerlink" title="三段式状态机：在两个 always 模块描述方法基础上，使用三个always 模块，一个always 模块采用同步时序描述状态转移，一个 always 采用组合逻辑判断状态转移条件，描述状态转移规律，另一个 always 模块描述状态输出。"></a>三段式状态机：在两个 always 模块描述方法基础上，使用三个always 模块，一个always 模块采用同步时序描述状态转移，一个 always 采用组合逻辑判断状态转移条件，描述状态转移规律，另一个 always 模块描述状态输出。</h3><h4 id="Moore型（摩尔型）三段式状态机"><a href="#Moore型（摩尔型）三段式状态机" class="headerlink" title="Moore型（摩尔型）三段式状态机"></a>Moore型（摩尔型）三段式状态机</h4><pre><code>//==================================================================
+//--    3段式状态机（Moore）
+//==================================================================
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Moore_3(
+    input 		sys_clk		,			//输入系统时钟、50M
+    input 		sys_rst_n	,   		//复位信号、低电平有效
+    input 		money		,   		//投币输入，高电平有效
+                                        
+    output reg	cola            		//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+localparam	IDLE  = 4&#39;b0001,
+            ONE   = 4&#39;b0010,
+            TWO   = 4&#39;b0100,
+            THREE = 4&#39;b1000;
+            
+//------------&lt;reg定义&gt;-------------------------------------------------
+reg	[3:0]	cur_state;					//定义现态寄存器
+reg	[3:0]	next_state;					//定义次态寄存器
+ 
+//-----------------------------------------------------------------------
+//--状态机第一段：同步时序描述状态转移
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cur_state &lt;= IDLE;				//复位初始状态
+    else
+        cur_state &lt;= next_state;		//次态转移到现态
+end
+ 
+//-----------------------------------------------------------------------
+//--状态机第二段：组合逻辑判断状态转移条件，描述状态转移规律以及输出
+//-----------------------------------------------------------------------
+always@(*)begin
+    case(cur_state)						//组合逻辑
+                                        //根据当前状态、输入进行状态转换判断										
+        IDLE:begin				
+            if(money)					
+                next_state = ONE;		//投币1元，则状态转移到ONE
+            else 
+                next_state = IDLE;		//没有投币，则状态保持	
+        end					
+        ONE:begin				
+            if(money)
+                next_state = TWO;		//投币1元，则状态转移到TWO
+            else 
+                next_state = ONE;		//没有投币，则状态保持
+        end
+        TWO:begin				
+            if(money)
+                next_state = THREE;		//投币1元，则状态转移到THREE
+            else                        
+                next_state = TWO;       //没有投币，则状态保持
+        end	
+        THREE:begin				
+            if(money)
+                next_state = ONE;		//投币1元，则状态转移到ONE
+            else                        
+                next_state = IDLE;      //没有投币，则状态保持
+        end
+        default:begin					//默认状态同IDLE
+            if(money)
+                next_state = ONE;
+            else 
+                next_state = IDLE;	
+        end
+    endcase
+end
+ 
+//-----------------------------------------------------------------------
+//--状态机第三段：时序逻辑描述输出
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cola &lt;= 1&#39;b0;					//复位、初始状态 
+    else
+        case(cur_state)					//根据当前状态进行输出
+            IDLE:	cola &lt;= 1&#39;b0;		//无可乐输出			
+            ONE:	cola &lt;= 1&#39;b0;		//无可乐输出
+            TWO:	cola &lt;= 1&#39;b0;		//无可乐输出
+            THREE:	cola &lt;= 1&#39;b1;		//输出可乐
+            default:cola &lt;= 1&#39;b0;		//默认无可乐输出
+        endcase
+end
+ 
+endmodule               
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;    </p>
+<pre><code>//------------------------------------------------
+//--    3段式状态机（Moore）
+//------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Moore_3();
+ 
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+ 
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Moore_3		FSM_Moore_3_inst(
+    .sys_clk	(sys_clk),
+    .sys_rst_n	(sys_rst_n),
+    .money		(money),
+ 
+    .cola       (cola)
+);
+ 
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------------------------------------------
+//--    状态机名称查看器
+//------------------------------------------------
+reg [39:0]	state_name_cur;			//每字符8位宽，这里最多5个字符40位宽
+reg [39:0]	state_name_next;		//每字符8位宽，这里最多5个字符40位宽
+ 
+always @(*) begin
+    case(FSM_Moore_3_inst.cur_state)
+         4&#39;b0001:    	state_name_cur = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_cur = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_cur = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_cur = &quot;THREE&quot;; 
+        default:		state_name_cur = &quot;IDLE&quot;;
+    endcase
+end
+ 
+always @(*) begin
+    case(FSM_Moore_3_inst.next_state)
+         4&#39;b0001:    	state_name_next = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_next = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_next = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_next = &quot;THREE&quot;; 
+         default:		state_name_next = &quot;IDLE&quot;;
+    endcase
+end
+ 
+endmodule
+</code></pre>
+<p>使用ModelSim执行仿真，仿真出来的波形如下所示：<br><img src="/../blog_image/88.png" alt="image.png">    </p>
+<p>从仿真结果可以看到：</p>
+<p>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>现态落后次态一个时钟周期，这是因为需要用次态去描述现态；<br>与二段式状态机不同，可乐的输出会滞后一个时钟周期，这是因为采用了时序逻辑来描述输出；<br>第1次输出可乐的输入为1，第2次输出可乐的输入为0；这说明输出与输入无关；<br>状态的跳转符合我们绘制的状态转移图；<br>波形图除了多了一个次态外，其余与一段式 的Moore状态机完全一致；  </p>
+<h4 id="Mealy型（米勒型）三段式状态机"><a href="#Mealy型（米勒型）三段式状态机" class="headerlink" title="Mealy型（米勒型）三段式状态机"></a>Mealy型（米勒型）三段式状态机</h4><pre><code>//==================================================================
+//--    3段式状态机（Mealy）
+//==================================================================
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module FSM_Mealy_3(
+    input 		sys_clk		,			//输入系统时钟、50M
+    input 		sys_rst_n	,   		//复位信号、低电平有效
+    input 		money		,   		//投币输入，高电平有效
+                                        
+    output reg	cola            		//可乐输出，高电平有效
+);
+ 
+//------------&lt;状态机参数定义&gt;------------------------------------------
+localparam	IDLE  = 3&#39;b0001,
+            ONE   = 3&#39;b0010,
+            TWO   = 3&#39;b0100;
+            
+//------------&lt;reg定义&gt;-------------------------------------------------
+reg	[3:0]	cur_state;					//定义现态寄存器
+reg	[3:0]	next_state;					//定义次态寄存器
+//-----------------------------------------------------------------------
+//--状态机第一段：同步时序描述状态转移
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cur_state &lt;= IDLE;				//复位初始状态
+    else
+        cur_state &lt;= next_state;		//次态转移到现态
+end
+//-----------------------------------------------------------------------
+//--状态机第二段：组合逻辑判断状态转移条件，描述状态转移规律以及输出
+//-----------------------------------------------------------------------
+always@(*)begin
+    case(cur_state)						//组合逻辑
+                                        //根据当前状态、输入进行状态转换判断										
+        IDLE:begin				
+            if(money)					
+                next_state = ONE;		//投币1元，则状态转移到ONE
+            else 
+                next_state = IDLE;		//没有投币，则状态保持	
+        end					
+        ONE:begin				
+            if(money)
+                next_state = TWO;		//投币1元，则状态转移到TWO
+            else 
+                next_state = ONE;		//没有投币，则状态保持
+        end
+        TWO:begin				
+            if(money)
+                next_state = IDLE;		//投币1元，则状态转移到IDLE
+            else                        
+                next_state = TWO;       //没有投币，则状态保持
+        end	
+        default:begin					//默认状态同IDLE
+            if(money)
+                next_state = ONE;
+            else 
+                next_state = IDLE;	
+        end
+    endcase
+end
+//-----------------------------------------------------------------------
+//--状态机第三段：时序逻辑描述输出
+//-----------------------------------------------------------------------
+always@(posedge sys_clk or negedge sys_rst_n)begin
+    if(!sys_rst_n)
+        cola &lt;= 1&#39;b0;					//复位、初始状态 
+    else
+        case(cur_state)					//根据当前状态进行输出
+            IDLE:	cola &lt;= 1&#39;b0;		//无可乐输出(因为输入不管是0、1都是输出0，所以省略写法)			
+            ONE:	cola &lt;= 1&#39;b0;		//无可乐输出(因为输入不管是0、1都是输出0，所以省略写法)	
+            TWO:begin					
+                if(money)
+                    cola &lt;= 1&#39;b1;		//如果输入1，则输出可乐
+                else
+                    cola &lt;= 1&#39;b0;		//如果输入0，则无可乐输出
+            end
+            default:cola &lt;= 1&#39;b0;		//默认无可乐输出
+        endcase
+end
+endmodule   
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<pre><code>//------------------------------------------------
+//--    3段式状态机（Mealy）
+//------------------------------------------------
+`timescale 1ns/1ns
+ 
+//------------&lt;模块及端口声明&gt;----------------------------------------
+module tb_FSM_Mealy_3();
+ 
+reg 	sys_clk;
+reg 	sys_rst_n;
+reg 	money;
+ 
+wire	cola;
+ 
+//------------&lt;例化被测试模块&gt;----------------------------------------
+FSM_Mealy_3		FSM_Mealy_3_inst(
+    .sys_clk	(sys_clk),
+    .sys_rst_n	(sys_rst_n),
+    .money		(money),
+ 
+    .cola       (cola)
+);
+ 
+//------------&lt;设置初始测试条件&gt;----------------------------------------
+initial begin
+    sys_clk = 1&#39;b0;					//初始时钟为0
+    sys_rst_n &lt;= 1&#39;b0;				//初始复位
+    money &lt;= 1&#39;b0;					//投币初始化为0
+    #5								//5个时钟周期后
+    sys_rst_n &lt;= 1&#39;b1;				//拉高复位，系统进入工作状态
+    #25								//25个时钟周期后
+    money &lt;= 1&#39;b1;					//拉高投币信号	
+    #40								//40个时钟周期后
+    money &lt;= 1&#39;b0;	    			//拉低投币信号	
+    #20								//25个时钟周期后
+    money &lt;= 1&#39;b1;	    			//拉高投币信号	
+    #80								//25个时钟周期后
+    money &lt;= 1&#39;b0;					//拉低投币信号	
+end
+//------------&lt;设置时钟&gt;----------------------------------------------
+always #10 sys_clk = ~sys_clk;		//系统时钟周期20ns
+ 
+//------------------------------------------------
+//--    状态机名称查看器
+//------------------------------------------------
+reg [39:0]	state_name_cur;			//每字符8位宽，这里最多5个字符40位宽
+reg [39:0]	state_name_next;		//每字符8位宽，这里最多5个字符40位宽
+ 
+always @(*) begin
+    case(FSM_Mealy_3_inst.cur_state)
+         4&#39;b0001:    	state_name_cur = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_cur = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_cur = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_cur = &quot;THREE&quot;; 
+        default:		state_name_cur = &quot;IDLE&quot;;
+    endcase
+end
+ 
+always @(*) begin
+    case(FSM_Mealy_3_inst.next_state)
+         4&#39;b0001:    	state_name_next = &quot;IDLE&quot;;
+         4&#39;b0010:   	state_name_next = &quot;ONE&quot;;
+         4&#39;b0100:   	state_name_next = &quot;TWO&quot;;
+         4&#39;b1000:		state_name_next = &quot;THREE&quot;; 
+         default:		state_name_next = &quot;IDLE&quot;;
+    endcase
+end
+ 
+endmodule  
+</code></pre>
+<p>使用ModelSim执行仿真，仿真出来的波形如下所示：<br><img src="/../blog_image/89.png" alt="image.png">    </p>
+<p>从仿真结果可以看到：  </p>
+<p>在第2、3、5、6、7、8的6个时钟投入了6个硬币，理论上应该有2个可乐分别输出，实际也有两个可乐输出；<br>现态落后次态一个时钟周期，这是因为需要用次态去描述现态；<br>与二段式状态机不同，可乐的输出会滞后一个时钟周期，这是因为采用了时序逻辑来描述输出；<br>第1次输出可乐的输入为1，第2次输出可乐的输入也为1；这说明输出与输入相关；<br>状态的跳转符合我们绘制的状态转移图；<br>波形图除了多了一个次态外，其余与一段式的Mealy状态机完全一致；  </p>
+<p>通过以上，针对三段式状态机可以得出如下小结：<br>Moore型状态机输出滞后Mealy型状态机一个时钟周期<br>三段式状态机的输出使用时序逻辑输出，避免了二段式状态机使用组合逻辑输出从而无法避免的“毛刺”问题   </p>
+<h3 id="总结与思考"><a href="#总结与思考" class="headerlink" title="总结与思考"></a>总结与思考</h3><h4 id="状态机的三种描述方法："><a href="#状态机的三种描述方法：" class="headerlink" title="状态机的三种描述方法："></a>状态机的三种描述方法：</h4><p>一段式：整个状态机写到一个always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。  </p>
+<p>二段式：用两个always模块来描述状态机，其中一个always模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。  </p>
+<p>三段式：在两个always模块描述方法基础上，使用三个always模块，一个always模块采用同步时序描述状态转移，一个always采用组合逻辑判断状态转移条件，描述状态转移规律，另一个always模块描述状态输出。  </p>
+<h4 id="应该选择哪一种状态机-？"><a href="#应该选择哪一种状态机-？" class="headerlink" title="应该选择哪一种状态机 ？"></a>应该选择哪一种状态机 ？</h4><p>一段式状态机写法不够模块化 ，且过于臃肿不利于维护，及布局布线；  </p>
+<p>二段式状态机将同步时序和组合逻辑分别放到不同的always模块中实现，这样做的好处不仅仅是便于阅读、理解、维护，更重要的是利于综合器优化代码，利于用户添加合适的时序约束条件，利于布局布线器实现设计。但是其当前状态的输出用组合逻辑实现，组合逻辑很容易产生毛刺，而且不利于约束，不利于综合器和布局布线器实现高性能的设计；  </p>
+<p>三段式状态机与二段式状态机相比，关键在于根据状态转移规律，在上一状态根据输入条件判断出当前状态的输出，从而在不插入额外时钟节拍的前提下，实现了寄存器输出，解决了毛刺问题。实际应用中三段式状态机使用最多，因为三段式状态机将组合逻辑和时序分开，有利于综合器分析优 化以及程序的维护；并且三段式状态机将状态转移与状态输出分开，使代码看上去更加清晰易懂，提高了代码的可读性，推荐大家使用三段式状态机。  </p>
+<h4 id="三段式状态机的基本格式："><a href="#三段式状态机的基本格式：" class="headerlink" title="三段式状态机的基本格式："></a>三段式状态机的基本格式：</h4><p>第一个 always 语句实现同步状态跳转；  </p>
+<p>第二个 always 语句采用组合逻辑判断状态转移条件；  </p>
+<p>第三个 always 语句采用时序逻辑描述状态输出。  </p>
+<h4 id="状态机的编码方式："><a href="#状态机的编码方式：" class="headerlink" title="状态机的编码方式："></a>状态机的编码方式：</h4><p><img src="/../blog_image/90.png" alt="image.png"><br>格雷码：相邻之间只变1bit，编码密度高。<br>独热码：任何状态只有1bit为1，其余皆为0，编码密度低。<br>比如说，表示4个状态，那么状态机寄存器采用格雷码编码只需要2bit：00(S0),01(S1),11(S2),10(S3)；<br>采用独热码需要4bit：0001(S0),0010(S1),0100(S2),1000(S3)。所以很明显采用格雷码可以省2bit寄存器。<br>独热码适合写条件复杂但是状态少的状态机；<br>格雷码适合写条件不复杂但是状态多的状态机。      </p>
+<p>独热码：和格雷码相比，虽然独热码多用了触发器，但所用组合电路可以省一些，因而使电路的速度和可靠性有显著提高，而总的单元数并无显著增加。因为独热码只有一位的变化，所以更适用于高速系统。<br>原因：<br>考虑最简单的跳变，当A为1时，状态机会从S0跳到S1:。<br>采用格雷码写：<br>STATUS[1:0] &lt;&#x3D; (STATUS&#x3D;&#x3D;2’h00) &amp; A ? 2’h01 : 2’h00;<br>采用独热码写:<br>STATUS[1] &lt;&#x3D; STATUS[0] &amp; A;  </p>
+<p>格雷码：使用了更多的组合逻辑资源，但是比独热码能表示更多的状态。<br>原因：<br>假如我们要在代码中判断状态机是否处于某状态S1，<br>对于格雷码的状态机来说，代码是这样的：assign S1 &#x3D; (STATUS&#x3D;&#x3D;2’b01);<br>对于独热码来说，代码是这样的就行：assign S1&#x3D;STATUS[1];<br>所以独热码的译码非常简单。  </p>
+<p>2进制：使用了更多的组合逻辑资源，但是比独热码能表示更多的状态，稳定性不如格雷码。</p>
+<h4 id="三段式状态机的第三段采用next-state还是cur-state："><a href="#三段式状态机的第三段采用next-state还是cur-state：" class="headerlink" title="三段式状态机的第三段采用next_state还是cur_state："></a>三段式状态机的第三段采用next_state还是cur_state：</h4><p>第三段使用next_state和cur_state的区别在于，当状态跳转时，基于next_state的输出是立刻变化的，而基于cur_state输出会延迟一个周期，其他情况都一样，应该根据自己的时序要求选择。</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A06/" rel="prev" title="中科院实习—— 参数化设计实现模块的重用与可控线性序列机">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— 参数化设计实现模块的重用与可控线性序列机
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/13/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A08/" rel="next" title="中科院实习—— 串口通信（发送）">
+      中科院实习—— 串口通信（发送） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%81%B6%E6%95%B0%E5%88%86%E9%A2%91%E7%94%B5%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">偶数分频电路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E8%AE%B2%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E-%E8%BD%AC%E8%87%AAlink"><span class="nav-number">2.</span> <span class="nav-text">重讲阻塞与非阻塞 转自link</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E%E4%B8%8E%E9%98%BB%E5%A1%9E"><span class="nav-number">2.1.</span> <span class="nav-text">非阻塞与阻塞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E9%98%BB%E5%A1%9E%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E7%9A%84%E4%B8%8D%E5%90%8C"><span class="nav-number">2.2.</span> <span class="nav-text">深入理解阻塞和非阻塞赋值的不同</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E7%9A%84%E6%89%A7%E8%A1%8C%E5%8F%AF%E4%BB%A5%E8%AE%A4%E4%B8%BA%E6%98%AF%E5%8F%AA%E6%9C%89%E4%B8%80%E4%B8%AA%E6%AD%A5%E9%AA%A4%E7%9A%84%E6%93%8D%E4%BD%9C%EF%BC%9A"><span class="nav-number">2.2.1.</span> <span class="nav-text">阻塞赋值的执行可以认为是只有一个步骤的操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E7%9A%84%E6%93%8D%E4%BD%9C%E5%8F%AF%E4%BB%A5%E7%9C%8B%E4%BD%9C%E4%B8%BA%E4%B8%A4%E4%B8%AA%E6%AD%A5%E9%AA%A4%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.2.2.</span> <span class="nav-text">非阻塞赋值的操作可以看作为两个步骤的过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%87%A0%E4%B8%AA%E9%80%9A%E8%BF%87%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E4%BE%8B%E5%AD%90%E6%9D%A5%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%90%86%E8%A7%A3%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E4%B8%8E%E9%9D%9E%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC"><span class="nav-number">2.2.3.</span> <span class="nav-text">通过几个通过移位寄存器的例子来更好的理解阻塞赋值与非阻塞赋值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5%E4%B8%8A%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%BE%8B%E5%AD%90%E8%A1%A8%E6%98%8E%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">以上移位寄存器时序逻辑电路设计的例子表明：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E5%92%8C%E9%9D%9E%E9%98%BB%E5%A1%9E%E8%B5%8B%E5%80%BC%E7%9A%84%E5%8E%9F%E5%88%99%E5%BD%92%E7%BA%B3%E5%A6%82%E4%B8%8B%EF%BC%9A"><span class="nav-number">2.4.</span> <span class="nav-text">阻塞赋值和非阻塞赋值的原则归纳如下：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA-%E8%BD%AC%E8%87%AAlink"><span class="nav-number">3.</span> <span class="nav-text">状态机  转自link</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%AE%BA"><span class="nav-number">3.1.</span> <span class="nav-text">理论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%B1%BB"><span class="nav-number">3.2.</span> <span class="nav-text">分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E8%BE%93%E5%87%BA%E6%98%AF%E5%90%A6%E4%B8%8E%E8%BE%93%E5%85%A5%E6%9D%A1%E4%BB%B6%E7%9B%B8%E5%85%B3%EF%BC%8C%E5%8F%AF%E5%B0%86%E7%8A%B6%E6%80%81%E6%9C%BA%E5%88%86%E4%B8%BA%E4%B8%A4%E5%A4%A7%E7%B1%BB%EF%BC%8C%E5%8D%B3%E6%91%A9%E5%B0%94-Moore-%E5%9E%8B%E7%8A%B6%E6%80%81%E6%9C%BA%E5%92%8C%E7%B1%B3%E5%8B%92-Mealy-%E5%9E%8B%E7%8A%B6%E6%80%81%E6%9C%BA%E3%80%82"><span class="nav-number">3.2.1.</span> <span class="nav-text">根据状态机的输出是否与输入条件相关，可将状态机分为两大类，即摩尔(Moore)型状态机和米勒(Mealy) 型状态机。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BE%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.2.2.</span> <span class="nav-text">实例分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">写法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%EF%BC%9A%E6%95%B4%E4%B8%AA%E7%8A%B6%E6%80%81%E6%9C%BA%E5%86%99%E5%88%B0%E4%B8%80%E4%B8%AA-always%E6%A8%A1%E5%9D%97%E9%87%8C%E9%9D%A2%EF%BC%8C%E5%9C%A8%E8%AF%A5%E6%A8%A1%E5%9D%97%E4%B8%AD%E6%97%A2%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%EF%BC%8C%E5%8F%88%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E7%9A%84%E8%BE%93%E5%85%A5%E5%92%8C%E8%BE%93%E5%87%BA%E3%80%82"><span class="nav-number">3.3.1.</span> <span class="nav-text">一段式状态机：整个状态机写到一个 always模块里面，在该模块中既描述状态转移，又描述状态的输入和输出。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Moore%E5%9E%8B%EF%BC%88%E6%91%A9%E5%B0%94%E5%9E%8B%EF%BC%89%E4%B8%80%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">Moore型（摩尔型）一段式状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mealy%E5%9E%8B%EF%BC%88%E7%B1%B3%E5%8B%92%E5%9E%8B%EF%BC%89%E4%B8%80%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">Mealy型（米勒型）一段式状态机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%EF%BC%9A%E7%94%A8%E4%B8%A4%E4%B8%AA-always-%E6%A8%A1%E5%9D%97%E6%9D%A5%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E6%9C%BA%EF%BC%8C%E5%85%B6%E4%B8%AD%E4%B8%80%E4%B8%AA-always-%E6%A8%A1%E5%9D%97%E9%87%87%E7%94%A8%E5%90%8C%E6%AD%A5%E6%97%B6%E5%BA%8F%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%EF%BC%9B%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%A8%A1%E5%9D%97%E9%87%87%E7%94%A8%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E5%88%A4%E6%96%AD%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E6%9D%A1%E4%BB%B6%EF%BC%8C%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E8%A7%84%E5%BE%8B%E4%BB%A5%E5%8F%8A%E8%BE%93%E5%87%BA%E3%80%82%E4%B8%8D%E5%90%8C%E4%BA%8E%E4%B8%80%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E6%98%AF%EF%BC%8C%E5%AE%83%E9%9C%80%E8%A6%81%E5%AE%9A%E4%B9%89%E4%B8%A4%E4%B8%AA%E7%8A%B6%E6%80%81%EF%BC%8C%E7%8E%B0%E6%80%81%E5%92%8C%E6%AC%A1%E6%80%81%EF%BC%8C%E7%84%B6%E5%90%8E%E9%80%9A%E8%BF%87%E7%8E%B0%E6%80%81%E5%92%8C%E6%AC%A1%E6%80%81%E7%9A%84%E8%BD%AC%E6%8D%A2%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E3%80%82"><span class="nav-number">3.3.2.</span> <span class="nav-text">二段式状态机：用两个 always 模块来描述状态机，其中一个 always 模块采用同步时序描述状态转移；另一个模块采用组合逻辑判断状态转移条件，描述状态转移规律以及输出。不同于一段式状态机的是，它需要定义两个状态，现态和次态，然后通过现态和次态的转换来实现时序逻辑。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Moore%E5%9E%8B%EF%BC%88%E6%91%A9%E5%B0%94%E5%9E%8B%EF%BC%89%E4%BA%8C%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">Moore型（摩尔型）二段式状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mealy%E5%9E%8B%EF%BC%88%E7%B1%B3%E5%8B%92%E5%9E%8B%EF%BC%89%E4%BA%8C%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">Mealy型（米勒型）二段式状态机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%EF%BC%9A%E5%9C%A8%E4%B8%A4%E4%B8%AA-always-%E6%A8%A1%E5%9D%97%E6%8F%8F%E8%BF%B0%E6%96%B9%E6%B3%95%E5%9F%BA%E7%A1%80%E4%B8%8A%EF%BC%8C%E4%BD%BF%E7%94%A8%E4%B8%89%E4%B8%AAalways-%E6%A8%A1%E5%9D%97%EF%BC%8C%E4%B8%80%E4%B8%AAalways-%E6%A8%A1%E5%9D%97%E9%87%87%E7%94%A8%E5%90%8C%E6%AD%A5%E6%97%B6%E5%BA%8F%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%EF%BC%8C%E4%B8%80%E4%B8%AA-always-%E9%87%87%E7%94%A8%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E5%88%A4%E6%96%AD%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E6%9D%A1%E4%BB%B6%EF%BC%8C%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E8%A7%84%E5%BE%8B%EF%BC%8C%E5%8F%A6%E4%B8%80%E4%B8%AA-always-%E6%A8%A1%E5%9D%97%E6%8F%8F%E8%BF%B0%E7%8A%B6%E6%80%81%E8%BE%93%E5%87%BA%E3%80%82"><span class="nav-number">3.3.3.</span> <span class="nav-text">三段式状态机：在两个 always 模块描述方法基础上，使用三个always 模块，一个always 模块采用同步时序描述状态转移，一个 always 采用组合逻辑判断状态转移条件，描述状态转移规律，另一个 always 模块描述状态输出。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Moore%E5%9E%8B%EF%BC%88%E6%91%A9%E5%B0%94%E5%9E%8B%EF%BC%89%E4%B8%89%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">Moore型（摩尔型）三段式状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mealy%E5%9E%8B%EF%BC%88%E7%B1%B3%E5%8B%92%E5%9E%8B%EF%BC%89%E4%B8%89%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">Mealy型（米勒型）三段式状态机</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%80%9D%E8%80%83"><span class="nav-number">3.3.4.</span> <span class="nav-text">总结与思考</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E4%B8%89%E7%A7%8D%E6%8F%8F%E8%BF%B0%E6%96%B9%E6%B3%95%EF%BC%9A"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">状态机的三种描述方法：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E8%AF%A5%E9%80%89%E6%8B%A9%E5%93%AA%E4%B8%80%E7%A7%8D%E7%8A%B6%E6%80%81%E6%9C%BA-%EF%BC%9F"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">应该选择哪一种状态机 ？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A0%BC%E5%BC%8F%EF%BC%9A"><span class="nav-number">3.3.4.3.</span> <span class="nav-text">三段式状态机的基本格式：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8F%EF%BC%9A"><span class="nav-number">3.3.4.4.</span> <span class="nav-text">状态机的编码方式：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E6%AE%B5%E5%BC%8F%E7%8A%B6%E6%80%81%E6%9C%BA%E7%9A%84%E7%AC%AC%E4%B8%89%E6%AE%B5%E9%87%87%E7%94%A8next-state%E8%BF%98%E6%98%AFcur-state%EF%BC%9A"><span class="nav-number">3.3.4.5.</span> <span class="nav-text">三段式状态机的第三段采用next_state还是cur_state：</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

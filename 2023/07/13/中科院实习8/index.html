@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FPGA开发。串口通信（串口发送）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— 串口通信（发送）">
+<meta property="og:url" content="http://example.com/2023/07/13/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A08/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="FPGA开发。串口通信（串口发送）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/74.png">
+<meta property="og:image" content="http://example.com/blog_image/75.png">
+<meta property="og:image" content="http://example.com/blog_image/91.png">
+<meta property="article:published_time" content="2023-07-13T05:40:55.000Z">
+<meta property="article:modified_time" content="2023-08-29T08:56:03.396Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/74.png">
+
+<link rel="canonical" href="http://example.com/2023/07/13/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A08/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— 串口通信（发送） | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/13/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A08/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— 串口通信（发送）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-13 13:40:55" itemprop="dateCreated datePublished" datetime="2023-07-13T13:40:55+08:00">2023-07-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-29 16:56:03" itemprop="dateModified" datetime="2023-08-29T16:56:03+08:00">2023-08-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FPGA开发。串口通信（串口发送）。 </p>
+<span id="more"></span>  
+<h1 id="串口通信"><a href="#串口通信" class="headerlink" title="串口通信"></a>串口通信</h1><p>通用异步收发传输器（Universal Asynchronous Receiver&#x2F;Transmitter，UART）是一种异步<br>收发传输器，其在数据发送时将并行数据转换成串行数据来传输，在数据接收时将接收到的<br>串行数据转换成并行数据，可以实现全双工传输和接收。它包括了 RS232、RS449、RS423、<br>RS422 和 RS485 等接口标准规范和总线标准规范。换句话说，UART 是异步串行通信的总<br>称。而 RS232、RS449、RS423、RS422 和 RS485 等，是对应各种异步串行通信口的接口标<br>准和总线标准，它们规定了通信口的电气特性、传输速率、连接特性和接口的机械特性等内<br>容。<br><img src="/../blog_image/74.png" alt="image.png">   </p>
+<h2 id="UART-关键参数及时序图"><a href="#UART-关键参数及时序图" class="headerlink" title="UART 关键参数及时序图"></a>UART 关键参数及时序图</h2><p>UART 通信在使用前需要做多项设置，最常见的设置包括<strong>数据位数、波特率大小、奇偶<br>校验类型和停止位数</strong>。<br>1.数据位（Data bits）：该参数定义单个 UART 数据传输在开始到停止期间发送的数据位<br>数。可选择为：5、6、7 或者 8（默认）。<br>2.波特率（Baud）：是指从一设备发到另一设备的波特率，即每秒钟可以通信的数据比特<br>个数。典型的波特率有 300, 1200, 2400, 9600, 19200, 115200 等。一般通信两端设备都要设为<br>相同的波特率，但有些设备也可设置为自动检测波特率。<br>3.奇偶校验类型（Parity Type）：是用来验证数据的正确性。奇偶校验一般不使用，如果<br>使用，则既可以做奇校验（Odd）也可以做偶校验（Even）。在偶校验中，因为奇偶校验位<br>会被相应的置 1 或 0（一般是最高位或最低位），所以数据会被改变以使得所有传送的数位<br>（含字符的各数位和校验位）中“1”的个数为偶数；在奇校验中，所有传送的数位（含字符<br>的各数位和校验位）中“1”的个数为奇数。奇偶校验可以用于接受方检查传输是否发送生错<br>误，如果某一字节中“1”的个数发生了错误，那么这个字节在传输中一定有错误发生。如果<br>奇偶校验是正确的，那么要么没有发生错误，要么发生了偶数个的错误。如果用户选择数据<br>长度为 8 位，则因为没有多余的比特可被用来作为奇偶校验位，因此就叫做“无奇偶校验<br>（Non）”。<br>4.停止位（Stop bits）：在每个字节的数据位发送完成之后，发送停止位，来标志着一次数据<br>传输完成，同时用来帮助接受信号方硬件重同步。可选择为：1（默认）、1.5 或者 2 位。<br>在 RS-232 标准中，最常用的配置是 8N1(即八个数据位、无奇偶校验、一个停止位)，其<br>发送一个字节时序图如下图所示:<br><strong>按照一个完整的字节包括一位起始位、8 位数据位、一位停止位即总共十位数据来算，<br>要想完整的实现这十位数据的发送，就需要 11 个波特率时钟脉冲，第 1 个脉冲标记一次传<br>输的起始，第 11 个脉冲标记一次传输的结束</strong>，如下所示：<br><img src="/../blog_image/75.png" alt="image.png"><br>bps_clk 信号的第一个上升沿到来时，字节发送模块开始发送起始位，接下来的 2 到 9<br>个上升沿，发送 8 个数据位，第 10 个上升沿到第 11 个上升沿为停止位的发送。</p>
+<h2 id="串口发送实验"><a href="#串口发送实验" class="headerlink" title="串口发送实验"></a>串口发送实验</h2><p>1.串口通信模块设计的目的<strong>是用来发生数据的，因此需要有一个数据输入端口</strong>；<br>2.串口通信，支持不同的波特率，所以需要有一个<strong>波特率设置端口</strong>；<br>3.串口通信的本质是将八位的并行数据通过一根信号线，<strong>在不同的时刻传输并行数据的不同位，通过多个时刻，最终将8位并行数据传出去</strong>；<br>4.串口通信<strong>以1位的低电平标志串行传输的开始</strong>，待8位数据传输完成后，<strong>再以1位的高电平标志传输的结束</strong>；<br>5.控制信号，控制并转串模块什么开始工作，<strong>什么时候一个数据发送完成</strong>？<strong>需有一个发送开始信号以及一个发送完成信号</strong>。<br><img src="/../blog_image/91.png" alt="image.png">   </p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><h3 id="分解"><a href="#分解" class="headerlink" title="分解"></a>分解</h3><h4 id="定义端口"><a href="#定义端口" class="headerlink" title="定义端口"></a>定义端口</h4><p>时钟与复位；数据输入端口；比特率设置端口；使能；数据输出及完成标志。（使能信号到达，数据以设置好的波特率输入并传输，传输完成后标志位置1）  </p>
+<pre><code>module utral_tx(
+    Clk,
+    Reset_n,
+    Data,
+    Send_en,
+    Baud_set,
+    uart_tx,
+    Tx_done
+    );
+      input Clk;
+      input Reset_n;
+      input [7:0]Data;
+      input Send_en;
+      input [2:0]Baud_set;
+      output reg uart_tx;
+      output reg Tx_done;
+      
+      reg[17:0]bps_DR;
+       
+</code></pre>
+<h4 id="波特率设置"><a href="#波特率设置" class="headerlink" title="波特率设置"></a>波特率设置</h4><p>本模块的设计是为了保证模块的复用性。当需要不同的波特率时，只需设置不同的波<br>特率时钟计数器的计数值。使用查找表即可实现，下面的设计代码中只包含了针对 5 个波<br>特率的设置，如需要其他波特率可根据实际使用情况具体修改。<br>波特率计算方法：1s&#x3D;1000000000ns 发送一个字节所需要的时间1s&#x2F;波特率 发送一个字节需要的时间100000000&#x2F;9600 再除以20（50Hz)得到最终的时钟周期。  </p>
+<pre><code>      //Baud_set = 0 波特率 = 9600  1000000000/9600/20 1s/波特率/20 
+      //Baud_set = 1 波特率 = 19200 
+      //Baud_set = 2 波特率 = 38400 
+      //Baud_set = 3 波特率 = 57600
+      //Baud_set = 4 波特率 = 115200
+    always@(posedge Clk or negedge Reset_n)
+        if(!Reset_n)
+            bps_DR &lt;= 16&#39;d5207;
+        else begin
+            case(Baud_set)
+                0:bps_DR &lt;= 16&#39;d5207;
+                1:bps_DR &lt;= 16&#39;d2603;
+                2:bps_DR &lt;= 16&#39;d1301;
+                3:bps_DR &lt;= 16&#39;d867;
+                4:bps_DR &lt;= 16&#39;d433;
+                default:bps_DR &lt;= 16&#39;d5207;
+            endcase
+        end
+</code></pre>
+<h4 id="波特率生成"><a href="#波特率生成" class="headerlink" title="波特率生成"></a>波特率生成</h4><p>利用一个计数器生成一个波特率时钟    </p>
+<pre><code>      reg[17:0]div_cnt;//分频
+      always@(posedge Clk or negedge Reset_n)
+      if(!Reset_n)
+        div_cnt &lt;= 0 ;
+      else if(Send_en) begin
+        if(div_cnt == bps_DR - 1)
+            div_cnt &lt;= 0;
+        else 
+            div_cnt &lt;= div_cnt + 1&#39;b1;  
+        end
+      else 
+           div_cnt &lt;= 0;  
+</code></pre>
+<p>所谓波特率生成，就是用一个定时器来定时，产生频率与对应波特率时钟频率相同的时钟信<br>号。例如，我们使用波特率为 115200bps，则我们需要产生一个频率为 115200Hz 的时钟信号。<br>那么如何产生这样一个 115200Hz 的时钟信号呢？这里，我们首先将 115200Hz 时钟信号的周期<br>计算出来，1 秒钟为 1000_000_000ns，因此波特率时钟的周期 Tb&#x3D; 1000000000&#x2F;115200 &#x3D;8680.6ns，<br>即 115200 信号的一个周期为 8680.6ns，那么，我们只需要设定我们的定时器定时时间为 8680.6ns，<br>每当定时时间到，产生一个系统时钟周期长度的高脉冲信号即可。系统时钟频率为 50MHz，即<br>周期为 20ns，那么，我们只需要计数 8680&#x2F;20 个系统时钟，就可获得 8680ns 的定时，<br>bps115200&#x3D;Tb&#x2F;Tclk - 1&#x3D;Tb*fclk - 1&#x3D;fclk&#x2F;115200-1。相应的，其它波特率定时值的计算与此相同<br>为了能够通过外部控制波特率，设计中使用了一个 3 位的波特率选择端口：baud_set。通过<br>给此端口不同的值，就能选择不同的波特率，此端口控制不同波特率的原理很简单，就是一个多<br>路选择器，多路选择器通过选择不同的定时器计数最大值来设置不同的比特率时钟频率。</p>
+<h4 id="数据输出模块设计"><a href="#数据输出模块设计" class="headerlink" title="数据输出模块设计"></a>数据输出模块设计</h4><p>通过对波特率时钟进行计数，来确定数据发送的循环状态。</p>
+<p><strong>每一个波特率开始计数，状态+1，因此div _ cnt &#x3D;&#x3D; 1时状态+1,这里并没有再div_cnt &#x3D;&#x3D; bps_DR - 1时状态+1，这是因为如果设为改值，那么在状态转变时，需要等待计数到bps _ DR - 1才会出执行相应的命令。</strong></p>
+<pre><code>  reg[3:0]bps_cnt;
+  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+     bps_cnt &lt;= 0 ;
+  else if(bps_cnt ==11)
+     bps_cnt &lt;= 0 ;   
+  else if(div_cnt ==1)
+      bps_cnt &lt;= bps_cnt + 1&#39;b1;
+  else
+       bps_cnt &lt;= bps_cnt;  
+</code></pre>
+<p>同样为了使得模块可以对其他模块进行控制或者调用，这里产生一个 byte 传送结束的<br>信号。一个数据位传输结束后 tx_done 信号输出一个时钟的高电平。  </p>
+<pre><code>    always@(posedge Clk or posedge Reset_n)
+    if(!Reset_n)
+        Tx_done &lt;= 1&#39;b0;
+    else if(bps_cnt == 11)
+        Tx_done &lt;= 1&#39;b1;
+    else
+        Tx_done &lt;= 1&#39;b0; 
+</code></pre>
+<p>根据不同状态输出值  </p>
+<pre><code>  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+    uart_tx &lt;= 1&#39;b1;  
+  else begin
+    case(bps_cnt)
+        1:uart_tx &lt;= 0;
+        2:uart_tx &lt;= Data[0];
+        3:uart_tx &lt;= Data[1];
+        4:uart_tx &lt;= Data[2];
+        5:uart_tx &lt;= Data[3];
+        6:uart_tx &lt;= Data[4];
+        7:uart_tx &lt;= Data[5];
+        8:uart_tx &lt;= Data[6];
+        9:uart_tx &lt;= Data[7];
+        10:uart_tx &lt;= 1;
+        11:uart_tx &lt;= 1;
+        default: uart_tx &lt;= 1;
+     endcase
+   end
+               
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;<br>时序仿真：  </p>
+<pre><code>`timescale 1ns / 1ns
+
+
+module uart_tx_tb(
+
+    );
+    
+      reg Clk;
+      reg Reset_n;
+      reg [7:0]Data;
+      reg Send_en;
+      reg [2:0]Baud_set;
+      wire  uart_tx;
+      wire  Tx_done;
+      
+    utral_tx utral_tx(
+        .Clk(Clk),
+        .Reset_n(Reset_n),
+        .Data(Data),
+        .Send_en(Send_en),
+        .Baud_set(Baud_set),
+        .uart_tx(uart_tx),
+        .Tx_done(Tx_done)
+        );
+     initial Clk = 1;
+     always#10 Clk = ~Clk;
+        
+     initial begin
+        Reset_n = 0;
+        Data = 0;
+        Send_en = 0;
+        Baud_set = 4;
+        #201;
+        Reset_n = 1;
+        #100;
+        Data = 8&#39;h57;
+        Send_en = 1;
+        #20;
+        @(posedge Tx_done);
+        Send_en = 0;
+        #20000;
+        Data = 8&#39;h75;
+        Send_en = 1;
+        #20;
+        @(posedge Tx_done);
+        Send_en = 0;
+        #20000;
+        $stop;
+     end
+        
+        
+endmodule
+</code></pre>
+<h4 id="串口发送的应用"><a href="#串口发送的应用" class="headerlink" title="串口发送的应用"></a>串口发送的应用</h4><p>使用上述的串口发送实现一个每10ms输出一个+1的数字</p>
+<h5 id="子程序1"><a href="#子程序1" class="headerlink" title="子程序1"></a>子程序1</h5><pre><code>module uart_byte_tx(
+    Clk,
+    Reset_n,
+    Data,
+    Send_en,
+    Baud_set,
+    uart_tx,
+    Tx_done
+    );
+      input Clk;
+      input Reset_n;
+      input [7:0]Data;
+      input Send_en;
+      input [2:0]Baud_set;
+      output reg uart_tx;
+      output reg Tx_done;
+      
+      reg[17:0]bps_DR;
+       
+      
+      //Baud_set = 0 波特率 = 9600  1000000000/9600/20 1s/波特率/20 
+      //Baud_set = 1 波特率 = 19200 
+      //Baud_set = 2 波特率 = 38400 
+      //Baud_set = 3 波特率 = 57600
+      //Baud_set = 4 波特率 = 115200
+      
+    always@(posedge Clk or negedge Reset_n)
+            if(!Reset_n)
+                bps_DR &lt;= 16&#39;d5207;
+            else begin
+                case(Baud_set)
+                    0:bps_DR &lt;= 16&#39;d5207;
+                    1:bps_DR &lt;= 16&#39;d2603;
+                    2:bps_DR &lt;= 16&#39;d1301;
+                    3:bps_DR &lt;= 16&#39;d867;
+                    4:bps_DR &lt;= 16&#39;d433;
+                    default:bps_DR &lt;= 16&#39;d5207;
+                endcase
+            end
+
+        
+      reg[17:0]div_cnt;//分频
+      always@(posedge Clk or negedge Reset_n)
+      if(!Reset_n)
+        div_cnt &lt;= 0 ;
+      else if(Send_en) begin
+        if(div_cnt == bps_DR - 1)
+            div_cnt &lt;= 0;
+        else 
+            div_cnt &lt;= div_cnt + 1&#39;b1;  
+        end
+      else 
+           div_cnt &lt;= 0;
+          
+      reg[3:0]bps_cnt;
+      always@(posedge Clk or negedge Reset_n)
+      if(!Reset_n)
+         bps_cnt &lt;= 0 ;
+      else if(bps_cnt ==11)
+         bps_cnt &lt;= 0 ;   
+      else if(div_cnt ==1)
+          bps_cnt &lt;= bps_cnt + 1&#39;b1;
+      else
+           bps_cnt &lt;= bps_cnt;
+     
+        always@(posedge Clk or posedge Reset_n)
+        if(!Reset_n)
+            Tx_done &lt;= 1&#39;b0;
+        else if(bps_cnt == 11)
+            Tx_done &lt;= 1&#39;b1;
+        else
+            Tx_done &lt;= 1&#39;b0; 
+    
+      always@(posedge Clk or negedge Reset_n)
+      if(!Reset_n)
+        uart_tx &lt;= 1&#39;b1;  
+      else begin
+        case(bps_cnt)
+            1:uart_tx &lt;= 0;
+            2:uart_tx &lt;= Data[0];
+            3:uart_tx &lt;= Data[1];
+            4:uart_tx &lt;= Data[2];
+            5:uart_tx &lt;= Data[3];
+            6:uart_tx &lt;= Data[4];
+            7:uart_tx &lt;= Data[5];
+            8:uart_tx &lt;= Data[6];
+            9:uart_tx &lt;= Data[7];
+            10:uart_tx &lt;= 1;
+            11:uart_tx &lt;= 1;
+            default: uart_tx &lt;= 1;
+         endcase
+       end
+                   
+endmodule  
+</code></pre>
+<h5 id="主程序"><a href="#主程序" class="headerlink" title="主程序"></a>主程序</h5><pre><code>    module uart_tx_2(
+        Clk,
+        Reset_n,
+        uart_tx
+        );
+        input Clk;
+        input Reset_n;
+        output uart_tx;
+        reg Send_en;
+        reg [7:0] Data;
+        
+        uart_byte_tx uart_byte_tx(
+                .Clk(Clk),
+                .Reset_n(Reset_n),
+                .Data(Data),
+                .Send_en(Send_en),
+                .Baud_set(3&#39;d4),
+                .uart_tx(uart_tx),
+                .Tx_done(Tx_done)
+                );
+          
+         reg [18:0]cnt;
+         always@(posedge Clk or negedge Reset_n)
+         if(!Reset_n)
+           cnt &lt;= 0;
+         else if(cnt == 499999)
+           cnt &lt;= 0;
+         else
+           cnt &lt;= cnt + 1;
+           
+         always@(posedge Clk or negedge Reset_n)
+         if(!Reset_n) 
+           Send_en &lt;= 0;
+          else if(cnt == 1)
+           Send_en &lt;= 1;
+          else if(Tx_done)
+           Send_en &lt;= 0;            //可以把这段放在子程序中，
+           
+         always@(posedge Clk or negedge Reset_n)
+         if(!Reset_n) 
+           Data &lt;= 0;
+         else if(Tx_done)
+           Data &lt;= Data + 1&#39;b1;
+           
+    endmodule
+          
+</code></pre>
+<h5 id="时序仿真"><a href="#时序仿真" class="headerlink" title="时序仿真"></a>时序仿真</h5><pre><code>`timescale 1ns / 1ns
+
+module uart_tx_tb(
+
+    );
+    
+    reg Clk;
+    reg  Reset_n;
+    wire uart_tx;
+    
+    uart_tx_2  uart_tx_2(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .uart_tx(uart_tx)
+    );
+    
+    initial Clk = 1;
+    always#10 Clk = ~Clk;
+            
+    initial begin
+        Reset_n = 0;
+        #201;
+        Reset_n = 1;
+        #50000000;
+        $stop;
+        
+     end
+endmodule  
+</code></pre>
+<p>还可以添加一个寄存器寄存数据：  </p>
+<pre><code>reg [7:0]data_byte_reg
+always@(posedge Clk or posedge Reset_n)
+if(!Reset_n)
+data_byte_reg &lt;= 8&#39;d0;
+else if(send_en)
+data_byte_reg &lt;= data_byte;
+else
+data_byte_reg &lt;= data_byte_reg;   
+</code></pre>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/12/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A07/" rel="prev" title="中科院实习—— 知识补充">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— 知识补充
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/14/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A09/" rel="next" title="中科院实习—— 串口通信（接收）">
+      中科院实习—— 串口通信（接收） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1"><span class="nav-number">1.</span> <span class="nav-text">串口通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UART-%E5%85%B3%E9%94%AE%E5%8F%82%E6%95%B0%E5%8F%8A%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-number">1.1.</span> <span class="nav-text">UART 关键参数及时序图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E5%8F%91%E9%80%81%E5%AE%9E%E9%AA%8C"><span class="nav-number">1.2.</span> <span class="nav-text">串口发送实验</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E8%A7%A3"><span class="nav-number">1.3.1.</span> <span class="nav-text">分解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">定义端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A2%E7%89%B9%E7%8E%87%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">波特率设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A2%E7%89%B9%E7%8E%87%E7%94%9F%E6%88%90"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">波特率生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BE%93%E5%87%BA%E6%A8%A1%E5%9D%97%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.1.4.</span> <span class="nav-text">数据输出模块设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%B2%E5%8F%A3%E5%8F%91%E9%80%81%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.3.1.5.</span> <span class="nav-text">串口发送的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%90%E7%A8%8B%E5%BA%8F1"><span class="nav-number">1.3.1.5.1.</span> <span class="nav-text">子程序1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E7%A8%8B%E5%BA%8F"><span class="nav-number">1.3.1.5.2.</span> <span class="nav-text">主程序</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E4%BB%BF%E7%9C%9F"><span class="nav-number">1.3.1.5.3.</span> <span class="nav-text">时序仿真</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

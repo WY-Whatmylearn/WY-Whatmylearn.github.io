@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FPGA巩固及新知识学习该篇包括3-8译码器、计数器完成跑马灯、参数化设计、例化3-8译码器完成跑马灯。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习——FPGA">
+<meta property="og:url" content="http://example.com/2023/07/10/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A04/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="FPGA巩固及新知识学习该篇包括3-8译码器、计数器完成跑马灯、参数化设计、例化3-8译码器完成跑马灯。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/42.png">
+<meta property="og:image" content="http://example.com/blog_image/43.png">
+<meta property="og:image" content="http://example.com/blog_image/44.png">
+<meta property="og:image" content="http://example.com/blog_image/45.png">
+<meta property="og:image" content="http://example.com/blog_image/46.png">
+<meta property="og:image" content="http://example.com/blog_image/47.png">
+<meta property="og:image" content="http://example.com/blog_image/48.png">
+<meta property="og:image" content="http://example.com/blog_image/49.png">
+<meta property="og:image" content="http://example.com/blog_image/50.png">
+<meta property="og:image" content="http://example.com/blog_image/51.png">
+<meta property="og:image" content="http://example.com/blog_image/52.png">
+<meta property="og:image" content="http://example.com/blog_image/53.png">
+<meta property="og:image" content="http://example.com/blog_image/54.png">
+<meta property="og:image" content="http://example.com/blog_image/55.png">
+<meta property="og:image" content="http://example.com/blog_image/57.png">
+<meta property="og:image" content="http://example.com/blog_image/58.png">
+<meta property="og:image" content="http://example.com/blog_image/59.png">
+<meta property="og:image" content="http://example.com/blog_image/60.png">
+<meta property="og:image" content="http://example.com/blog_image/61.png">
+<meta property="article:published_time" content="2023-07-10T03:08:55.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:16:19.861Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/42.png">
+
+<link rel="canonical" href="http://example.com/2023/07/10/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A04/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习——FPGA | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/10/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A04/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习——FPGA
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-10 11:08:55" itemprop="dateCreated datePublished" datetime="2023-07-10T11:08:55+08:00">2023-07-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-09 14:16:19" itemprop="dateModified" datetime="2023-08-09T14:16:19+08:00">2023-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FPGA巩固及新知识学习<br>该篇包括3-8译码器、计数器完成跑马灯、参数化设计、例化3-8译码器完成跑马灯。</p>
+<span id="more"></span>
+
+<h1 id="3-8译码器"><a href="#3-8译码器" class="headerlink" title="3-8译码器"></a>3-8译码器</h1><p>本科数电都学过三八译码器，他就是将三位的输入信号翻译位8位的输出信号。<br><img src="/../blog_image/42.png" alt="image.png"><br>真值表：<br><img src="/../blog_image/43.png" alt="image.png">  </p>
+<h2 id="开始编写"><a href="#开始编写" class="headerlink" title="开始编写"></a>开始编写</h2><h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><p>需要注意的几项是：<br><img src="/../blog_image/44.png" alt="image.png"><br><img src="/../blog_image/45.png" alt="image.png"><br><img src="/../blog_image/46.png" alt="image.png"><br><img src="/../blog_image/47.png" alt="image.png">   </p>
+<h3 id="开始编程"><a href="#开始编程" class="headerlink" title="开始编程"></a>开始编程</h3><p><img src="/../blog_image/48.png" alt="image.png"><br>点击create design sources；<br><img src="/../blog_image/49.png" alt="image.png"><br>点击create file-选择语言（verilog）,文件名称与工程名一致；<br>最后点击finish即可。<br>编程：<br><img src="/../blog_image/50.png" alt="image.png"><br>程序如下：  </p>
+<pre><code>module decoder_3_8(
+    a,
+    b,
+    c,
+    out
+);
+    input a;
+    input b;
+    input c;
+    output [7:0]out;
+    reg [7:0]out;
+    
+    //以always块描述的信号赋值，被赋值的对象必须定义为reg型
+    always@(*)begin //always@(a,b,c)  
+        case(&#123;a,b,c&#125;)//&#123;a,b,c&#125;独立的三个信号变成了一个三位的信号：位拼接 此外，还有wire [3:0]d: assign d= &#123;a,1&#39;b0,b,c&#125;使得第二位始终为0
+            3&#39;b000:out = 8&#39;b0000_0001;//b,d,h都是格式限定符，分别为二进制，十进制，十六进制 3&#39;b101=3&#39;d5 ; 8&#39;b0000_1100=8&#39;d12=8&#39;hc
+            3&#39;b001:out = 8&#39;b0000_0010;
+            3&#39;b010:out = 8&#39;b0000_0100;
+            3&#39;b011:out = 8&#39;b0000_1000;
+            3&#39;b100:out = 8&#39;b0001_0000;
+            3&#39;b101:out = 8&#39;b0010_0000;
+            3&#39;b110:out = 8&#39;b0100_0000;
+            3&#39;b111:out = 8&#39;b1000_0000;
+        endcase
+    end
+endmodule  
+   
+</code></pre>
+<h3 id="分析综合"><a href="#分析综合" class="headerlink" title="分析综合"></a>分析综合</h3><p><img src="/../blog_image/51.png" alt="image.png">   </p>
+<h3 id="功能仿真"><a href="#功能仿真" class="headerlink" title="功能仿真"></a>功能仿真</h3><p>与创建功能源文件一样，不过点击add source后修改为创建仿真源文件<br><img src="/../blog_image/52.png" alt="image.png"><br><img src="/../blog_image/53.png" alt="image.png">  </p>
+<pre><code>`timescale 1ns/1ns
+
+module decoder_3_8_tb;
+reg s_a;
+reg s_b;
+reg s_c;
+wire [7:0]out;
+
+decoder_3_8 decoder_3_8(
+    .a(s_a),
+    .b(s_b),
+    .c(s_c),
+    .out(out)
+);
+
+initial begin
+    s_a = 0;s_b = 0;s_c = 0;
+    #200;
+    s_a = 0;s_b = 0;s_c = 1;
+    #200;
+    s_a = 0;s_b = 1;s_c = 0;
+    #200;
+    s_a = 1;s_b = 0;s_c = 0;
+    #200;
+    s_a = 0;s_b = 1;s_c = 1;
+    #200;
+    s_a = 1;s_b = 0;s_c = 1;
+    #200;
+    s_a = 1;s_b = 1;s_c = 0;
+    #200;
+    s_a = 1;s_b = 1;s_c = 1;
+    #200;
+    $stop;
+end
+
+endmodule    
+</code></pre>
+<p>分析综合，与上述内容一样<br>查看波形<br><img src="/../blog_image/54.png" alt="image.png">   </p>
+<h3 id="布局布线和实际仿真略；"><a href="#布局布线和实际仿真略；" class="headerlink" title="布局布线和实际仿真略；"></a>布局布线和实际仿真略；</h3><h3 id="扳机调试"><a href="#扳机调试" class="headerlink" title="扳机调试"></a>扳机调试</h3><p><img src="/../blog_image/55.png" alt="image.png"><br><img src="/../blog_image/57.png" alt="image.png"><br><img src="/../blog_image/58.png" alt="image.png"><br>修改端口。<br>IMPLEMENTATION &#x3D;&gt;点击Open Implemented Design&#x3D;&gt;Layout&#x3D;&gt;I&#x2F;O planing&#x3D;&gt;根据自己的板子设置端口&#x3D;&gt;ctrl+S保存&#x3D;&gt;Gennerate Bitstream&#x3D;&gt;open hardware manager&#x3D;&gt;open target<br>本文再次详细的介绍了整个项目的创建及调试过程，之后的项目会省略相关步骤。   </p>
+<h1 id="时序逻辑设计之计数器"><a href="#时序逻辑设计之计数器" class="headerlink" title="时序逻辑设计之计数器"></a>时序逻辑设计之计数器</h1><p>1.时序逻辑基本概念（相比于之前的三八译码器）<br><img src="/../blog_image/59.png" alt="image.png"><br><img src="/../blog_image/60.png" alt="image.png"><br>2.计数器基本概念，基本的四位加法器结构图<br>cnt &lt;&#x3D; cnt + 1<br>此图略:一个上升沿到来自加1.<br>3.设计一个一1秒频率闪烁的LED灯（亮和灭各500ms)<br>4.计数值与计数器的关系。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p><img src="/../blog_image/61.png" alt="image.png"><br>50MHz 20ns:500ms-&gt;计数为25000000时  </p>
+<pre><code>module led_flash(
+    Clk,
+    Reset_n,
+    Led
+
+    );
+    
+    input Clk;
+    input Reset_n;
+    output reg Led;
+    
+    reg[24:0]counter;
+    
+//    always@(posedge Clk or negedge Reset_n)
+//    if(!Reset_n)begin
+//        counter &lt;= 0 ; //&lt;=是非阻塞赋值的意思
+//        Led &lt;= 0;
+//     end
+//    else if(counter == 25000000)begin
+//        Led &lt;= !Led;
+//        counter &lt;= 0;
+//    end
+//    else 
+//        counter &lt;= counter + 1&#39;d1;  //也可以分开写，推荐分开写
+        
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter &lt;= 0 ; //&lt;=是非阻塞赋值的意思
+       
+   
+    else if(counter == 25000000 - 1)
+      
+        counter &lt;= 0;
+ 
+    else 
+        counter &lt;= counter + 1&#39;d1; 
+   
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 1;
+     
+    else if(counter == 25000000 - 1) //0-1 1-2 2-3 3-0
+        Led &lt;= !Led;
+         
+endmodule   
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<pre><code>`timescale 1ns/1ns
+
+module led_flash_tb;
+
+    reg Clk;
+    reg Reset_n;
+    wire Led;
+
+    led_flash led_flash(
+        .Clk(Clk),
+        .Reset_n(Reset_n),
+        .Led(Led)
+        
+       );
+       
+       initial Clk = 1;
+       always #10 Clk =!Clk;
+       
+       initial begin
+            Reset_n = 0;
+            #201;
+            Reset_n = 1;
+            #2000000000;
+            $stop;
+       end
+ endmodule
+</code></pre>
+<h1 id="时序逻辑设计之计数器（Verilog语法学习与应用）"><a href="#时序逻辑设计之计数器（Verilog语法学习与应用）" class="headerlink" title="时序逻辑设计之计数器（Verilog语法学习与应用）"></a>时序逻辑设计之计数器（Verilog语法学习与应用）</h1><h2 id="计数器实验升级，设计4个LED灯以每个0-5s的速率循环闪烁（跑马灯）。"><a href="#计数器实验升级，设计4个LED灯以每个0-5s的速率循环闪烁（跑马灯）。" class="headerlink" title="计数器实验升级，设计4个LED灯以每个0.5s的速率循环闪烁（跑马灯）。"></a>计数器实验升级，设计4个LED灯以每个0.5s的速率循环闪烁（跑马灯）。</h2><pre><code>module led_run(
+    Clk,
+    Reset_n,
+    Led
+
+);
+   input Clk;
+   input Reset_n;
+   output reg [3:0]Led;
+   reg [24:0]counter;
+   
+  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+        counter &lt;= 0;
+   else if(counter == 25&#39;d24999999)
+        counter &lt;= 0;
+   else 
+        counter &lt;= counter + 1&#39;d1;
+    
+   always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 4&#39;b0001;
+    else if(counter == 25&#39;d24999999)begin
+        if(Led == 4&#39;b1000)
+            Led &lt;=  4&#39;b0001;
+         else 
+            Led &lt;= Led &lt;&lt; 1;
+     end
+     else 
+        Led &lt;= Led;
+        
+endmodule
+          
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;   </p>
+<pre><code>`timescale 1ns/1ns
+
+module led_run_tb;
+
+    reg Clk;
+    reg Reset_n;
+    wire [3:0]Led;
+
+    led_run led_run(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .Led(Led)
+
+);
+    
+    initial Clk = 1;
+    always #10Clk = ~Clk;
+    
+    initial begin
+        Reset_n = 0;
+        #201;
+        Reset_n = 1;
+        #2000000000;
+        $stop;
+    end
+
+endmodule
+</code></pre>
+<h2 id="改进"><a href="#改进" class="headerlink" title="改进"></a>改进</h2><pre><code>module led_run(
+    Clk,
+    Reset_n,
+    Led
+
+);
+   input Clk;
+   input Reset_n;
+   output reg [3:0]Led;
+   reg [24:0]counter;
+   
+  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+        counter &lt;= 0;
+   else if(counter == 25&#39;d24999999)
+        counter &lt;= 0;
+   else 
+        counter &lt;= counter + 1&#39;d1;
+    
+   always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 4&#39;b0001;
+    else if(counter == 25&#39;d24999999)begin
+//        if(Led == 4&#39;b1000)
+//            Led &lt;=  4&#39;b0001;
+//         else 
+//            Led &lt;= Led &lt;&lt; 1;
+            
+        Led &lt;= &#123;Led[2:0],Led[3]&#125;;
+     end
+     else 
+        Led &lt;= Led;
+        
+endmodule
+</code></pre>
+<h2 id="例化3-8译码器（模块中调用模块）"><a href="#例化3-8译码器（模块中调用模块）" class="headerlink" title="例化3-8译码器（模块中调用模块）"></a>例化3-8译码器（模块中调用模块）</h2><p>复制文件到相应目录下；<br>ADD sources添加已有文件即可。<br>修改代码为：  </p>
+<pre><code>module led_run2(
+    Clk,
+    Reset_n,
+    Led
+
+);
+   input Clk;
+   input Reset_n;
+   output [7:0]Led;/此处不需要再写reg，因为译码器中已有
+   reg [24:0]counter;
+   
+  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+        counter &lt;= 0;
+   else if(counter == 25&#39;d24999)
+        counter &lt;= 0;
+   else 
+        counter &lt;= counter + 1&#39;d1;
+    
+    reg [2:0]counter2;
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter2 &lt;= 0;
+    else if(counter == 25&#39;d24999)
+        counter2 &lt;= counter2 + 1&#39;d1;
+        
+    decoder_3_8 decoder_3_8(
+        .a(counter2[2]),
+        .b(counter2[1]),
+        .c(counter2[0]),
+        .out(Led)
+);    //此处
+    
+        
+endmodule
+          
+</code></pre>
+<h1 id="参数化设计"><a href="#参数化设计" class="headerlink" title="参数化设计"></a>参数化设计</h1><p>我们在仿真时为了避免时间过长，通常会把时间缩小，但是在板机调试时又会把时间恢复，在忘记恢复时间的情况下会导致实际错误，因此这里提出参数化设计方法。  </p>
+<pre><code>module led_run2(
+    Clk,
+    Reset_n,
+    Led
+
+);
+   input Clk;
+   input Reset_n;
+   output [7:0]Led;
+   reg [24:0]counter;
+   
+   parameter MCNT = 25&#39;d24999999;//此处为修改的地方
+   
+  always@(posedge Clk or negedge Reset_n)
+  if(!Reset_n)
+        counter &lt;= 0;
+   else if(counter == MCNT)//此处为修改的地方
+        counter &lt;= 0;
+   else 
+        counter &lt;= counter + 1&#39;d1;
+    
+    reg [2:0]counter2;
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter2 &lt;= 0;
+    else if(counter == MCNT) //此处为修改的地方
+        counter2 &lt;= counter2 + 1&#39;d1;
+        
+    decoder_3_8 decoder_3_8(
+        .a(counter2[2]),
+        .b(counter2[1]),
+        .c(counter2[0]),
+        .out(Led)
+);    
+    
+        
+endmodule
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</p>
+<pre><code>`timescale 1ns/1ns
+
+module led_run_tb;
+
+    reg Clk;
+    reg Reset_n;
+    wire [3:0]Led;
+
+    led_run2 led_run_inst0(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .Led(Led)
+
+);
+    defparam led_run_inst0.MCNT = 24999;
+    
+    initial Clk = 1;
+    always #10Clk = ~Clk;
+    
+    initial begin
+        Reset_n = 0;
+        #201;
+        Reset_n = 1;
+        #2000000000;
+        $stop;
+    end
+
+endmodule
+</code></pre>
+<p>或者：  </p>
+<pre><code>`timescale 1ns/1ns
+
+module led_run_tb;
+
+    reg Clk;
+    reg Reset_n;
+    wire [3:0]Led;
+
+    led_run2 
+    #(
+        .MCNT(2499)
+
+        )
+
+    led_run_inst0(
+    .Clk(Clk),
+    .Reset_n(Reset_n),
+    .Led(Led)
+
+);
+    
+    
+    initial Clk = 1;
+    always #10Clk = ~Clk;
+    
+    initial begin
+        Reset_n = 0;
+        #201;
+        Reset_n = 1;
+        #2000000000;
+        $stop;
+    end
+
+endmodule
+</code></pre>
+<p>假如3-8译码器也有一个<br>parameter WIDTH &#x3D; 4;<br>reg [WIDTH - 1 : 0]OUT;<br>那么在led_run2对译码器例化时<br>加上一个 defparam 名字.WIDTH &#x3D; ?；也是可以的<br>参数化设计嵌套</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/06/python%E5%AD%A6%E4%B9%A0/" rel="prev" title="Python学习记录">
+      <i class="fa fa-chevron-left"></i> Python学习记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A05/" rel="next" title="中科院实习—— Verilog语言重点内容解析">
+      中科院实习—— Verilog语言重点内容解析 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#3-8%E8%AF%91%E7%A0%81%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">3-8译码器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99"><span class="nav-number">1.1.</span> <span class="nav-text">开始编写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E7%A8%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">开始编程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E7%BB%BC%E5%90%88"><span class="nav-number">1.1.3.</span> <span class="nav-text">分析综合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E4%BB%BF%E7%9C%9F"><span class="nav-number">1.1.4.</span> <span class="nav-text">功能仿真</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E5%B1%80%E5%B8%83%E7%BA%BF%E5%92%8C%E5%AE%9E%E9%99%85%E4%BB%BF%E7%9C%9F%E7%95%A5%EF%BC%9B"><span class="nav-number">1.1.5.</span> <span class="nav-text">布局布线和实际仿真略；</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B3%E6%9C%BA%E8%B0%83%E8%AF%95"><span class="nav-number">1.1.6.</span> <span class="nav-text">扳机调试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E8%AE%BE%E8%AE%A1%E4%B9%8B%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">时序逻辑设计之计数器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.1.</span> <span class="nav-text">实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E8%AE%BE%E8%AE%A1%E4%B9%8B%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88Verilog%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E4%B8%8E%E5%BA%94%E7%94%A8%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">时序逻辑设计之计数器（Verilog语法学习与应用）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E5%99%A8%E5%AE%9E%E9%AA%8C%E5%8D%87%E7%BA%A7%EF%BC%8C%E8%AE%BE%E8%AE%A14%E4%B8%AALED%E7%81%AF%E4%BB%A5%E6%AF%8F%E4%B8%AA0-5s%E7%9A%84%E9%80%9F%E7%8E%87%E5%BE%AA%E7%8E%AF%E9%97%AA%E7%83%81%EF%BC%88%E8%B7%91%E9%A9%AC%E7%81%AF%EF%BC%89%E3%80%82"><span class="nav-number">3.1.</span> <span class="nav-text">计数器实验升级，设计4个LED灯以每个0.5s的速率循环闪烁（跑马灯）。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B9%E8%BF%9B"><span class="nav-number">3.2.</span> <span class="nav-text">改进</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%8B%E5%8C%963-8%E8%AF%91%E7%A0%81%E5%99%A8%EF%BC%88%E6%A8%A1%E5%9D%97%E4%B8%AD%E8%B0%83%E7%94%A8%E6%A8%A1%E5%9D%97%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">例化3-8译码器（模块中调用模块）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%8C%96%E8%AE%BE%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">参数化设计</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

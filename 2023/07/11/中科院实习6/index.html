@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="FPGA开发。包括让8个LED分别以不同的频率闪烁、从计数器到可控线性序列机（让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭等多个任务）.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="中科院实习—— 参数化设计实现模块的重用与可控线性序列机">
+<meta property="og:url" content="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A06/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="FPGA开发。包括让8个LED分别以不同的频率闪烁、从计数器到可控线性序列机（让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭等多个任务）.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/blog_image/72.png">
+<meta property="og:image" content="http://example.com/blog_image/73.png">
+<meta property="article:published_time" content="2023-07-11T05:38:55.000Z">
+<meta property="article:modified_time" content="2023-08-09T06:16:24.363Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/blog_image/72.png">
+
+<link rel="canonical" href="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A06/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>中科院实习—— 参数化设计实现模块的重用与可控线性序列机 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A06/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          中科院实习—— 参数化设计实现模块的重用与可控线性序列机
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-07-11 13:38:55" itemprop="dateCreated datePublished" datetime="2023-07-11T13:38:55+08:00">2023-07-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2023-08-09 14:16:24" itemprop="dateModified" datetime="2023-08-09T14:16:24+08:00">2023-08-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/" itemprop="url" rel="index"><span itemprop="name">中科院实习记录</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>FPGA开发。包括让8个LED分别以不同的频率闪烁、从计数器到可控线性序列机（让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭等多个任务）.</p>
+<span id="more"></span>  
+
+<h1 id="让8个LED分别以不同的频率闪烁"><a href="#让8个LED分别以不同的频率闪烁" class="headerlink" title="让8个LED分别以不同的频率闪烁"></a>让8个LED分别以不同的频率闪烁</h1><pre><code>module led_flash(
+Clk,
+Reset_n,
+Led
+);
+
+input Clk;
+input Reset_n;
+output reg Led;
+parameter MCNT = 24999999;
+
+reg [24:0]counter;
+
+always@(posedge Clk or negedge Reset_n)begin
+if (!Resnet)
+    counter &lt;= 0;
+else if (counter == MCNT)
+    counter &lt;= 0;
+else 
+    counter &lt;= counter + 1&#39;d1;
+end
+
+always@(posedge Clk or negedge Reset_n)begin
+if (!Resnet)
+    Led &lt;= 1;
+else if (counter == MCNT)
+    Led &lt;= !Led;
+end
+
+endmodule
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  </p>
+<pre><code>module Led_run3_test(
+    Clk;
+    Reset_n;
+    Led
+);  
+
+//例化
+input Clk;
+input Reset_n;
+output [3:0]Led;
+
+
+Led_flash Led_flash_inst0(
+    
+    .Clk(Clk);
+    .Reset_n(Reset_n);
+    .Led(Led[0])
+    );
+defparam Led_flash_inst0.MCNT = 499999;
+
+Led_flash Led_flash_int1(
+    
+    .Clk(Clk);
+    .Reset_n(Reset_n);
+    .Led(Led[0])
+    );
+defparam Led_flash_inst1.MCNT = 2499999;
+
+Led_flash Led_flash_int2(
+    
+    .Clk(Clk);
+    .Reset_n(Reset_n);
+    .Led(Led[0])
+    );
+defparam Led_flash_inst2.MCNT = 7499999;
+
+Led_flash Led_flash_int3(
+    
+    .Clk(Clk);
+    .Reset_n(Reset_n);
+    .Led(Led[0])
+    );
+defparam Led_flash_inst3.MCNT = 1499999;
+
+endmodule
+</code></pre>
+<p>在开发时，可能会遇到之前的项目具有相同的输入输出，那么此时我们就不必重复定义端口了：<br>1.一般在项目名\led_run.srcs\constrs_1\new\文件名；<br>2.打开复制；<br>3.<img src="/../blog_image/72.png" alt="image.png"><br>4.复制内容到该文件中；<br>5.<img src="/../blog_image/73.png" alt="image.png"><br>设置为target。  </p>
+<h1 id="从计数器到可控线性序列机"><a href="#从计数器到可控线性序列机" class="headerlink" title="从计数器到可控线性序列机"></a>从计数器到可控线性序列机</h1><p>1.让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭；<br>2.让LED灯按照亮0.25秒，灭0.5秒，亮0.75秒，灭1秒的状态循环亮灭；<br>3.让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0.25秒为一个变化周期，8个变化状态为1个循环；<br>4.让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择；<br>5.让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；<br>6.每隔10ms,让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us)。</p>
+<h2 id="让LED灯按照亮0-25秒，灭0-75秒的状态循环亮灭"><a href="#让LED灯按照亮0-25秒，灭0-75秒的状态循环亮灭" class="headerlink" title="让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭"></a>让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭</h2><pre><code>module led_flash_0(
+    Clk,
+    Reset_n,
+    Led
+    );
+    
+    input Clk;
+    input Reset_n;
+    output reg Led;
+    
+    reg [25:0]counter;
+    
+    parameter MCNT = 50000000;
+    
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    counter &lt;= 0;
+else if(counter == MCNT - 1)
+    counter &lt;= 0;
+else 
+    counter &lt;= counter + 1&#39;b1;
+    
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    Led &lt;= 0;
+else if(counter == MCNT/2 - 1)
+    Led &lt;= 1;
+else if(counter == MCNT - 1)
+    Led &lt;= 0;
+    
+endmodule
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;    </p>
+<pre><code>`timescale 1ns / 1ns
+
+
+module led_flash_tb(
+
+    );
+    
+    reg Clk;
+    reg Reset_n;
+    wire Led;
+    
+    led_flash_0 
+    #(
+        .MCNT(50000000)
+      )
+      led_flash_0(
+    
+        .Clk(Clk),
+        .Reset_n(Reset_n),
+        .Led(Led)
+    );
+    
+    initial Clk = 1;
+    always #10 Clk = !Clk;
+    
+    initial begin
+       Reset_n = 0;
+       #201;
+       Reset_n = 1;
+       #2000000000;
+       $stop;
+    end
+
+
+endmodule
+</code></pre>
+<p>这是实现0.5s亮，0.5s灭的程序，如果想要0.75s亮，0.25s灭直接修改MCNT处就行。</p>
+<h2 id="让LED灯按照亮0-25秒，灭0-5秒，亮0-75秒，灭1秒的状态循环亮灭"><a href="#让LED灯按照亮0-25秒，灭0-5秒，亮0-75秒，灭1秒的状态循环亮灭" class="headerlink" title="让LED灯按照亮0.25秒，灭0.5秒，亮0.75秒，灭1秒的状态循环亮灭"></a>让LED灯按照亮0.25秒，灭0.5秒，亮0.75秒，灭1秒的状态循环亮灭</h2><pre><code>module led_flash_1(
+    Clk,
+    Reset_n,
+    Led
+    );
+    
+    input Clk;
+    input Reset_n;
+    output reg Led;
+    
+    reg [26:0]counter;
+    
+    parameter MCNT = 125000000;
+    
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    counter &lt;= 0;
+else if(counter == MCNT - 1)
+    counter &lt;= 0;
+else 
+    counter &lt;= counter + 1&#39;b1;
+    
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    Led &lt;= 1;
+else if(counter == MCNT/10 - 1)
+    Led &lt;= 0;
+else if(counter == MCNT*3/10- 1)
+    Led &lt;= 1;
+else if(counter == MCNT*6/10- 1)
+    Led &lt;= 0;
+else if(counter == MCNT - 1)
+    Led &lt;= 1;
+
+endmodule
+</code></pre>
+<h2 id="让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0-25秒为一个变化周期，8个变化状态为1个循环"><a href="#让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0-25秒为一个变化周期，8个变化状态为1个循环" class="headerlink" title="让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0.25秒为一个变化周期，8个变化状态为1个循环"></a>让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0.25秒为一个变化周期，8个变化状态为1个循环</h2><p>2秒为一个循环周期，有一个指定的端口由用户指定亮灭模式  </p>
+<pre><code>module led_flash_2(
+    Clk,
+    Reset_n,
+    Ctrl,
+    Led
+    );
+    
+    input Clk;
+    input Reset_n;
+    input [7:0] Ctrl;
+    output reg Led;
+    
+    reg [26:0]counter;
+    
+    parameter MCNT = 50000000;
+    
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    counter &lt;= 0;
+else if(counter == MCNT - 1)
+    counter &lt;= 0;
+else 
+    counter &lt;= counter + 1&#39;b1;
+    
+//always@(posedge Clk or negedge Reset_n)
+//if(!Reset_n)
+//	Led &lt;= 0;
+//else if(counter == MCNT/8 - 1)
+//	Led &lt;= Ctrl[0];
+//else if(counter == MCNT/4 - 1)
+//	Led &lt;= Ctrl[1];
+//else if(counter == MCNT*3/8 - 1)
+//	Led &lt;= Ctrl[2];
+//else if(counter == MCNT*4/8 - 1)
+//	Led &lt;= Ctrl[3];
+//else if(counter == MCNT*5/8 - 1)
+//	Led &lt;= Ctrl[4];
+//else if(counter == MCNT*6/8 - 1)
+//	Led &lt;= Ctrl[5];
+//else if(counter == MCNT*7/8 - 1)
+//	Led &lt;= Ctrl[6];
+//else if(counter == MCNT - 1)
+//	Led &lt;= Ctrl[7];	
+
+always@(posedge Clk or negedge Reset_n)
+if(!Reset_n)
+    Led &lt;= 0;
+else case(counter)
+    MCNT/8 - 1:Led &lt;= Ctrl[0];
+    MCNT*2/8 - 1:Led &lt;= Ctrl[1];
+    MCNT*3/8 - 1:Led &lt;= Ctrl[2];
+    MCNT*4/8 - 1:Led &lt;= Ctrl[3];
+    MCNT*5/8 - 1:Led &lt;= Ctrl[4];
+    MCNT*6/8 - 1:Led &lt;= Ctrl[5];
+    MCNT*7/8 - 1:Led &lt;= Ctrl[6];
+    MCNT - 1:Led &lt;= Ctrl[7];
+    default:Led &lt;= Led;
+endcase
+    
+endmodule
+</code></pre>
+<p>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;  </p>
+<pre><code>`timescale 1ns / 1ns
+
+
+module led_flash_tb(
+
+    );
+    
+    reg Clk;
+    reg Reset_n;
+    reg [7:0]Ctrl;
+    wire Led;
+    
+    led_flash_2 
+    #(
+        .MCNT(100000000)
+      )
+      led_flash_0(
+    
+        .Clk(Clk),
+        .Reset_n(Reset_n),
+        .Ctrl(Ctrl)
+        .Led(Led)
+    );
+    
+    initial Clk = 1;
+    always #10 Clk = !Clk;
+    
+    initial begin
+       Reset_n = 0;
+       #201;
+       Reset_n = 1;
+       Ctrl = 8&#39;b1000_0111;
+       #2000000000;
+       $stop;
+    end
+
+
+endmodule
+</code></pre>
+<h2 id="让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择"><a href="#让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择" class="headerlink" title="让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择"></a>让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择</h2><p>思路：设置一个计数器用于每个状态的计时（这个计时由用户自己定义），设置另一个3位计数器用于一个循环，该计数器在另一个计数器计数达到用户设定的时间时自加1。这个3位计数器不需要清零，在加到111时，会自己清零。 </p>
+<pre><code>module led_flash_3(
+    Clk,
+    Reset_n,
+    Ctrl,
+    Time,
+    Led
+    );
+    
+    input Clk;
+    input Reset_n;
+    input [7:0] Ctrl;
+    input [31:0] Time;
+    output reg Led;
+    
+    reg [31:0]counter;
+    
+
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter &lt;= 0;
+    else if(counter == Time - 1)
+        counter &lt;= 0;
+    else 
+        counter &lt;= counter + 1&#39;b1;
+        
+    reg [2:0]counter2;
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter2 &lt;= 0;
+    else if(counter ==Time - 1)
+        counter2 = counter2 + 1&#39;b1;
+    
+
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 0;
+    else case(counter2)
+        0:Led &lt;= Ctrl[0];
+        1:Led &lt;= Ctrl[1];
+        2:Led &lt;= Ctrl[2];
+        3:Led &lt;= Ctrl[3];
+        4:Led &lt;= Ctrl[4];
+        5:Led &lt;= Ctrl[5];
+        6:Led &lt;= Ctrl[6];
+        7:Led &lt;= Ctrl[7];
+        default:Led &lt;= Led;
+    endcase
+    
+endmodule  
+</code></pre>
+<h2 id="让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；"><a href="#让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；" class="headerlink" title="让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；"></a>让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；</h2><pre><code>module led_flash_4(
+    Clk,
+    Reset_n,
+    CtrlA,
+    CtrlB,
+    Time,
+    Led
+    );
+    
+    
+    input Clk;
+    input Reset_n;
+    input [7:0] Ctrl;
+    input [31:0] Time;
+    output reg [1:0]Led;
+    
+    reg [31:0]counter;
+    
+
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter &lt;= 0;
+    else if(counter == Time - 1)
+        counter &lt;= 0;
+    else 
+        counter &lt;= counter + 1&#39;b1;
+        
+    reg [2:0]counter2;
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter2 &lt;= 0;
+    else if(counter ==Time - 1)
+        counter2 = counter2 + 1&#39;b1;
+    
+
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 0;
+    else case(counter2)
+        0:begin Led &lt;= CtrlA[0];Led[1] &lt;= CtrlB[0];end
+        1:Led &lt;= Ctrl[1];
+        2:Led &lt;= Ctrl[2];
+        3:Led &lt;= Ctrl[3];
+        4:Led &lt;= Ctrl[4];
+        5:Led &lt;= Ctrl[5];
+        6:Led &lt;= Ctrl[6];
+        7:Led &lt;= Ctrl[7];
+        default:Led &lt;= Led;
+    endcase
+    
+endmodule  
+</code></pre>
+<p>熟悉控制方法，可以控制多个信号  </p>
+<h2 id="每隔10ms-让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us"><a href="#每隔10ms-让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us" class="headerlink" title="每隔10ms,让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us)"></a>每隔10ms,让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us)</h2><p>EN &#x3D; 1：counter计数<br>EN拉低的条件时8个翻转状态结束之时  </p>
+<pre><code>module led_flash_3(
+    Clk,
+    Reset_n,
+    Ctrl,
+    Time,
+    Led
+    );
+    
+    input Clk;
+    input Reset_n;
+    input [7:0] Ctrl;
+    input [31:0] Time;
+    output reg Led;
+    
+    
+    reg [31:0]counter;
+    reg EN;
+    
+    reg [18:0]counter0;
+    
+
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n) //10ms定时器
+        counter0 &lt;= 0;
+    else if(counter0 == 500000 - 1)
+        counter0 &lt;= 0;
+    else 
+        counter0 &lt;= counter0 + 1&#39;b1;  
+    
+    
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n) //使能端：使开始计时
+        EN &lt;= 0;
+    else if(counter == 0)
+        EN &lt;= 1;
+    else if(counter2 == 7) &amp;&amp; (counter == Time - 1))
+        EN &lt;= 0;  
+    
+
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter &lt;= 0;
+    else if(EN)begin
+        if (counter == Time - 1)
+            counter &lt;= 0
+        else
+            counter = counter + 1&#39;b1;
+    end
+    else
+        counter &lt;= 0 
+    
+    
+    reg [2:0]counter2;
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        counter2 &lt;= 0;
+    else if(EN)begin
+        if (counter == Time - 1)
+            counter2 = counter2 + 1&#39;b1;
+    end
+    else
+        counter2 &lt;= 0 
+    
+
+    always@(posedge Clk or negedge Reset_n)
+    if(!Reset_n)
+        Led &lt;= 0;
+    else case(counter2)
+        0:Led &lt;= Ctrl[0];
+        1:Led &lt;= Ctrl[1];
+        2:Led &lt;= Ctrl[2];
+        3:Led &lt;= Ctrl[3];
+        4:Led &lt;= Ctrl[4];
+        5:Led &lt;= Ctrl[5];
+        6:Led &lt;= Ctrl[6];
+        7:Led &lt;= Ctrl[7];
+        default:Led &lt;= Led;
+    endcase
+    
+endmodule   
+</code></pre>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/FPGA/" rel="tag"># FPGA</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/11/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A05/" rel="prev" title="中科院实习—— Verilog语言重点内容解析">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— Verilog语言重点内容解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/07/12/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AE%9E%E4%B9%A07/" rel="next" title="中科院实习—— 知识补充">
+      中科院实习—— 知识补充 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A98%E4%B8%AALED%E5%88%86%E5%88%AB%E4%BB%A5%E4%B8%8D%E5%90%8C%E7%9A%84%E9%A2%91%E7%8E%87%E9%97%AA%E7%83%81"><span class="nav-number">1.</span> <span class="nav-text">让8个LED分别以不同的频率闪烁</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%8E%E8%AE%A1%E6%95%B0%E5%99%A8%E5%88%B0%E5%8F%AF%E6%8E%A7%E7%BA%BF%E6%80%A7%E5%BA%8F%E5%88%97%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">从计数器到可控线性序列机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9LED%E7%81%AF%E6%8C%89%E7%85%A7%E4%BA%AE0-25%E7%A7%92%EF%BC%8C%E7%81%AD0-75%E7%A7%92%E7%9A%84%E7%8A%B6%E6%80%81%E5%BE%AA%E7%8E%AF%E4%BA%AE%E7%81%AD"><span class="nav-number">2.1.</span> <span class="nav-text">让LED灯按照亮0.25秒，灭0.75秒的状态循环亮灭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9LED%E7%81%AF%E6%8C%89%E7%85%A7%E4%BA%AE0-25%E7%A7%92%EF%BC%8C%E7%81%AD0-5%E7%A7%92%EF%BC%8C%E4%BA%AE0-75%E7%A7%92%EF%BC%8C%E7%81%AD1%E7%A7%92%E7%9A%84%E7%8A%B6%E6%80%81%E5%BE%AA%E7%8E%AF%E4%BA%AE%E7%81%AD"><span class="nav-number">2.2.</span> <span class="nav-text">让LED灯按照亮0.25秒，灭0.5秒，亮0.75秒，灭1秒的状态循环亮灭</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9LED%E7%81%AF%E6%8C%89%E7%85%A7%E6%8C%87%E5%AE%9A%E7%9A%84%E4%BA%AE%E7%81%AD%E6%A8%A1%E5%BC%8F%E4%BA%AE%E7%81%AD%EF%BC%8C%E4%BA%AE%E7%81%AD%E6%A8%A1%E5%BC%8F%E6%9C%AA%E7%9F%A5%EF%BC%8C%E7%94%B1%E7%94%A8%E6%88%B7%E9%9A%8F%E6%9C%BA%E6%8C%87%E5%AE%9A%E3%80%82%E4%BB%A50-25%E7%A7%92%E4%B8%BA%E4%B8%80%E4%B8%AA%E5%8F%98%E5%8C%96%E5%91%A8%E6%9C%9F%EF%BC%8C8%E4%B8%AA%E5%8F%98%E5%8C%96%E7%8A%B6%E6%80%81%E4%B8%BA1%E4%B8%AA%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.3.</span> <span class="nav-text">让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。以0.25秒为一个变化周期，8个变化状态为1个循环</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9LED%E7%81%AF%E6%8C%89%E7%85%A7%E6%8C%87%E5%AE%9A%E7%9A%84%E4%BA%AE%E7%81%AD%E6%A8%A1%E5%BC%8F%E4%BA%AE%E7%81%AD%EF%BC%8C%E4%BA%AE%E7%81%AD%E6%A8%A1%E5%BC%8F%E6%9C%AA%E7%9F%A5%EF%BC%8C%E7%94%B1%E7%94%A8%E6%88%B7%E9%9A%8F%E6%9C%BA%E6%8C%87%E5%AE%9A%E3%80%828%E4%B8%AA%E5%8F%98%E5%8C%96%E7%8A%B6%E6%80%81%E4%B8%BA%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%EF%BC%8C%E6%AF%8F%E4%B8%AA%E5%8F%98%E5%8C%96%E7%8A%B6%E6%80%81%E7%9A%84%E6%97%B6%E9%97%B4%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%A0%B9%E6%8D%AE%E4%B8%8D%E5%90%8C%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E9%80%89%E6%8B%A9"><span class="nav-number">2.4.</span> <span class="nav-text">让LED灯按照指定的亮灭模式亮灭，亮灭模式未知，由用户随机指定。8个变化状态为一个循环，每个变化状态的时间值可以根据不同的应用场景选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9%E5%A4%9A%E4%B8%AALED%E7%81%AF%E6%8C%89%E7%85%A7%E8%AE%BE%E7%BD%AE%E7%9A%84%E6%A8%A1%E5%BC%8F%E5%90%84%E8%87%AA%E5%9C%A8%E4%B8%80%E4%B8%AA%E5%8F%98%E5%8C%96%E5%BE%AA%E7%8E%AF%E5%86%85%E7%8B%AC%E7%AB%8B%E4%BA%AE%E7%81%AD%E5%8F%98%E5%8C%96%EF%BC%9B"><span class="nav-number">2.5.</span> <span class="nav-text">让多个LED灯按照设置的模式各自在一个变化循环内独立亮灭变化；</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AF%8F%E9%9A%9410ms-%E8%AE%A9LED%E7%81%AF%E7%9A%84%E4%B8%80%E4%B8%AA8%E7%8A%B6%E6%80%81%E5%BE%AA%E7%8E%AF%E6%89%A7%E8%A1%8C%E4%B8%80%E6%AC%A1%EF%BC%88%E6%AF%8F%E4%B8%AA%E7%8A%B6%E6%80%81%E7%9A%84%E5%8F%98%E5%8C%96%E6%97%B6%E9%97%B4%E5%80%BC%E5%B0%8F%E4%B8%80%E7%82%B9%EF%BC%8C%E6%96%B9%E4%BE%BF%E6%B5%8B%E8%AF%95%EF%BC%8C%E6%AF%94%E5%A6%82%E8%AE%BE%E7%BD%AE%E4%B8%BA10us"><span class="nav-number">2.6.</span> <span class="nav-text">每隔10ms,让LED灯的一个8状态循环执行一次（每个状态的变化时间值小一点，方便测试，比如设置为10us)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.2k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
