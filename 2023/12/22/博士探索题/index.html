@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="该篇是在申请南航博士时，布置的一个探索题。由于第一次接触遥感图像，我只是机械的完成了每题，没有注重题与题之间的关系，尚未达到老师预期。本来想丢掉，但是还是上传一下吧。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博士探索题">
+<meta property="og:url" content="http://example.com/2023/12/22/%E5%8D%9A%E5%A3%AB%E6%8E%A2%E7%B4%A2%E9%A2%98/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="该篇是在申请南航博士时，布置的一个探索题。由于第一次接触遥感图像，我只是机械的完成了每题，没有注重题与题之间的关系，尚未达到老师预期。本来想丢掉，但是还是上传一下吧。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E6%95%B0%E6%8D%AE%E6%9E%84%E6%88%90.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%8E%9F%E5%9B%BE.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E8%A3%81%E5%89%AA%E5%9B%BE.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E4%B8%AD%E5%BF%83%E5%9B%BE.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\432%E7%BB%84%E5%90%88.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%85%B6%E4%BB%96%E7%BB%84%E5%90%88.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\NDVI.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E6%9B%B4%E5%A4%9A%E6%8C%87%E6%95%B0.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\NDIV2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\NDVI3.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\NDVI%E5%B7%AE%E5%80%BC.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E6%90%9C%E7%B4%A2ID.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\3D.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\2d%E4%B8%8E%E5%AF%B9%E6%AF%94.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E8%BE%90%E5%B0%84%E6%A0%87%E5%AE%9A.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%8F%8D%E5%B0%84%E7%8E%87%E6%A0%87%E5%AE%9A.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E4%BA%AE%E5%BA%A6%E6%B8%A9%E5%BA%A6%E6%A0%87%E5%AE%9A.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%8F%98%E6%8D%A2%E5%89%8D%E5%9B%BE%E7%89%87.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E8%A7%86%E8%A7%89%E5%8F%98%E6%8D%A2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%8F%98%E6%8D%A2%E7%9F%A9%E9%98%B5%E6%B1%87%E6%80%BB.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E4%BB%BF%E5%B0%84%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%9C%E5%9B%BE.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E9%80%8F%E8%A7%86%E5%8F%98%E6%8D%A2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E9%80%8F%E8%A7%86%E5%8F%98%E6%8D%A2%E5%8C%BA%E5%88%AB.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E9%80%8F%E8%A7%86%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E9%87%8D%E5%B0%84%E5%8F%98%E6%8D%A2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%BC%B9%E6%80%A7%E5%8F%98%E6%8D%A2.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E5%BC%B9%E6%80%A7%E5%8F%98%E6%8D%A2%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E9%80%8F%E8%A7%86%E5%8F%98%E6%8D%A2_6.png">
+<meta property="article:published_time" content="2023-12-22T04:00:00.000Z">
+<meta property="article:modified_time" content="2023-12-22T07:21:14.769Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="图像处理">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="d:\YANJIUSHENG\%E5%8D%97%E8%88%AA%E5%8D%9A%E5%A3%AB%E7%94%B3%E8%AF%B7%E6%8E%A2%E7%B4%A2%E9%A2%98\picture\%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90.png">
+
+<link rel="canonical" href="http://example.com/2023/12/22/%E5%8D%9A%E5%A3%AB%E6%8E%A2%E7%B4%A2%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>博士探索题 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/22/%E5%8D%9A%E5%A3%AB%E6%8E%A2%E7%B4%A2%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          博士探索题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2023-12-22 12:00:00 / 修改时间：15:21:14" itemprop="dateCreated datePublished" datetime="2023-12-22T12:00:00+08:00">2023-12-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%81%A5%E6%84%9F%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">遥感图像处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>该篇是在申请南航博士时，布置的一个探索题。由于第一次接触遥感图像，我只是机械的完成了每题，没有注重题与题之间的关系，尚未达到老师预期。本来想丢掉，但是还是上传一下吧。</p>
+<span id="more"></span>
+
+<h1 id="博士探索题"><a href="#博士探索题" class="headerlink" title="博士探索题"></a>博士探索题</h1><h2 id="题1-通过网络等手段找到任意某颗遥感卫星的一幅-图像数据和辅助数据-，完成以下工作："><a href="#题1-通过网络等手段找到任意某颗遥感卫星的一幅-图像数据和辅助数据-，完成以下工作：" class="headerlink" title="题1 通过网络等手段找到任意某颗遥感卫星的一幅**图像数据和辅助数据**，完成以下工作："></a>题1 通过网络等手段找到任意某颗遥感卫星的一幅**<u>图像数据</u>和<u>辅助数据</u>**，完成以下工作：</h2><p>（辅助数据是指在主体数据处理中具有辅助作用的数据。辅助数据不构成数据处理的主要实体，但是如果在数据处理过程中加入辅助数据，将有助于提高数据处理精度。在遥感数据输入地理信息系统的过程中，需要对遥感数据进行有效地分类。在分类过程中借助地理信息系统中的辅助数据（如该地区高程数据、地面坡度数据、地表坡向数据及土地利用数据等）的支持，可改善遥感数据的分类精度，以达到地理信息系统中数据处理的精度要求）</p>
+<h3 id="1-对图像数据和辅助数据进行解译，解释说明图像的各个参数含义（编程完成）"><a href="#1-对图像数据和辅助数据进行解译，解释说明图像的各个参数含义（编程完成）" class="headerlink" title="1.对图像数据和辅助数据进行解译，解释说明图像的各个参数含义（编程完成）"></a>1.对图像数据和辅助数据进行解译，解释说明图像的各个参数含义（编程完成）</h3><p>（解译：通过遥感图像所提供的各种识别目标的特征信息进行分析、推理和判断，最终达到识别目标或现象的目的。遥感图像解译可以说是遥感成像过程的逆过程，即从遥感对地面实况的模拟影响中提取遥感信息、反演地面原型的过程）</p>
+<h4 id="1-数据来源"><a href="#1-数据来源" class="headerlink" title="1).数据来源"></a>1).数据来源</h4><p><a target="_blank" rel="noopener" href="https://www.gscloud.cn/search"><a target="_blank" rel="noopener" href="https://www.gscloud.cn/search">地理空间数据云 (gscloud.cn)</a></a></p>
+<p>高级检索&gt;&gt;Landsat 8 OLI_TIRS 卫星数字产品&gt;&gt;设置搜索范围</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\数据来源.png" alt="数据来源"></p>
+<h4 id="2-数据解读（下述内容部分参考【Landsat-8】遥感影像文件内容及命名规则-landsat8影像命名规则-Uyoin的博客-CSDN博客"><a href="#2-数据解读（下述内容部分参考【Landsat-8】遥感影像文件内容及命名规则-landsat8影像命名规则-Uyoin的博客-CSDN博客" class="headerlink" title="2).数据解读（下述内容部分参考【Landsat 8】遥感影像文件内容及命名规则_landsat8影像命名规则_Uyoin的博客-CSDN博客"></a>2).数据解读（下述内容部分参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/Futurscope/article/details/119452436">【Landsat 8】遥感影像文件内容及命名规则_landsat8影像命名规则_Uyoin的博客-CSDN博客</a></h4><h5 id="a-文件构成"><a href="#a-文件构成" class="headerlink" title="a. 文件构成"></a>a. 文件构成</h5><p><strong>- 压缩包名称：LC81180382020357LGN00.tar</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">压缩包命名分段</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">LC8</td>
+<td align="center">Landsat-8 卫星</td>
+</tr>
+<tr>
+<td align="center">118</td>
+<td align="center">WRS Path</td>
+</tr>
+<tr>
+<td align="center">038</td>
+<td align="center">WRS Row</td>
+</tr>
+<tr>
+<td align="center">2020</td>
+<td align="center">影像获取年份</td>
+</tr>
+<tr>
+<td align="center">357</td>
+<td align="center">影像获取日期，1月1日起累计</td>
+</tr>
+<tr>
+<td align="center">LGN</td>
+<td align="center">接站代码</td>
+</tr>
+<tr>
+<td align="center">00</td>
+<td align="center">产品级别</td>
+</tr>
+<tr>
+<td align="center">.tar</td>
+<td align="center">压缩格式后缀</td>
+</tr>
+</tbody></table>
+<p>（WRS（Worldwide Reference System）：是Landsat卫星采用的全球参考系统,用以区分全球各区域对应的Landsat系列卫星影像编号,其用“Path”与“Row”两个数值确定影像的编号与位置）  </p>
+<p><strong>- 文件包含：2个txt文档与11个tif文件(命名方LXSS_LLLL_PPPRRR_YYYYMMDD_yyyymmdd_CC_TX_BB）</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\数据构成.png" alt="数据构成">   </p>
+<table>
+<thead>
+<tr>
+<th align="center">子文件命名分段</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">L</td>
+<td align="center">Landsat 卫星</td>
+</tr>
+<tr>
+<td align="center">X</td>
+<td align="center">传感器（’C’&#x3D; OLI与TIRS组合；’O’只有OLI；’T’只有TIRS;’ E’&#x3D;ETM+；’T’&#x3D;TM;’M’&#x3D;MSS）</td>
+</tr>
+<tr>
+<td align="center">SS</td>
+<td align="center">卫星编号，’08’指Landsat-8 卫星</td>
+</tr>
+<tr>
+<td align="center">LLL</td>
+<td align="center">处理等级</td>
+</tr>
+<tr>
+<td align="center">PPP</td>
+<td align="center">WRS Path</td>
+</tr>
+<tr>
+<td align="center">RRR</td>
+<td align="center">WRS Row</td>
+</tr>
+<tr>
+<td align="center">YYYYMMDD</td>
+<td align="center">影像获取年月日</td>
+</tr>
+<tr>
+<td align="center">yyyymmdd</td>
+<td align="center">影像处理年月日</td>
+</tr>
+<tr>
+<td align="center">CC</td>
+<td align="center">编码</td>
+</tr>
+<tr>
+<td align="center">TX</td>
+<td align="center">‘RT’实时层;’T1’第一层;’T2’第二次</td>
+</tr>
+<tr>
+<td align="center">BB</td>
+<td align="center">ANG:投影信息;MTL:影像元数据；B1~B11:不同波段遥感影像；BQA：影像质量信息</td>
+</tr>
+</tbody></table>
+<h5 id="b-文件解释"><a href="#b-文件解释" class="headerlink" title="b. 文件解释"></a>b. 文件解释</h5><p><strong>-TXT文件（MTL文件）包含以下信息：</strong></p>
+<p>文件元数据</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">来源 (<code>ORIGIN</code>)</td>
+<td align="center">数据来源。</td>
+</tr>
+<tr>
+<td align="center">请求ID (<code>REQUEST_ID</code>)</td>
+<td align="center">数据请求的唯一标识符。</td>
+</tr>
+<tr>
+<td align="center">Landsat场景ID (<code>LANDSAT_SCENE_ID</code>)</td>
+<td align="center">图像的唯一标识符。</td>
+</tr>
+<tr>
+<td align="center">Landsat产品ID (<code>LANDSAT_PRODUCT_ID</code>)</td>
+<td align="center">产品的独特标识。</td>
+</tr>
+<tr>
+<td align="center">收集编号 (<code>COLLECTION_NUMBER</code>)</td>
+<td align="center">数据收集批次的编号</td>
+</tr>
+<tr>
+<td align="center">文件日期 (<code>FILE_DATE</code>)</td>
+<td align="center">数据文件的生成日期</td>
+</tr>
+<tr>
+<td align="center">站点ID (<code>STATION_ID</code>)</td>
+<td align="center">接收遥感数据的地面站标识</td>
+</tr>
+<tr>
+<td align="center">处理软件版本 (<code>PROCESSING_SOFTWARE_VERSION</code>)</td>
+<td align="center">处理数据的软件版本</td>
+</tr>
+</tbody></table>
+<p>产品元数据</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">数据类型 (<code>DATA_TYPE</code>)</td>
+<td align="center">数据的类型(数据处理的级别）：本文件为Level 1 Terrain Corrected Product（L1TP)，即第一级地形校正产品。这意味着图像已经经过了地形校正，以校正地表地形的影响。这种类型的数据对于大多数地表特征分析和应用来说是最有用的，因为它提供了准确的地理位置信息。</td>
+</tr>
+<tr>
+<td align="center">数据类别 (<code>COLLECTION_CATEGORY</code>）</td>
+<td align="center">数据质量等级：本文件为T1，最高质量的数据类别，适用于科学和应用目的。</td>
+</tr>
+<tr>
+<td align="center">高程数据源 (<code>ELEVATION_SOURCE</code>)</td>
+<td align="center">地形校正过程中的高程数据源：本文为GLS2000，全球地表覆盖数据集，提供地表的高程信息，提高数据的几何精度和可靠性。</td>
+</tr>
+<tr>
+<td align="center">输出格式 (<code>OUTPUT_FORMAT</code>)</td>
+<td align="center">文件输出格式：”GEOTIFF”。</td>
+</tr>
+<tr>
+<td align="center">航天器ID(<code>SPACECRAFT_ID</code>)</td>
+<td align="center">航天器编号：”LANDSAT_8”</td>
+</tr>
+<tr>
+<td align="center">传感器ID (<code>SENSOR_ID</code>)</td>
+<td align="center">传感器型号：”OLI_TIRS”。(OLI是一种高级成像仪器，设计用于捕获地表图像；TIRS是用于捕捉地表温度或热特性的热红外传感器)</td>
+</tr>
+<tr>
+<td align="center">WRS路径和行 (<code>WRS_PATH</code>, <code>WRS_ROW</code>)</td>
+<td align="center">用于确定影像编号与位置，遥感卫星轨道上的路径为path（东西）,遥感卫星在路径上的行为row（南北）：（118，38）</td>
+</tr>
+<tr>
+<td align="center">观测角度（<code>NADIR_OFFNADIR</code>）</td>
+<td align="center">本文件为NADIR。(NADIR 观测角度为传感器以垂直地球表面方向观测地面，有助于测量地面特征。OFFNADI为有一定倾斜角度，提供更广阔覆盖范围)</td>
+</tr>
+<tr>
+<td align="center">目标观测区域(<code>TARGET_WRS_PATH，TARGET_WRS_ROW</code></td>
+<td align="center">（118，38）</td>
+</tr>
+<tr>
+<td align="center">获取日期 (<code>DATE_ACQUIRED</code>)</td>
+<td align="center">2020-12-22</td>
+</tr>
+<tr>
+<td align="center">场景中心时间 (<code>SCENE_CENTER_TIME</code>)</td>
+<td align="center">“02:25:20.1010799Z”</td>
+</tr>
+<tr>
+<td align="center">角点坐标 (<code>CORNER_*_LAT_PRODUCT</code>, <code>CORNER_*_LON_PRODUCT</code>)</td>
+<td align="center">（32.78382，120.68188），（32.80518，123.15168），（30.66079，120.73416），（30.68047，123.14825）</td>
+</tr>
+<tr>
+<td align="center">在投影坐标系中的坐标(<code>CORNER_*_PROJECTION_X_PRODUCT，CORNER_*_PROJECTION_Y_PRODUCT</code>）</td>
+<td align="center">（282900，3629700），（514200，3629700），（282900，3394200），（514200，3394200）</td>
+</tr>
+<tr>
+<td align="center">全色波段图像的高度与宽度(<code>PANCHROMATIC_LINES，PANCHROMATIC_SAMPLES</code>)</td>
+<td align="center">（15701，15421）</td>
+</tr>
+<tr>
+<td align="center">反射波段图像高度与宽度(<code>REFLECTIVE_LINES，REFLECTIVE_SAMPLES</code>)</td>
+<td align="center">（7851，7711）</td>
+</tr>
+<tr>
+<td align="center">热红外波段图像高度与宽度(<code>THERMAL_LINES，THERMAL_SAMPLES</code>)</td>
+<td align="center">（7851，7711）</td>
+</tr>
+<tr>
+<td align="center">文件名称<code>FILE_NAME_BAND_1~11 ,FILE_NAME_BAND_QUALITY, ANGLE_COEFFICIENT_FILE_NAME, METADATA_FILE_NAME) </code></td>
+<td align="center">命名方式见2）a</td>
+</tr>
+<tr>
+<td align="center">标识文件元数据集信息(<code>CPF_NAME，BPF_NAME_OLI,BPF_NAME_TIRS,RLUT_FILE_NAME</code>)</td>
+<td align="center">校准参数名，生成产品的偏倚参数文件(BPF)的文件名（传感器：OLI与TIRS)，生成产品的响应线性化查找表。</td>
+</tr>
+</tbody></table>
+<p>图像元数据</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">云覆盖度(<code>CLOUD_COVER</code>)</td>
+<td align="center">图像中被云层覆盖的比例：0.61%</td>
+</tr>
+<tr>
+<td align="center">陆地上的云覆盖度(<code>CLOUD_COVER_LAND</code>)</td>
+<td align="center">陆地地表被云层覆盖的比例:1.26%</td>
+</tr>
+<tr>
+<td align="center">OLI传感器图像质量评分(<code>IMAGE_QUALITY_OLI</code>)</td>
+<td align="center">OLI波段的图像质量评估:9(受云覆盖、大气干扰、传感器问题等影响等级通常由1到10，1最低)</td>
+</tr>
+<tr>
+<td align="center">TIRS传感器图像质量评分(<code>IMAGE_QUALITY_TIRS</code>)</td>
+<td align="center">TIRS波段的图像质量评估:9</td>
+</tr>
+<tr>
+<td align="center">TIRS传感器扫描镜模型(<code>IMAGE_QUALITY_TIRS</code>)</td>
+<td align="center">TIRS扫描镜的模型:FINAL(通过改进、校准确定的最终版本)</td>
+</tr>
+<tr>
+<td align="center">TIRS传感器扫描镜位置状态(<code>TIRS_SSM_POSITION_STATUS</code>)</td>
+<td align="center">ESTIMATED(表示估算得到)</td>
+</tr>
+<tr>
+<td align="center">TIRS传感器漂移光矫正源(<code>TIRS_STRAY_LIGHT_CORRECTION_SOURCE</code>)</td>
+<td align="center">TIRS漂移光矫正的数据源:TIRS</td>
+</tr>
+<tr>
+<td align="center">卫星的滚转角度(<code>ROLL_ANGLE</code>)</td>
+<td align="center">卫星相对于参考轨道的滚转角度:-0.001</td>
+</tr>
+<tr>
+<td align="center">太阳方位角(<code>SUN_AZIMUTH</code>)</td>
+<td align="center">太阳在地平面上的方向：156.98570422</td>
+</tr>
+<tr>
+<td align="center">太阳高度角(<code>SUN_ELEVATION</code>)</td>
+<td align="center">太阳位于地平面上的高度：31.14958435</td>
+</tr>
+<tr>
+<td align="center">地球到太阳的距离(<code>EARTH_SUN_DISTANCE</code>)</td>
+<td align="center">地球与太阳之间的平均距离：0.9836681</td>
+</tr>
+<tr>
+<td align="center">各个波段的饱和度(<code>ATURATION_BAND_1~SATURATION_BAND_9</code>)</td>
+<td align="center">对应波段是否饱和。”Y” 表示饱和，”N” 表示未饱和。</td>
+</tr>
+<tr>
+<td align="center">地面控制点版本(<code>GROUND_CONTROL_POINTS_VERSION</code>)</td>
+<td align="center">地面控制点的数据版本：4</td>
+</tr>
+<tr>
+<td align="center">地面控制点模型(<code>GROUND_CONTROL_POINTS_MODEL</code>)</td>
+<td align="center">地面控制点的模型：102</td>
+</tr>
+<tr>
+<td align="center">几何校正均方根误差(<code>GEOMETRIC_RMSE_MODEL</code>)</td>
+<td align="center">几何校正模型的均方根误差：8.773</td>
+</tr>
+<tr>
+<td align="center">几何校正均方根误差的垂直和水平分量(<code>GEOMETRIC_RMSE_MODEL_Y,GEOMETRIC_RMSE_MODEL_X</code>)</td>
+<td align="center">几何校正均方根误差的垂直和水平分量：5.847&#x2F;6.541</td>
+</tr>
+<tr>
+<td align="center">验证地面控制点的数量(<code>GROUND_CONTROL_POINTS_VERIFY</code>)</td>
+<td align="center">验证地面控制点的数量：39</td>
+</tr>
+<tr>
+<td align="center">验证几何校正均方根误差(<code>GEOMETRIC_RMSE_VERIFY</code>)</td>
+<td align="center">验证几何校正均方根误差：9.995</td>
+</tr>
+<tr>
+<td align="center">OLI波段的截断方式(<code>TRUNCATION_OLI</code>)</td>
+<td align="center">UPPER（表示向上截断）</td>
+</tr>
+</tbody></table>
+<p>其他</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">最大-最小辐射值(<code>MIN_MAX_RADIANCE</code>)</td>
+<td align="center">1~11各个波段的辐射最大&#x2F;最小值</td>
+</tr>
+<tr>
+<td align="center">最大-最小反射率值(<code>MIN_MAX_REFLECTANCE</code>)</td>
+<td align="center">1~9各个波段的反射率最大&#x2F;最小值</td>
+</tr>
+<tr>
+<td align="center">最大-最小像素值(<code>MIN_MAX_PIXEL_VALUE</code>)</td>
+<td align="center">1-11各个波段的量化最大&#x2F;最小值</td>
+</tr>
+<tr>
+<td align="center">辐射&#x2F;反射系数(<code>RADIOMETRIC_RESCALING</code>)<em><strong>在后续的辐射定标和反射定标中需要使用</strong></em></td>
+<td align="center">1-11各个波段的辐射系数最大&#x2F;最小值（MULT:乘法因子；ADD：加法因子），1-9各个波段的反射率系数最大&#x2F;最小值（MULT:乘法因子；ADD：加法因子）（乘法因子和加法因子是用于将数字值转换为物理量（如辐射亮度或反射率）的参数，以确保遥感图像与地表特性的物理量之间的关系准确和可靠）</td>
+</tr>
+<tr>
+<td align="center">热红外定标参数(<code>TIRS_THERMAL_CONSTANTS</code>)<em><strong>在后续的温度定标中需要使用</strong></em></td>
+<td align="center">TIRS波段10&#x2F;11的热红外定标参数</td>
+</tr>
+<tr>
+<td align="center">地图投影类型(<code>MAP_PROJECTION</code>)</td>
+<td align="center">图像使用的地图投影类型：UTM（UTM：横向墨卡托投影。一种常用的地图投影方法，通常用于将地球上的表面划分为小块，每块都使用平面投影来表示）</td>
+</tr>
+<tr>
+<td align="center">大地基准(<code>DATUM</code>)</td>
+<td align="center">图像使用的大地基准：WGS84（坐标系统使用经度（Longitude，东西）和纬度（Latitude，南北）来表示地球上的位置，这个坐标系统的原点位于地球的质心，并且与地球的椭球体模型相对应）</td>
+</tr>
+<tr>
+<td align="center">椭球体(<code>ELLIPSOID</code>)</td>
+<td align="center">图像使用的椭球体：WGS84</td>
+</tr>
+<tr>
+<td align="center">UTM投影的区域代号(<code>UTM_ZONE</code>)</td>
+<td align="center">图像使用的UTM投影的区域：51（UTM划分的小块区域代号51）</td>
+</tr>
+<tr>
+<td align="center">不同波段的栅格单元大小(<code>GRID_CELL_SIZE_PANCHROMATIC，GRID_CELL_SIZE_REFLECTIVE，GRID_CELL_SIZE_THERMAL</code>)</td>
+<td align="center">不同波段的栅格单元大小：（15，30，30）</td>
+</tr>
+<tr>
+<td align="center">图像的方向(<code>ORIENTATION</code>)</td>
+<td align="center">图像的方向是否朝北：NORTH_UP</td>
+</tr>
+<tr>
+<td align="center">重采样选项(<code>RESAMPLING_OPTION</code>)</td>
+<td align="center">图像重采样时所采用的方法：CUBIC_CONVOLUTION。（三次样条插值是一种数学插值方法，它使用三次多项式来逼近像素之间的值。这种插值方法在重采样过程中考虑了像素之间的连续性和平滑性，因此通常能够产生较平滑的图像）</td>
+</tr>
+</tbody></table>
+<p><strong>-TXT文件（ANG文件）包含以下信息：</strong> </p>
+<p> 头文件</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Landsat卫星场景的唯一标识符(<code>LANDSAT_SCENE_ID</code>)</td>
+<td align="center">包含传感器、日期和路径&#x2F;行等信息：LC81180382020357LGN00</td>
+</tr>
+<tr>
+<td align="center">拍摄图像的卫星的标识符(<code>SPACECRAFT_ID</code>)</td>
+<td align="center">图像是由Landsat 8 卫星拍摄的LANDSAT_8</td>
+</tr>
+<tr>
+<td align="center">图像中的波段数量(<code>NUMBER_OF_BANDS</code>)</td>
+<td align="center">图像中包含的不同光谱波段的数量：11</td>
+</tr>
+<tr>
+<td align="center">图像中包含的波段列表(<code>BAND_LIST</code>)</td>
+<td align="center">列表形式展示波段</td>
+</tr>
+</tbody></table>
+<p>投影信息</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">地球椭球体的半长轴和半短轴的长度(<code>ELLIPSOID_AXES</code>)</td>
+<td align="center">(6378137.000000, 6356752.314200)</td>
+</tr>
+<tr>
+<td align="center">地图投影的类型(<code>MAP_PROJECTION</code>)</td>
+<td align="center">同MTL文件</td>
+</tr>
+<tr>
+<td align="center">投影的单位(<code>PROJECTION_UNITS</code>)</td>
+<td align="center">Meters(米)</td>
+</tr>
+<tr>
+<td align="center">地图投影所基于的大地基准(<code>DATUM</code>)</td>
+<td align="center">同MTL文件</td>
+</tr>
+<tr>
+<td align="center">UTM投影的区域代号(<code>UTM_ZONE</code>)</td>
+<td align="center">同MTL文件</td>
+</tr>
+<tr>
+<td align="center">地图投影的参数<code>PROJECTION_PARAMETERS</code>)</td>
+<td align="center">包括平移、旋转和缩放等。本文件全为0，表示没有变换。</td>
+</tr>
+<tr>
+<td align="center">四个角的地理坐标（经度和纬度）(<code>UL_CORNER，UR_CORNER，LL_CORNER，UR_CORNER</code>)</td>
+<td align="center">同MTL文件</td>
+</tr>
+</tbody></table>
+<p>星历数据（用于确定卫星的位置和运动轨迹）</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">星历数据的参考时刻的年份（<code>EPHEMERIS_EPOCH_YEAR</code>)</td>
+<td align="center">2020</td>
+</tr>
+<tr>
+<td align="center">星历数据的参考时刻的轮内第几天（<code>EPHEMERIS_EPOCH_DAY</code>)</td>
+<td align="center">357</td>
+</tr>
+<tr>
+<td align="center">星历数据的参考时刻的秒数（<code>EPHEMERIS_EPOCH_SECONDS</code>)</td>
+<td align="center">8693.716066</td>
+</tr>
+<tr>
+<td align="center">星历数据中包含的数据点数量（<code>NUMBER_OF_POINTS</code>)</td>
+<td align="center">55</td>
+</tr>
+<tr>
+<td align="center">一系列时间值，表示星历数据中的时间点（<code>EPHEMERIS_TIME</code>)</td>
+<td align="center">——（以秒为单位，从参考时刻开始逐步增加）</td>
+</tr>
+<tr>
+<td align="center">卫星的地心地固坐标系（ECEF坐标系）中的X、Y和Z坐标分量有关数据（<code>EPHEMERIS_ECEF_X、EPHEMERIS_ECEF_Y、EPHEMERIS_ECEF_Z</code>)</td>
+<td align="center">——（每个坐标对应于星历数据中的时间点，描述卫星在地球上的位置随时间的变化-）</td>
+</tr>
+</tbody></table>
+<p>（ECEF坐标系：以地球质心为原点，地球的自转轴为坐标系的Z轴，并与地球的自转一起固定。X轴指向本初子午线（通常是格林威治子午线）与赤道的交点，指向东方。y轴与x轴垂直，指向南方）</p>
+<p>太阳矢量（用于确定太阳在地球上不同时间和位置的方向和强度，其中的值基本与星历数据相同）</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">太阳矢量数据的参考时刻的年份（<code>SOLAR_EPOCH_YEAR</code>)</td>
+<td align="center">2020</td>
+</tr>
+<tr>
+<td align="center">太阳矢量数据的参考时刻的轮内第几天（<code>SOLAR_EPOCH_DAY</code>)</td>
+<td align="center">357</td>
+</tr>
+<tr>
+<td align="center">太阳矢量数据的参考时刻的秒数（<code>SOLAR_EPOCH_SECONDS</code>)</td>
+<td align="center">8693.716066</td>
+</tr>
+<tr>
+<td align="center">地球与太阳之间的平均距离（<code>EARTH_SUN_DISTANCE</code>)</td>
+<td align="center">0.98366810天文单位（天文单位是地球与太阳之间的平均距离，约等于1.496 × 10^8公里）</td>
+</tr>
+<tr>
+<td align="center">太阳矢量数据中包含的数据点数量（<code>NUMBER_OF_POINTS</code>)</td>
+<td align="center">55</td>
+</tr>
+<tr>
+<td align="center">一系列时间值，表示太阳矢量数据的时间点（<code>SOLAR_TIME</code>)</td>
+<td align="center">——（以秒为单位，从参考时刻开始逐步增加）</td>
+</tr>
+<tr>
+<td align="center">太阳的地心地固坐标系（ECEF坐标系）中的X、Y和Z坐标分量有关数据（<code>SOLAR_ECEF_X、SOLAR_ECEF_Y、SOLAR_ECEF_Z</code>)</td>
+<td align="center">——（每个坐标对应于太阳矢量数据中的时间点，描述太阳在地球上的位置随时间的变化）</td>
+</tr>
+</tbody></table>
+<p>各个波段的信息，以波段1为例</p>
+<table>
+<thead>
+<tr>
+<th align="center">命名</th>
+<th align="center">含义&#x2F;值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">传感器芯片组件数量（<code>BAND01_NUMBER_OF_SCAS</code>)</td>
+<td align="center">该频带内有14个独立的传感器芯片组件</td>
+</tr>
+<tr>
+<td align="center">L1T级别数据的行宽（<code>BAND01_NUM_L1T_LINES，BAND01_NUM_L1T_SAMPS</code>)</td>
+<td align="center">（7851，7711）</td>
+</tr>
+<tr>
+<td align="center">L1T级别图像的四个角点位置（<code>BAND01_L1T_IMAGE_CORNER_LINES，BAND01_L1T_IMAGE_CORNER_SAMPS</code>)</td>
+<td align="center">( 4.182939,  1476.124065,  7848.396736, 6352.972113)  ( 1523.595155,  7705.349531,  6176.008193,  0.230545)</td>
+</tr>
+<tr>
+<td align="center">像素尺寸（<code>BAND01_PIXEL_SIZE</code>)</td>
+<td align="center">30米&#x2F;像素</td>
+</tr>
+<tr>
+<td align="center">数据开始时间和每行的时间间隔（<code>BAND01_START_TIME，BAND01_LINE_TIME</code>)</td>
+<td align="center">10.495779&#x2F;0.004236000</td>
+</tr>
+<tr>
+<td align="center">平均高度（<code>BAND01_MEAN_HEIGHT</code>)</td>
+<td align="center">250米</td>
+</tr>
+<tr>
+<td align="center">L1R和L1T级别的平均行和列（<code>BAND01_MEAN_L1R_LINE_SAMP，BAND01_MEAN_L1T_LINE_SAMP</code>)</td>
+<td align="center">（3763.889, 3468.214）（3930.371, 3860.961）（L1R级别：L1R代表辐射校正级别，通常是遥感数据的第一处理级别；L1T级别：L1T代表地表校正级别，通常是遥感数据的第二处理级别）</td>
+</tr>
+<tr>
+<td align="center">卫星平均位置矢量（<code>BAND01_MEAN_SAT_VECTOR</code>)</td>
+<td align="center">(-0.002261318, -0.003964814,  0.996297368)</td>
+</tr>
+<tr>
+<td align="center">卫星各轴位置系数（<code>BAND01_SAT_*_NUM_COEF，BAND01_SAT_*_DEN_COEF</code>)</td>
+<td align="center">——————</td>
+</tr>
+<tr>
+<td align="center">太阳平均位置矢量（<code>BAND01_MEAN_SUN_VECTOR</code>)</td>
+<td align="center">( 0.334537344, -0.787571723,  0.517343518)</td>
+</tr>
+<tr>
+<td align="center">太阳各轴位置系数（<code>BAND01_SUN_*_NUM_COEF，BAND01_SUN_*_DEN_COEF</code>)</td>
+<td align="center">——————</td>
+</tr>
+<tr>
+<td align="center">通道中的SCA列表（<code>BAND01_SCA_LIST</code>)</td>
+<td align="center">一共14个。[1,2….14]。</td>
+</tr>
+<tr>
+<td align="center">各个传感器平均高度（<code>BAND01_*_MEAN_HEIGHT</code>)</td>
+<td align="center">——————</td>
+</tr>
+<tr>
+<td align="center">各个传感器的L1R和L1T级别的平均行和列（<code>BAND01_*_MEAN_L1R_LINE_SAMP，BAND01_*_MEAN_L1T_LINE_SAMP</code>)</td>
+<td align="center">——————</td>
+</tr>
+</tbody></table>
+<p><strong>-TIF文件包含以下信息：</strong>    </p>
+<p>TIF文件包含多个波段的信息。目的在于，不同地物对于不同波段的辐射具有不同的响应，通过捕捉多个波段的信息，<strong>可以更全面地理解地表的各种特征和属性</strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="center">波段名（Band Name）</th>
+<th align="center">波长范围 （Bandwidth）(µm)</th>
+<th align="center">空间分辨率（Resolution） (m)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Band 1 Coastal （海岸波段，可见）</td>
+<td align="center">0.43 – 0.45</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 2 Blue （蓝波段，可见）</td>
+<td align="center">0.45 – 0.51</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 3 Green （绿波段，可见）</td>
+<td align="center">0.53 – 0.59</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 4 Red （红波段）</td>
+<td align="center">0.64 – 0.67</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 5 NIR （近红外波段）</td>
+<td align="center">0.85 – 0.88</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 6 SWIR 1 （短波红外1）</td>
+<td align="center">1.57 – 1.65</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 7 SWIR 2 （短波红外2）</td>
+<td align="center">2.11 – 2.29</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 8 Pan （全色波段）</td>
+<td align="center">0.50 – 0.68</td>
+<td align="center">15</td>
+</tr>
+<tr>
+<td align="center">Band 9 Cirrus （卷云波段）</td>
+<td align="center">1.36 – 1.38</td>
+<td align="center">30</td>
+</tr>
+<tr>
+<td align="center">Band 10 TIRS 1 (热红外1)</td>
+<td align="center">10.6 – 11.19</td>
+<td align="center">100</td>
+</tr>
+<tr>
+<td align="center">Band 11 TIRS 2 (热红外2)</td>
+<td align="center">11.5 – 12.5</td>
+<td align="center">100</td>
+</tr>
+</tbody></table>
+<p>（波段1-9为陆地成像仪：Operational Land Imager (OLI)拍摄；波段10-11为热红外传感器Thermal Infrared (TIRS)拍摄）</p>
+<h4 id="3-解译过程-（下述部分内容参考Python-处理遥感影像入门-知乎-zhihu-com-）"><a href="#3-解译过程-（下述部分内容参考Python-处理遥感影像入门-知乎-zhihu-com-）" class="headerlink" title="3).解译过程  （下述部分内容参考Python 处理遥感影像入门 - 知乎 (zhihu.com)）"></a>3).解译过程  （下述部分内容参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/412865295">Python 处理遥感影像入门 - 知乎 (zhihu.com)</a>）</h4><h5 id="a-导入必须库"><a href="#a-导入必须库" class="headerlink" title="a. 导入必须库"></a><strong>a. 导入必须库</strong></h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rasterio  <span class="comment">#主要用于空间栅格/矢量数据处理</span></span><br><span class="line"><span class="keyword">import</span> rasterio.plot</span><br><span class="line"><span class="keyword">import</span> pyproj    <span class="comment">#用于坐标转换</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br></pre></td></tr></table></figure>
+
+<h5 id="b-打印文件信息"><a href="#b-打印文件信息" class="headerlink" title="b. 打印文件信息"></a><strong>b. 打印文件信息</strong></h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">image_path =<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B4.TIF&#x27;</span></span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(filepath) <span class="keyword">as</span> src:</span><br><span class="line">    <span class="built_in">print</span>(src.profile)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#x27;driver&#x27;: &#x27;GTiff&#x27;, &#x27;dtype&#x27;: &#x27;uint16&#x27;, &#x27;nodata&#x27;: None, &#x27;width&#x27;: 7711, &#x27;height&#x27;: 7851, &#x27;count&#x27;: 1, &#x27;crs&#x27;: CRS.from_epsg(32651), &#x27;transform&#x27;: Affine(30.0, 0.0, 282885.0,</span><br><span class="line">       0.0, -30.0, 3629715.0), &#x27;blockysize&#x27;: 1, &#x27;tiled&#x27;: False, &#x27;interleave&#x27;: &#x27;band&#x27;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>src.profile 包含了文件的元数据。我们得知文件格式为GeoTIFF，像元值为无符号整型，‘nodata’像元值为被定义，图片分辨率为7711乘以7851，数据仅包含一个波段，UTM坐标系，并且使用了仿射变换。数据存取以1*1的数据块为单元，存储在AWS中。</p>
+<h5 id="c-显示图像"><a href="#c-显示图像" class="headerlink" title="c. 显示图像"></a><strong>c. 显示图像</strong></h5><p>方案1：  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(image_path) <span class="keyword">as</span> src:</span><br><span class="line">    image = src.read(<span class="number">1</span>)  </span><br><span class="line"><span class="comment"># 图片显示</span></span><br><span class="line"><span class="comment">#plt.figure(figsize=(5, 5),dpi=300)</span></span><br><span class="line">plt.imshow(image)</span><br><span class="line">plt.title(<span class="string">&#x27;Overview - Band 4 &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(image.shape))</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;Digital Number (DN) Values&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\原图.png" alt="原图"></p>
+<p>受地球自转以及卫星轨道影响，上述图片中存在着无效数据0。图像数据原格式为uint16,无效区域值为NaN。为去掉四周无效数据，需要先将unit16转为float32，最后显示图像。代码及结果展示如下。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(image_path) <span class="keyword">as</span> src:</span><br><span class="line">    image = src.read(<span class="number">1</span>)  </span><br><span class="line">    image = image.astype(<span class="string">&#x27;f4&#x27;</span>) <span class="comment">#图片转数据格式，Nan转为0</span></span><br><span class="line">    image[image==<span class="number">0</span>] = np.nan <span class="comment">#去除边界为0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 图片显示</span></span><br><span class="line">plt.imshow(image)</span><br><span class="line">plt.title(<span class="string">&#x27;Overview - Band 4 &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(image.shape))</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;Digital Number (DN) Values&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\裁剪图.png" alt="裁剪图"></p>
+<p>方案2： </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;读取图像波段的子集&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_band_subset</span>(<span class="params">image_path, subset_size=(<span class="params"><span class="number">1000</span>, <span class="number">1000</span></span>)</span>):</span><br><span class="line">    <span class="keyword">with</span> rasterio.<span class="built_in">open</span>(image_path) <span class="keyword">as</span> src:</span><br><span class="line">        width, height = src.width, src.height <span class="comment">#获取宽与高</span></span><br><span class="line">        start_x, start_y = width // <span class="number">2</span> - subset_size[<span class="number">0</span>] // <span class="number">2</span>, height // <span class="number">2</span> - subset_size[<span class="number">1</span>] // <span class="number">2</span> <span class="comment">#取中心位置</span></span><br><span class="line">        window = rasterio.windows.Window(start_x, start_y, subset_size[<span class="number">0</span>], subset_size[<span class="number">1</span>])</span><br><span class="line">        band_subset = src.read(<span class="number">1</span>, window=window)</span><br><span class="line">    <span class="keyword">return</span> band_subset</span><br><span class="line"></span><br><span class="line">b4_band_subset = read_band_subset(image_path)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 展示图像和部分辅助数据的内容</span></span><br><span class="line">plt.imshow(b4_band_subset)</span><br><span class="line">plt.title(<span class="string">&#x27;Overview - Band 4 &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(b4_band_subset.shape))</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;Digital Number (DN) Values&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\中心图.png" alt="中心图"></p>
+<p>上图为选取了整张图片的中心区域并展示。</p>
+<h5 id="d-波段组合"><a href="#d-波段组合" class="headerlink" title="d. 波段组合"></a><strong>d. 波段组合</strong></h5><p>组合4、3、2波段（自然色）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#数据导入，使用上述读取中心区域的函数</span></span><br><span class="line">b4_band_subset = read_band_subset(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B4.TIF&#x27;</span>)</span><br><span class="line">b3_band_subset = read_band_subset(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B3.TIF&#x27;</span>)</span><br><span class="line">b2_band_subset = read_band_subset(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B2.TIF&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 标准化波段数据</span></span><br><span class="line">b4_band_subset= b4_band_subset / b4_band_subset.<span class="built_in">max</span>()</span><br><span class="line">b3_band_subset = b3_band_subset / b3_band_subset.<span class="built_in">max</span>()</span><br><span class="line">b2_band_subset = b2_band_subset/ b2_band_subset.<span class="built_in">max</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 组合成RGB图像</span></span><br><span class="line">rgb_image = np.dstack((b4_band_subset, b3_band_subset, b2_band_subset))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 展示彩色图像</span></span><br><span class="line">plt.imshow(rgb_image)</span><br><span class="line">plt.title(<span class="string">&#x27;RGB Composite Image (B4, B3, B2)&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\432组合.png" alt="432组合"></p>
+<p>此外还有一些波段组合展示如下图所示：  </p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\其他组合.png" alt="其他组合"></p>
+<h5 id="e-计算NDVI（归一化植被制数）"><a href="#e-计算NDVI（归一化植被制数）" class="headerlink" title="e. 计算NDVI（归一化植被制数）"></a><strong>e. 计算NDVI（归一化植被制数）</strong></h5><p>归一化植被指数（NDVI）通过测量近红外（植被强烈反射） 和红光（植被吸收）之间的差异来量化植被。NDVI的范围始终为-1至+1。但是每种类型的土地覆盖并没有明确的界限。  </p>
+<p>例如，当值为<strong>负数</strong>时，很可能是<strong>水</strong>。另一方面，如果NDVI值<strong>接近+1</strong>，则很有可能是<strong>茂密的绿叶</strong>。然而，当<strong>NDVI接近于零</strong>时，<strong>没有绿叶</strong>，甚至可能是<strong>城市化区域</strong>。<br>$$<br>NDVI &#x3D; (nir-red)&#x2F;(nir+red)<br>$$<br>其中，nir指近红外通道，red指红色通道 。与其他波长相比，健康的植被（叶绿素）反射更多的近红外（NIR）和绿光。但是它吸收更多的红色和蓝色光。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">read_band_subset</span>(<span class="params">image_path, subset_size=(<span class="params"><span class="number">1000</span>, <span class="number">1000</span></span>)</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;读取图像波段的子集&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">with</span> rasterio.<span class="built_in">open</span>(image_path) <span class="keyword">as</span> src:</span><br><span class="line">        <span class="comment"># 计算要读取的子集的位置</span></span><br><span class="line">        width, height = src.width, src.height</span><br><span class="line">        start_x, start_y = width // <span class="number">2</span> - subset_size[<span class="number">0</span>] // <span class="number">2</span>, height // <span class="number">2</span> - subset_size[<span class="number">1</span>] // <span class="number">2</span></span><br><span class="line">        window = rasterio.windows.Window(start_x, start_y, subset_size[<span class="number">0</span>], subset_size[<span class="number">1</span>])</span><br><span class="line">        band_subset = src.read(<span class="number">1</span>, window=window).astype(<span class="built_in">float</span>)  </span><br><span class="line">    <span class="keyword">return</span> band_subset</span><br><span class="line"></span><br><span class="line">red = read_band_subset(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B4.TIF&#x27;</span>)</span><br><span class="line">nir = read_band_subset(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B5.TIF&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算NDVI</span></span><br><span class="line">ndvi = (nir -red) / (nir + red)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 展示NDVI图像</span></span><br><span class="line">plt.imshow(ndvi, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;NDVI Image&#x27;</span>)</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;NDVI Value&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\NDVI.png" alt="NDVI"></p>
+<h5 id="f-更多指数"><a href="#f-更多指数" class="headerlink" title="f. 更多指数"></a><strong>f. 更多指数</strong></h5><p>归一化差异水体指数 (NDWI): 用于监测水体和水分含量。通常使用绿色和近红外波段来计算。<br>$$<br>NDWI &#x3D; （绿光-近红外）&#x2F;（绿光+近红外）<br>$$<br>归一化差异建筑区域指数 (NDBI):用于识别城市化区域或建筑物。它通常利用近红外和短波红外波段的数据。<br>$$<br>NDBI &#x3D; （短板红外波-近红外）&#x2F;（短板红外波+近红外）<br>$$<br>土壤调节植被指数 (SAVI): 类似于NDVI，但包含一个用于减少土壤亮度影响的调节因子。这对于低植被覆盖区域特别有用。L一般取0.5。<br>$$<br>SAVI &#x3D; （1+L）*（近红外-红光）&#x2F;（近红外+红光+L）<br>$$<br><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\更多指数.png" alt="更多指数"></p>
+<h5 id="g-保存结果-NDVI-到本地"><a href="#g-保存结果-NDVI-到本地" class="headerlink" title="g. 保存结果(NDVI)到本地"></a><strong>g. 保存结果(NDVI)到本地</strong></h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">red_path =(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B4.TIF&#x27;</span>)</span><br><span class="line">nir_path =(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B5.TIF&#x27;</span>)</span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(red_path) <span class="keyword">as</span> src:</span><br><span class="line">    red = src.read(<span class="number">1</span>).astype(<span class="string">&#x27;f4&#x27;</span>)  </span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(nir_path) <span class="keyword">as</span> src:</span><br><span class="line">    nir = src.read(<span class="number">1</span>).astype(<span class="string">&#x27;f4&#x27;</span>) </span><br><span class="line"><span class="comment"># 计算NDVI</span></span><br><span class="line">ndvi = (nir-red) / (nir + red)</span><br><span class="line"><span class="comment"># 展示NDVI图像</span></span><br><span class="line">plt.imshow(ndvi, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;NDVI Image&#x27;</span>)</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;NDVI Value&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\NDIV2.png" alt="NDIV2"></p>
+<p>在保存为’tif’文件时，需要修改为仿射变换（线性与平移变换的叠加）矩阵。具体操作如下：  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算下采样因子，本例子中下采样比例为1。</span></span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(red_path) <span class="keyword">as</span> src:</span><br><span class="line">    original_width, original_height = src.width, src.height <span class="comment">#原图尺寸</span></span><br><span class="line">downsampled_width, downsampled_height = ndvi.shape[<span class="number">1</span>], ndvi.shape[<span class="number">0</span>]<span class="comment">#NDVI尺寸</span></span><br><span class="line">width_factor = original_width / downsampled_width</span><br><span class="line">height_factor = original_height / downsampled_height</span><br><span class="line">width_factor,height_factor</span><br></pre></td></tr></table></figure>
+
+<p>Out[1]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1.0</span>, <span class="number">1.0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算变换后的仿射矩阵</span></span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(red_path) <span class="keyword">as</span> src:</span><br><span class="line">    transform = src.transform</span><br><span class="line">transform = transform * rasterio.Affine.scale(width_factor, height_factor)</span><br><span class="line">transform</span><br></pre></td></tr></table></figure>
+
+<p>Out[2]:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Affine(<span class="number">30.0</span>, <span class="number">0.0</span>, <span class="number">282885.0</span>,</span><br><span class="line">       <span class="number">0.0</span>, -<span class="number">30.0</span>, <span class="number">3629715.0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 保存</span></span><br><span class="line">ndvi_image_path = <span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_NDVI.TIF&#x27;</span><span class="comment">#保存地址</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(red_path) <span class="keyword">as</span> src: <span class="comment">#打开源文件</span></span><br><span class="line">    profile = src.profile</span><br><span class="line">    profile.update(dtype=rasterio.float32, transform=transform, width=downsampled_width, height=downsampled_height) <span class="comment">#更新信息</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> rasterio.<span class="built_in">open</span>(ndvi_image_path, <span class="string">&#x27;w&#x27;</span>, **profile) <span class="keyword">as</span> dst:</span><br><span class="line">        dst.write(ndvi.astype(rasterio.float32), <span class="number">1</span>) <span class="comment">#保存</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>测试保存内容。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(ndvi_image_path) <span class="keyword">as</span> src:</span><br><span class="line">    image = src.read(<span class="number">1</span>)  </span><br><span class="line"><span class="comment"># 图片显示</span></span><br><span class="line"><span class="comment">#plt.figure(figsize=(5, 5),dpi=300)</span></span><br><span class="line">plt.imshow(image)</span><br><span class="line">plt.title(<span class="string">&#x27;Overview - Ndvi &#123;&#125;&#x27;</span>.<span class="built_in">format</span>(image.shape))</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;Digital Number (DN) Values&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\NDVI3.png" alt="NDVI3"></p>
+<h5 id="h-空间索引及提取像素值"><a href="#h-空间索引及提取像素值" class="headerlink" title="h. 空间索引及提取像素值"></a><strong>h. 空间索引及提取像素值</strong></h5><p>遥感影像有两组坐标系，数据的坐标系为UTM坐标系。一组是图片的行列坐标，另一组是空间坐标。遥感影像中的每一个像元都对应地球上的一个地点。如需获取某个地理坐标的NDVI值，需要将经纬度坐边投影为UTM。具体操作如下：  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(ndvi_image_path) <span class="keyword">as</span> src:</span><br><span class="line"></span><br><span class="line">    utm = pyproj.Proj(src.crs)</span><br><span class="line">    lonlat = pyproj.Proj(init=<span class="string">&#x27;epsg:4326&#x27;</span>) <span class="comment">#创建一个坐标参考系统</span></span><br><span class="line"> </span><br><span class="line">    lon,lat = (<span class="number">119</span>, <span class="number">31</span>) <span class="comment">#上理经纬度</span></span><br><span class="line">    east,north = pyproj.transform(lonlat, utm, lon, lat) <span class="comment">#坐标转换</span></span><br><span class="line"> </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Fresno NDVI\n-------&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;lon,lat=\t\t(<span class="subst">&#123;lon:<span class="number">.2</span>f&#125;</span>,<span class="subst">&#123;lat:<span class="number">.2</span>f&#125;</span>)&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;easting,northing=\t(<span class="subst">&#123;east:g&#125;</span>,<span class="subst">&#123;north:g&#125;</span>)&#x27;</span>)</span><br><span class="line">     </span><br><span class="line">    row, col = src.index(east, north) <span class="comment"># spatial --&gt; image coordinates</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;row,col=\t\t(<span class="subst">&#123;row&#125;</span>,<span class="subst">&#123;col&#125;</span>)&#x27;</span>)</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">    value = ndvi[row, col]</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;ndvi=\t\t\t<span class="subst">&#123;value:<span class="number">.2</span>f&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>output[3]</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Fresno NDVI</span><br><span class="line">-------</span><br><span class="line">lon,lat=		(<span class="number">119.00</span>,<span class="number">31.00</span>)</span><br><span class="line">easting,northing=	(<span class="number">117989</span>,<span class="number">3.43648e+06</span>)</span><br><span class="line">row,col=		(<span class="number">6441</span>,-<span class="number">5497</span>)</span><br><span class="line">ndvi=			<span class="number">0.08</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>i. 计算一段时间内NDVI值的变化</strong></p>
+<p>原先的数据是2022年12月22号的数据，这里又下载了2022年8月16号的数据，计算其NDVI值。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">red_path1 =(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data2/LC08_L1TP_118038_20200222_20200225_01_T1_B4.TIF&#x27;</span>)</span><br><span class="line">nir_path1 =(<span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data2/LC08_L1TP_118038_20200222_20200225_01_T1_B5.TIF&#x27;</span>)</span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(red_path1) <span class="keyword">as</span> src:</span><br><span class="line">    red1 = src.read(<span class="number">1</span>).astype(<span class="string">&#x27;f4&#x27;</span>)  </span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(nir_path1) <span class="keyword">as</span> src:</span><br><span class="line">    nir1 = src.read(<span class="number">1</span>).astype(<span class="string">&#x27;f4&#x27;</span>) </span><br><span class="line"><span class="comment"># 计算NDVI</span></span><br><span class="line">ndvi1 = (nir1-red1) / (nir1 + red1)</span><br><span class="line"><span class="comment"># 展示NDVI图像</span></span><br><span class="line">plt.imshow(ndvi, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;NDVI Image&#x27;</span>)</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;NDVI Value&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>而后两者相减，展示变化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算NDVI的变化</span></span><br><span class="line">ndvi_change = ndvi - ndvi1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可视化NDVI的变化</span></span><br><span class="line">plt.imshow(ndvi_change, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">plt.colorbar(label=<span class="string">&#x27;NDVI Change&#x27;</span>)</span><br><span class="line">plt.title(<span class="string">&#x27;NDVI Change between Two Time Periods&#x27;</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\NDVI差值.png" alt="NDVI差值"></p>
+<p><strong>分析：</strong>差值可以看出基本在0值附近，处于0值下方。这说明绿色植被减少，但也可能受季节影响，12.22属秋冬季，绿色植被较少，08.16为夏季，绿色植被较多。</p>
+<h3 id="2-利用STK仿真载荷成像时刻轨道位置与视场"><a href="#2-利用STK仿真载荷成像时刻轨道位置与视场" class="headerlink" title="2. 利用STK仿真载荷成像时刻轨道位置与视场"></a>2. 利用STK仿真载荷成像时刻轨道位置与视场</h3><p>(STK软件提供分析引擎用于计算数据、并可显示多种形式的二维地图，显示卫星和其它对象如 运载火箭 、导弹、飞机、地面车辆、目标等。 STK的 核心能力 是产生位置和姿态数据、获取时间、遥感器覆盖分析。)</p>
+<h4 id="1）联合python与STK创建应用获取接口"><a href="#1）联合python与STK创建应用获取接口" class="headerlink" title="1）联合python与STK创建应用获取接口"></a>1）联合python与STK创建应用获取接口</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> comtypes.client <span class="keyword">import</span> CreateObject</span><br><span class="line"><span class="comment"># 创建STK11桌面应用</span></span><br><span class="line">app=CreateObject(<span class="string">&quot;STK11.Application&quot;</span>)</span><br><span class="line"><span class="comment"># STK11可见</span></span><br><span class="line">app.Visible = <span class="number">1</span></span><br><span class="line"><span class="comment"># 获取IAgStkObjectRoot接口</span></span><br><span class="line">root = app.Personality2</span><br><span class="line"><span class="comment"># 查看root属性</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(root))</span><br></pre></td></tr></table></figure>
+
+<h4 id="2）创建场景"><a href="#2）创建场景" class="headerlink" title="2）创建场景"></a>2）创建场景</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> comtypes.client <span class="keyword">import</span> CreateObject</span><br><span class="line"><span class="keyword">from</span> comtypes.gen <span class="keyword">import</span> STKObjects</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取IAgStkObject接口</span></span><br><span class="line">rootIAF = root.QueryInterface(STKObjects.IAgStkObject)</span><br><span class="line"><span class="comment"># 利用Children属性进行场景创建</span></span><br><span class="line">scenario = rootIAF.Children.New(<span class="number">19</span>,<span class="string">&#x27;Shanghai&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3）设置场景时间"><a href="#3）设置场景时间" class="headerlink" title="3）设置场景时间"></a>3）设置场景时间</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">scenario2 = scenario.QueryInterface(STKObjects.IAgScenario)</span><br><span class="line">root.UnitPreferences.SetCurrentUnit(<span class="string">&#x27;DateFormat&#x27;</span>, <span class="string">&#x27;UTCG&#x27;</span>)</span><br><span class="line"><span class="comment"># 设置场景时间</span></span><br><span class="line">scenario2.StartTime = <span class="string">&#x27;22 Dec 2020 02:25:20.101&#x27;</span></span><br><span class="line">scenario2.StopTime =  <span class="string">&#x27;22 Dec 2020 04:00:00.000&#x27;</span></span><br><span class="line">scenario2.CurrentTime =scenario2.StartTime</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-创建卫星，设置参数"><a href="#4-创建卫星，设置参数" class="headerlink" title="4) 创建卫星，设置参数"></a>4) 创建卫星，设置参数</h4><p>同样可以python创建或者内部创建。内部创建共有6种方法。这里通过搜索ID创建卫星：</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\搜索ID.png" alt="搜索ID"></p>
+<h4 id="5）结果展示"><a href="#5）结果展示" class="headerlink" title="5）结果展示"></a>5）结果展示</h4><p>3D图与2D图，但角点坐标以及成像信息与之前的TXT文档及TIF显示<strong>结果有略微差别（需要继续探索原因</strong>）。</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\3D.png" alt="3D"></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\2d与对比.png" alt="2d与对比"></p>
+<h3 id="3-利用辅助数据对图像数据进行辐射定标（编程完成）"><a href="#3-利用辅助数据对图像数据进行辐射定标（编程完成）" class="headerlink" title="3. 利用辅助数据对图像数据进行辐射定标（编程完成）"></a>3. 利用辅助数据对图像数据进行辐射定标（编程完成）</h3><h4 id="1）简介"><a href="#1）简介" class="headerlink" title="1）简介"></a>1）简介</h4><h5 id="a-辐射定标定义"><a href="#a-辐射定标定义" class="headerlink" title="a. 辐射定标定义"></a>a. 辐射定标定义</h5><p>将图像的亮度灰度值转换为绝对的辐射亮度（统一值）的过程。单位通常是 W&#x2F;(m²·sr·μm)。</p>
+<p>其中，W能量单位，用在此处为辐射的功率。m²面积单位，表示辐射亮度是如何分布在一个特定的面积上的。sr三维空间中的角度单位，用于描述辐射在空间中的分布范围，1立体角是定义在球面上、以球心为顶点、截面积为半径的平方的球冠所对应的角。μm长度单位，指定波长的范围或特定波长。因此辐射亮度为描述每单位面积、每单位立体角、在特定波长范围内的辐射功率的量。即<strong>从一个方向在特定波长上到达或离开一个表面的光的强度。</strong></p>
+<h5 id="b-为什么要进行辐射定位"><a href="#b-为什么要进行辐射定位" class="headerlink" title="b. 为什么要进行辐射定位"></a>b. 为什么要进行辐射定位</h5><p>在第一个问题的分析中，我们使用了像元值对同景图像内部进行了比较。然而全球资源和环境变化需要提供多时域、多区域、多种传感器且相互之间具有可比性的遥感数据。因此需要将像元值转换为统一值。</p>
+<h5 id="c-还可以进行哪些定标"><a href="#c-还可以进行哪些定标" class="headerlink" title="c. 还可以进行哪些定标"></a>c. 还可以进行哪些定标</h5><p>多光谱数据（B1~B9)可以进行<strong>辐射率定标和反射率定标</strong>。公式如下：</p>
+<p><strong>辐射率定标：</strong><br>$$<br>L &#x3D; M_L * Q_L + B_L<br>$$<br>其中，M_L为一个波段特定的辐射定标系数，Q_L为原图像量化值，B_L为一个波段特定的辐射定标加数。</p>
+<p>反射率定标（像素的地面反射率）ρ ：<br>$$<br>ρ &#x3D; M_ρ  * Q_ρ  + B_ρ<br>$$<br>其中，Mρ  为反射率定标系数，Qρ原图像量化值， Bρ 为反射率定标加数。</p>
+<p>热红外数据(B10~B11)可以进行<strong>辐射率定标和亮度温度定标</strong>。</p>
+<p><strong>亮度温度定标（传感器记录的辐射值转换为等效的亮度温度）</strong>：<br>$$<br>T &#x3D; K_2&#x2F;(ln(K_1&#x2F;L+1))<br>$$<br>其中T是亮度温度，通常以开尔文（K为单位）。K1和K2是卫星特定的定标常数(K1传感器特性有关的放射常数，K2波长有关的温度转换常数)。L是辐射亮度。通过辐射定标公式计算得到。</p>
+<h4 id="2-编程实现"><a href="#2-编程实现" class="headerlink" title="2) 编程实现"></a>2) 编程实现</h4><h5 id="a-在TXT文件中找到相关参数"><a href="#a-在TXT文件中找到相关参数" class="headerlink" title="a. 在TXT文件中找到相关参数"></a>a. 在TXT文件中找到相关参数</h5><p>相关系数在MTL.txt文件中，在前文的文件解释中MTL.txt文件的其他表格内，对应于RADIOMETRIC_RESCALING和TIRS_THERMAL_CONSTANTS 。值如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">波段</th>
+<th align="center">辐射乘数&#x2F;加数</th>
+<th align="center">反射率乘数&#x2F;加数</th>
+<th align="center">K1 常数</th>
+<th align="center">K1 常数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">1.2976E-02&#x2F;-64.88072</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">1.3288E-02&#x2F;-66.43865</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">1.2245E-02&#x2F;-61.22265</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">1.0325E-02&#x2F;-51.62639</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">6.3186E-03&#x2F;-31.59277</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">1.5714E-03&#x2F;-7.85684</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">5.2963E-04&#x2F;-2.64817</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">8</td>
+<td align="center">1.1685E-02&#x2F;-58.42686</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">2.4694E-03&#x2F;-12.34717</td>
+<td align="center">2.0000E-05&#x2F;-0.100000</td>
+<td align="center">————</td>
+<td align="center">————</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="center">3.3420E-04&#x2F;0.10000</td>
+<td align="center">————</td>
+<td align="center">774.8853</td>
+<td align="center">1321.0789</td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="center">3.3420E-04&#x2F;0.10000</td>
+<td align="center">————</td>
+<td align="center">480.8883</td>
+<td align="center">1201.1442</td>
+</tr>
+</tbody></table>
+<h5 id="b-代码"><a href="#b-代码" class="headerlink" title="b. 代码"></a>b. 代码</h5><p>定义计算函数&gt;&gt;遍历图像&gt;&gt;调用函数&gt;&gt;图像显示</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rasterio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="comment"># 辐射定标函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">radiance_calibration</span>(<span class="params">band_data, mult, add</span>):</span><br><span class="line">    <span class="keyword">return</span> mult * band_data + add</span><br><span class="line"><span class="comment"># 反射率定标函数,反射率的加减法因子都一样</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">reflectance_calibration</span>(<span class="params">band_data, mult = <span class="number">2.0000E-05</span>, add = -<span class="number">0.100000</span></span>):</span><br><span class="line">    <span class="keyword">return</span> mult * band_data + add  <span class="comment"># Assuming no atmospheric correction</span></span><br><span class="line"><span class="comment"># 亮度温度定标函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">brightness_temperature_calibration</span>(<span class="params">band_data, k1, k2</span>):</span><br><span class="line">    <span class="keyword">return</span> k2 / np.log((k1 / band_data) + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#给定参数</span></span><br><span class="line">radiance_p = &#123;</span><br><span class="line">    <span class="number">1</span>: (<span class="number">1.2976E-02</span>, -<span class="number">64.88072</span>),</span><br><span class="line">    <span class="number">2</span>: (...)</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">brightness_temp_p = &#123;</span><br><span class="line">    <span class="number">10</span>: (<span class="number">774.8853</span>, <span class="number">1321.0789</span>),</span><br><span class="line">    <span class="number">11</span>: (<span class="number">480.8883</span>, <span class="number">1201.1442</span>),</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历，逐一求取标定值并展示。</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>,<span class="number">12</span>):</span><br><span class="line">    band_file_path = <span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/&#x27;</span>+<span class="string">&#x27;LC08_L1TP_118038_20201222_20210310_01_T1_B&#x27;</span>+<span class="built_in">str</span>(i)+<span class="string">&#x27;.TIF&#x27;</span></span><br><span class="line">    <span class="keyword">with</span> rasterio.<span class="built_in">open</span>(band_file_path) <span class="keyword">as</span> src:</span><br><span class="line">        band_data = read_band_subset（band_file_path） <span class="comment">#原图中的部分图像进行定标</span></span><br><span class="line">        band_radiance = radiance_calibration(band_data, *radiance_p[i]) </span><br><span class="line">        plt.imshow(band_radiance, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">        plt.colorbar(label=<span class="string">&#x27;辐射率标定值&#x27;</span>)</span><br><span class="line">        plt.title(<span class="string">f&#x27;band<span class="subst">&#123;i&#125;</span>辐射标定&#x27;</span>)</span><br><span class="line">        plt.show()</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> i&lt;<span class="number">10</span>:</span><br><span class="line">            band_reflectance = reflectance_calibration(band_data)</span><br><span class="line">            plt.imshow(band_reflectance, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">            plt.colorbar(label=<span class="string">&#x27;反射率标定值&#x27;</span>)</span><br><span class="line">            plt.title(<span class="string">f&#x27;band<span class="subst">&#123;i&#125;</span>反射率标定值&#x27;</span>)</span><br><span class="line">            plt.show()     </span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            band_K =  brightness_temperature_calibration(band_data, *brightness_temp_p[i])</span><br><span class="line">            plt.imshow(band_K, cmap=<span class="string">&#x27;RdYlGn&#x27;</span>)</span><br><span class="line">            plt.colorbar(label=<span class="string">&#x27;亮度温度标定值&#x27;</span>)</span><br><span class="line">            plt.title(<span class="string">f&#x27;band<span class="subst">&#123;i&#125;</span>亮度温度标定&#x27;</span>)</span><br><span class="line">            plt.show()</span><br></pre></td></tr></table></figure>
+
+<h4 id="3）结果展示"><a href="#3）结果展示" class="headerlink" title="3）结果展示"></a>3）结果展示</h4><ul>
+<li>辐射标定</li>
+</ul>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\辐射标定.png" alt="辐射标定"></p>
+<ul>
+<li>反射率标定</li>
+</ul>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\反射率标定.png" alt="反射率标定"></p>
+<ul>
+<li>亮度温度标定</li>
+</ul>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\亮度温度标定.png" alt="亮度温度标定"></p>
+<p><strong>（疑问：波段1-9的辐射标定与反射标定，波段10-11的辐射标定与亮度温度标定为什么基本一致）</strong></p>
+<h3 id="4-利用辅助数据对图像数据进行地理定位（编程完成）"><a href="#4-利用辅助数据对图像数据进行地理定位（编程完成）" class="headerlink" title="4. 利用辅助数据对图像数据进行地理定位（编程完成）"></a>4. 利用辅助数据对图像数据进行地理定位（编程完成）</h3><h4 id="1）简介-1"><a href="#1）简介-1" class="headerlink" title="1）简介"></a>1）简介</h4><p>遥感图像的地理定位：是将遥感图像中的像素与地球表面的实际地理位置相对应的过程。</p>
+<h4 id="2）编程实现"><a href="#2）编程实现" class="headerlink" title="2）编程实现"></a>2）编程实现</h4><p>找到角点坐标（<strong>MTL文件中介绍</strong>）&gt;&gt;转换为WGS 坐标格式（ <strong>UTM_ZONE &#x3D; 51</strong>）&gt;&gt;建立坐标系&gt;&gt;投射坐标。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> rasterio</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> pyproj <span class="keyword">import</span> Proj, transform <span class="keyword">as</span> pyproj_transform</span><br><span class="line"><span class="keyword">from</span> rasterio.plot <span class="keyword">import</span> show</span><br><span class="line"><span class="comment"># 文件路径</span></span><br><span class="line">file_path = <span class="string">&#x27;D:/YANJIUSHENG/南航博士申请探索题/Dataset/data/LC08_L1TP_118038_20201222_20210310_01_T1_B1.TIF&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义UTM和WGS84坐标系统</span></span><br><span class="line">utm_proj = Proj(init=<span class="string">&#x27;epsg:32651&#x27;</span>)   <span class="comment"># UTM zone </span></span><br><span class="line">wgs84_proj = Proj(init=<span class="string">&#x27;epsg:4326&#x27;</span>)  <span class="comment"># WGS84</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义四个角点的UTM坐标</span></span><br><span class="line">utm_corners = [(<span class="number">282900</span>, <span class="number">3629700</span>), (<span class="number">514200</span>, <span class="number">3629700</span>), (<span class="number">282900</span>, <span class="number">3394200</span>), (<span class="number">514200</span>, <span class="number">3394200</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 转换角点坐标为WGS84</span></span><br><span class="line">wgs84_corners = [pyproj_transform(utm_proj, wgs84_proj, pt[<span class="number">0</span>], pt[<span class="number">1</span>]) <span class="keyword">for</span> pt <span class="keyword">in</span> utm_corners]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算WGS84坐标的边界</span></span><br><span class="line">left, top = wgs84_corners[<span class="number">0</span>]</span><br><span class="line">right, bottom = wgs84_corners[<span class="number">3</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取图像</span></span><br><span class="line"><span class="keyword">with</span> rasterio.<span class="built_in">open</span>(file_path) <span class="keyword">as</span> src:</span><br><span class="line">    <span class="comment"># 读取图像数据</span></span><br><span class="line">    data = src.read(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 为WGS84坐标创建新的仿射变换</span></span><br><span class="line">    transform = from_bounds(left, bottom, right, top, data.shape[<span class="number">1</span>], data.shape[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置图像显示</span></span><br><span class="line">    fig, ax = plt.subplots(figsize=(<span class="number">6</span>, <span class="number">4</span>))</span><br><span class="line">    show(data, ax=ax, transform=transform, cmap=<span class="string">&#x27;gray&#x27;</span>, extent=(left, right, bottom, top))</span><br><span class="line">    ax.set_title(<span class="string">&quot;Image in WGS84 Coordinate System&quot;</span>)</span><br><span class="line">    plt.show()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-结果展示"><a href="#3-结果展示" class="headerlink" title="3) 结果展示"></a>3) 结果展示</h4><p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\地理定位.png" alt="地理定位"></p>
+<p>和原文件中四个角点坐标（32.78382，120.68188），（32.80518，123.15168），（30.66079，120.73416），（30.68047，123.14825）是一致的。</p>
+<h3 id="5-通过几何变换，利用该图像数据仿真另一观测几何条件下的图像数据（观测区域不变，观测角度和分辨率发生变化，编程完成）"><a href="#5-通过几何变换，利用该图像数据仿真另一观测几何条件下的图像数据（观测区域不变，观测角度和分辨率发生变化，编程完成）" class="headerlink" title="5. 通过几何变换，利用该图像数据仿真另一观测几何条件下的图像数据（观测区域不变，观测角度和分辨率发生变化，编程完成）"></a>5. 通过几何变换，利用该图像数据仿真另一观测几何条件下的图像数据（观测区域不变，观测角度和分辨率发生变化，编程完成）</h3><h4 id="1）概述"><a href="#1）概述" class="headerlink" title="1）概述"></a>1）概述</h4><h5 id="a-几何变换定义："><a href="#a-几何变换定义：" class="headerlink" title="a. 几何变换定义："></a>a. 几何变换定义：</h5><p>几何变换又称空间变换，就是将一组图像数据经过某种数学运算，<strong>映射</strong>成另外一组图像数据的操作。也就是将一幅图像中的坐标位置映射到另一幅图像中的新坐标位置。或者说是不改变图像的像素值，在图像平面上对像素进行重新安排。 </p>
+<p><strong>几何变换的关键就是要确定这种空间映射关系</strong>。</p>
+<h5 id="b-为什么要进行几何变换："><a href="#b-为什么要进行几何变换：" class="headerlink" title="b. 为什么要进行几何变换："></a>b. 为什么要进行几何变换：</h5><p>1）消除图像由于角度、透视关系、拍摄等原因造成的几何失真进而造成的计算机模型或者算法无法正确识别图像的现象，对于遥感图像主要是消除地球曲率、卫星轨道和姿态、大气折射等因素的影响；</p>
+<p>2）为了更好地理解或展示地表特征，可能需要从不同的视角查看图像。几何变换可以模拟从不同角度观察地球表面的视图。</p>
+<p>3）在多时相或多源的遥感分析中，需要将不同时间或不同来源的图像精确叠加。几何变换用于确保图像之间的对应点在空间上对齐，这对于变化检测、多光谱分析等应用至关重要。</p>
+<p>4）在进行多源数据融合、三维建模或景观分析时，需要对来自不同角度和不同传感器的图像进行准确的几何校正，以确保数据的一致性和准确性。</p>
+<h4 id="2）几何变换常见方法（部分内容参考了opencv学习笔记（五）：图像几何变换-知乎-zhihu-com-）"><a href="#2）几何变换常见方法（部分内容参考了opencv学习笔记（五）：图像几何变换-知乎-zhihu-com-）" class="headerlink" title="2）几何变换常见方法（部分内容参考了opencv学习笔记（五）：图像几何变换 - 知乎 (zhihu.com)）"></a>2）几何变换常见方法（部分内容参考了<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/511560729">opencv学习笔记（五）：图像几何变换 - 知乎 (zhihu.com)</a>）</h4><p>为避免大量运算，这里裁剪了原图的一小部分；为了成像清晰，考虑到城市地区，融合了7、6、4波段对应的相同部分（相关代码见代码文档，基本同前）。原图如下：</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\变换前图片.png" alt="变换前图片"></p>
+<h5 id="a-视觉效果分类"><a href="#a-视觉效果分类" class="headerlink" title="a.  视觉效果分类"></a>a.  视觉效果分类</h5><ul>
+<li><p>缩放：对图像的大小进行放大和缩小的变换。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">apply_zoom</span>(<span class="params">image, zoom_factor</span>):</span><br><span class="line">      center_x, center_y = image.shape[<span class="number">1</span>] / <span class="number">2</span>, image.shape[<span class="number">0</span>] / <span class="number">2</span> <span class="comment">#计算中心点，用作缩放的枢轴</span></span><br><span class="line">      matrix = cv2.getRotationMatrix2D((center_x, center_y), <span class="number">0</span>, zoom_factor) <span class="comment">#变换矩阵，包括旋转中心、旋转角度、缩放因子三个参数</span></span><br><span class="line">      <span class="keyword">return</span> cv2.warpAffine(image, matrix, (image.shape[<span class="number">1</span>], image.shape[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>平移</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">translation</span>(<span class="params">image, tx, ty</span>):</span><br><span class="line">    matrix = np.float32([[<span class="number">1</span>, <span class="number">0</span>, tx], [<span class="number">0</span>, <span class="number">1</span>, ty]])<span class="comment"># [1, 0, tx]表示水平方向上不改变像素的位置，但整体向右移动 tx 单位，第二行相反</span></span><br><span class="line">    <span class="keyword">return</span> cv2.warpAffine(image, matrix, (image.shape[<span class="number">1</span>], image.shape[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>旋转</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">rotation</span>(<span class="params">image, angle</span>):</span><br><span class="line">    center_x, center_y = image.shape[<span class="number">1</span>] / <span class="number">2</span>, image.shape[<span class="number">0</span>] / <span class="number">2</span></span><br><span class="line">    matrix = cv2.getRotationMatrix2D((center_x, center_y), angle, <span class="number">1</span>)<span class="comment">#与缩放一样</span></span><br><span class="line">    <span class="keyword">return</span> cv2.warpAffine(image, matrix, (image.shape[<span class="number">1</span>], image.shape[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>镜像</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">mirror</span>(<span class="params">image</span>):</span><br><span class="line">    <span class="keyword">return</span> cv2.flip(image, <span class="number">1</span>)<span class="comment"># cv2.flip(img, flipcode),flipcode: flipcode=0 表示绕x轴翻转；flipcode=任意正整数，比如1，2，3，表示绕y轴翻转；flipcode=任意负整数，比如-1，-2，-3，表示绕x轴和y轴同时翻转；</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>结果展示：</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\视觉变换.png" alt="视觉变换"></p>
+<h5 id="b-数学原理分类"><a href="#b-数学原理分类" class="headerlink" title="b.  数学原理分类"></a>b.  数学原理分类</h5><p>首先需要了解几种变换矩阵，理解图像的坐标变换：  </p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\变换矩阵汇总.png" alt="变换矩阵汇总"></p>
+<ul>
+<li><p><strong>仿射变换（Affine Transformation）</strong></p>
+<p><strong>定义：</strong>仿射变换通俗的讲就是就是“线性变换”+“平移”。上述的缩放、平移等操作都可以称为仿射变换。其常用于图像的校正、拼接、配准等操作中。</p>
+<p>在二维图像处理中，仿射变换可以理解为一种可以<strong>改变图像形状和大小的变换</strong>，同时保持图像中<strong>平行线的平行性和直线的直线性</strong>(点还是点，线还是线，面还是面，点变不成线，线变不成面，同一条直线上的点的位置和长度比例关系不变，变的是向量的夹角、垂直的关系会发生变换）。比如下图：</p>
+<p>该图参考了<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20666664">(1 封私信) 如何通俗地讲解「仿射变换」？ - 知乎 (zhihu.com)</a></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\仿射变换.png" alt="仿射变换"></p>
+<p><strong>如何实现：</strong>一般来讲，仿射变换主要基于三种方法，一是在相同坐标空间下，点线面自身移动；二是点线面本身没有移动，而坐标空间发生了变换，比如坐标轴发生了缩放、旋转或者平移导致的点线面坐标值发生变换，这样点线面也就相当于移动了；三是，点线面以及坐标轴本身都发生了变换，但相对的量不等，但也相当于移动。公式如下：<br>$$<br>(\begin{aligned}x’\y’\end{aligned}) &#x3D;(\begin{aligned}a_{11}; a_{12}; t_x\ a_{21} ; a_{22}; t_y\end{aligned}) (\begin{aligned}x\y\1\end{aligned})<br>$$<br>其中，a_11,a_12,a_21,a_22 定义了图像的旋转、缩放和倾斜，t_x,t_y 定义了平移量。(x,y)为原图像中的点。（x’,y’)为变换后图像中的点。</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">affine_transform</span>(<span class="params">image</span>):</span><br><span class="line">    rows, cols = image.shape[:<span class="number">2</span>]</span><br><span class="line">    src_points = np.float32([[<span class="number">0</span>, <span class="number">0</span>], [cols-<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, rows-<span class="number">1</span>]])<span class="comment">#原图的三个点</span></span><br><span class="line">    dst_points = np.float32([[<span class="number">0</span>,image.shape[<span class="number">1</span>]*<span class="number">0.1</span>], [image.shape[<span class="number">1</span>]*<span class="number">0.85</span>,image.shape[<span class="number">0</span>]*<span class="number">0.25</span>], [image.shape[<span class="number">1</span>]*<span class="number">0.15</span>, image.shape[<span class="number">0</span>]*<span class="number">0.7</span>]])</span><br><span class="line">    <span class="comment">#仿射变换矩阵，可以是原图的几倍也可以是下面这种固定的坐标dst_points = np.float32([[10,10],[200,120],[50,150]])</span></span><br><span class="line">    matrix = cv2.getAffineTransform(src_points, dst_points) <span class="comment">#仿射变换矩阵</span></span><br><span class="line">    <span class="keyword">return</span> cv2.warpAffine(image, matrix, (cols, rows))</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果展示：</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\仿射变换结果图.png" alt="仿射变换结果图"></p>
+</li>
+<li><p><strong>透视变换（Perspective Transformation）</strong></p>
+<p><strong>定义：</strong>把一个图像投影到一个新的视平面的过程。其常用于畸变校正、3D视图的模拟等操作中。</p>
+<p>透视变换能够改变图像视点，模拟从不同角度和不同距离观察场景的效果，这是通过改变图像中对象的透视来实现的。透视变换是一个非线性变换过程<strong>直线仍然映射为直线，但平行线可能不再保持平行</strong>。</p>
+<p>该图参考了<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_43609475/article/details/112847314">（十四）透视变换_淡定的炮仗的博客-CSDN博客</a></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\透视变换.png" alt="透视变换"></p>
+<p><strong>透视变换包含了仿射变换。</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\透视变换区别.png" alt="透视变换区别"></p>
+<p>此外还有逆透视变换，即将一个具有透视效果的图像转换回其原始的视图。常用于摄像头捕获的图像中校正透视畸变，或者将倾斜拍摄的图像矫正为正面视图。</p>
+<p><strong>如何实现</strong>：<strong>该过程包括把一个二维坐标系转换为三维坐标系，然后把三维坐标系投影到新的二维坐标系</strong>。与仿射变换不同（<strong>仿射变换只需要三个点，因为平行线仍然平行，线的比例相同，确定三条线后即可确定最后一条线</strong>），透视变换需要至少<strong>四对对应点（原图像中的点和目标图像中的点）</strong>来计算变换矩阵。公式如下：<br>$$<br>(\begin{aligned}x’\y’\w’\end{aligned}) &#x3D;(\begin{aligned}h_{00}; h_{01}; h_{02} \ h_{10}; h_{11}; h_{12} \h_{20}; h_{21}; h_{22} \end{aligned}) (\begin{aligned}x\y\1\end{aligned})<br>$$<br>其中 （x,y)是原始图像中的点，(x*′,*y′) 是变换后的点，而 w′ 是齐次坐标，用于保持变换的线性表达。在实际应用中，我们通常对结果进行归一化，即 (x’&#x2F;w’,y’&#x2F;w’)，以得到最终的图像坐标。变换矩阵中h_00,h_01,h_10,h_11用于线性变换，h_02,h_23用于产生图像透视变换，h_20,h_21用于图像的平移。</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">perspective_transform</span>(<span class="params">image</span>):</span><br><span class="line">    rows, cols = image.shape[:<span class="number">2</span>]</span><br><span class="line">    src_points = np.float32([[<span class="number">0</span>, <span class="number">0</span>], [cols-<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, rows-<span class="number">1</span>], [cols-<span class="number">1</span>, rows-<span class="number">1</span>]])</span><br><span class="line">    dst_points = np.float32([[<span class="number">0</span>, <span class="number">0</span>], [<span class="built_in">int</span>(<span class="number">0.6</span>*cols), rows//<span class="number">3</span>], [<span class="built_in">int</span>(<span class="number">0.4</span>*cols), rows], [cols-<span class="number">1</span>, rows-<span class="number">2</span>*rows//<span class="number">3</span>]])</span><br><span class="line">    matrix = cv2.getPerspectiveTransform(src_points, dst_points)</span><br><span class="line">    <span class="keyword">return</span> cv2.warpPerspective(image, matrix, (cols, rows))</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果展示：</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\透视变换结果.png" alt="透视变换结果"></p>
+</li>
+<li><p>**重映射变换(Remap Transformation)  **</p>
+<p><strong>定义：</strong>把一张图像内的像素点放置到另外一幅图像内指定的位置。其常用于图像扭曲、畸变矫正等操作中。</p>
+<p>上述的两周变换都是通过变换矩阵来实现，重映射变换则是通过自定义的方式进行映射。</p>
+<p><strong>如何实现：</strong> 在重映射操作中，输出图像中的每个像素位置都通过映射规则从输入图像的相应位置上取得像素值。这个映射规则由两个独立的映射函数定义，分别是 x*′&#x3D;<em>f(x,y) 和 y′&#x3D;g(x</em>,*y)，其中 *(<em>x</em>,*y) 是输入图像中的原始坐标，而(x’,y’) 是输出图像中的新坐标。</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">remap</span>(<span class="params">image</span>):</span><br><span class="line">    rows, cols = image.shape[:<span class="number">2</span>]</span><br><span class="line">    map_x, map_y = np.float32(np.indices((rows, cols)))</span><br><span class="line">    map_x = np.sin(map_x/<span class="number">15</span>)*<span class="number">15</span> + map_x<span class="comment">#定义变换函数</span></span><br><span class="line">    map_y = np.cos(map_y/<span class="number">20</span>)*<span class="number">10</span> + map_y</span><br><span class="line">    <span class="keyword">return</span> cv2.remap(image, map_x, map_y, cv2.INTER_LINEAR)</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果展示：</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\重射变换.png" alt="重射变换"></p>
+</li>
+</ul>
+<h4 id="3）文献扩展"><a href="#3）文献扩展" class="headerlink" title="3）文献扩展"></a>3）文献扩展</h4><p><strong>弹性变换（elastic_transform)</strong></p>
+<p>本文旨在阐述神经网络在文档视觉输入分类中的有效应用<strong>（总的任务）</strong>。论文指出，尽管神经网络方法繁多且令人困惑，但仍有一些具体的最佳实践可供文档分析研究者使用以获得良好结果。论文强调了扩大训练集的重要性，并提出了一种新的数据扭曲方式——弹性变换<strong>（方法1</strong>）。此外，论文还提出卷积神经网络比全连接网络更适合视觉文档任务，并描述了一个简单但通用的卷积神经网络架构<strong>（方法2）</strong>。论文得出结论，使用弹性变形和卷积神经网络在MNIST数据集上取得了最高性能。这些结果反映了两个重要问题：训练集的大小和质量是学习系统质量的主要决定因素，卷积神经网络利用输入数据的空间结构，不同于其他依赖独立元素的分类技术<strong>（结论）</strong>。</p>
+<p><strong>围绕本课题主题，这里只阐述方法1的实现，即弹性变换：</strong></p>
+<ul>
+<li>创建一个随机的位移场使图像变形，如下式所示：<br>$$<br>Δx(x,y) &#x3D; rand(-1,+1)\Δy(x,y)&#x3D;rand(-1,+1)<br>$$</li>
+</ul>
+<p>其中，rand(-1,+1)是生成一个在（-1，1）之间的随机数。</p>
+<ul>
+<li>利用高斯分布的N（0,σ）生成的随机位移场进行卷积操作(和CNN中的卷积操作一样，说白了就是滤波操作)。σ越大产生的图像越平滑。下图是论文中的不同σ值对随机位移场的影响。</li>
+</ul>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\弹性变换.png" alt="弹性变换"></p>
+<ul>
+<li>用一个控制因子α与随机位移场相乘，用以控制其变形强度，得到一个弹性形变的位移场。</li>
+<li>弹性形变的位移场运用到原图的仿射变换的图像上，得到最终结果。</li>
+</ul>
+<p><strong>代码：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">elastic_transform</span>(<span class="params">image, alpha, sigma, random_state=<span class="literal">None</span></span>): <span class="comment">#四个参数：原图片、两个控制强度的参数（ alpha 越大、sigma越小强度越大）、随机变换的参数（可设置）</span></span><br><span class="line">    <span class="keyword">if</span> random_state <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        random_state = np.random.RandomState(<span class="literal">None</span>) <span class="comment">#随机变换</span></span><br><span class="line"></span><br><span class="line">    shape = image.shape <span class="comment">#变换后的图像</span></span><br><span class="line">    dx = gaussian_filter((random_state.rand(*shape) * <span class="number">2</span> - <span class="number">1</span>), sigma, mode=<span class="string">&quot;constant&quot;</span>, cval=<span class="number">0</span>) * alpha <span class="comment">#水平方向上的扭曲函数</span></span><br><span class="line">    dy = gaussian_filter((random_state.rand(*shape) * <span class="number">2</span> - <span class="number">1</span>), sigma, mode=<span class="string">&quot;constant&quot;</span>, cval=<span class="number">0</span>) * alpha <span class="comment">#垂直方向上的扭曲函数</span></span><br><span class="line"></span><br><span class="line">    x, y = np.meshgrid(np.arange(shape[<span class="number">1</span>]), np.arange(shape[<span class="number">0</span>]))    <span class="comment">#定义新的一个网格数组</span></span><br><span class="line">    indices = np.reshape(y + dy, (-<span class="number">1</span>, <span class="number">1</span>)), np.reshape(x + dx, (-<span class="number">1</span>, <span class="number">1</span>)) <span class="comment">#将变换后的图像加到原像素上</span></span><br><span class="line"></span><br><span class="line">    distored_image = map_coordinates(image, indices, order=<span class="number">1</span>).reshape(shape) <span class="comment">#创建图像</span></span><br><span class="line">    <span class="keyword">return</span> distored_image</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong></p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\弹性变换结果.png" alt="弹性变换结果"></p>
+<p><strong>参考文献：</strong></p>
+<p>[1] P. Y. Simard, S.  David,  J. C. Platt,  “Best practices for convolutional neural networks applied to visual document analysis”. Icdar. Vol. 3. No. 2003. 2003.</p>
+<h3 id="6-根据英文科技论文的写作要求，用1小节对第5题的方法进行描述"><a href="#6-根据英文科技论文的写作要求，用1小节对第5题的方法进行描述" class="headerlink" title="6.根据英文科技论文的写作要求，用1小节对第5题的方法进行描述"></a>6.根据英文科技论文的写作要求，用1小节对第5题的方法进行描述</h3><p>以透视变换为例：</p>
+<p>​	Perspective transformation is a method of image geometric transformation that projects an image onto a new viewing plane while ensuring that lines within the image remain mapped as lines [1]. As illustrated in Fig. 1, each pixel point of the original two-dimensional image undergoes projection through a 3x3 transformation matrix into a three-dimensional space. Subsequently, a normalization factor is applied to re-project this three-dimensional image back into a two-dimensional coordinate system, resulting in the final perspective transformed image.</p>
+<p><img src="D:\YANJIUSHENG\南航博士申请探索题\picture\透视变换_6.png" alt="透视变换_6"></p>
+<p>​                                      Fig. 1.  Perspective transformation schematic diagram</p>
+<p>​	The entire transformation process can be represented by Eq. (1),<br>$$<br>[\begin{aligned}x’\y’\w’\end{aligned}] &#x3D;[\begin{aligned}h_{00}; h_{01}; h_{02} \ h_{10}; h_{11}; h_{12} \h_{20}; h_{21}; h_{22} \end{aligned}] [\begin{aligned}x\y\1\end{aligned}] \tag 1<br>$$<br>Where, (x, y) represents a point in the original image,  (x’, y’) denotes the transformed point, w’ is a factor used for normalization. The elements of the perspective transformation matrix are denoted as h<sub>ij</sub>. The components h<sub>00</sub>, h<sub>01</sub>, h<sub>10</sub>, h<sub>11</sub> are involved in the linear transformation of the image, the elements h<sub>02</sub>, h<sub>12</sub> are responsible for generating the perspective transformation of the image,  the elements h<sub>20</sub>, h<sub>21</sub> are used for the translation of the image.</p>
+<p><strong>Reference:</strong></p>
+<p>[1] F.S.Hill，JR. Computer Graphics Using OpenGL, Second Edition, Science Press and Pearson Education, 2004.</p>
+<h3 id="7-根据中文科技论文的写作要求，用1小节对第5题的方法进行描述（注意中英文语言的写作区别）"><a href="#7-根据中文科技论文的写作要求，用1小节对第5题的方法进行描述（注意中英文语言的写作区别）" class="headerlink" title="7. 根据中文科技论文的写作要求，用1小节对第5题的方法进行描述（注意中英文语言的写作区别）"></a>7. 根据中文科技论文的写作要求，用1小节对第5题的方法进行描述（注意中英文语言的写作区别）</h3><p>​		透射变换（Perspective Transformation）是一种将图像投影到一个新的视平面，并保证图像中直线仍然映射为直线的图像几何变换方法，计算简便、应用灵活，能够根据预设的参数调整图像的视角和比例实现对图像的校正和增强[1]。在透视变换中，图像中的每一个像素点都会通过一个透视变换矩阵从原始坐标系统中转换到新的坐标系统下。透视变换的公式可以表示为：<br>$$<br>[\begin{aligned}x’\y’\w’\end{aligned}] &#x3D;[\begin{aligned}h_{00}; h_{01}; h_{02} \ h_{10}; h_{11}; h_{12} \h_{20}; h_{21}; h_{22} \end{aligned}] [\begin{aligned}x\y\1\end{aligned}] \tag 1<br>$$<br>式中，(<em>x</em>,<em>y</em>) 是原始图像中的点，(<em>x‘</em>,<em>y’</em>）是变换后的点，<em>w’<em>是用于归一化的因子；</em>h</em><sub><em>ij</em></sub>为透视变换矩阵中的元素，<em>h</em><sub><em>00</em></sub>，<em>h</em><sub><em>01</em></sub>，<em>h</em><sub><em>10</em></sub>，<em>h</em><sub><em>11</em></sub> 用于图像的线性变换，<em>h</em><sub><em>02</em></sub> ，<em>h</em><sub><em>12</em></sub>用于产生图像透视变换，<em>h</em><sub><em>20</em></sub>，<em>h</em><sub><em>21</em></sub>用于图像的平移。</p>
+<p>​		通过适当选择变换矩阵中的元素，透视变换实现了从一种视角到另一种视角的平滑过渡，使得观看者能够从不同的视角观察同一个场景或对象。</p>
+<p><strong>参考文献：</strong></p>
+<p>[1] F.S.Hill，JR. Computer Graphics Using OpenGL, Second Edition, Science Press and Pearson Education, 2004.</p>
+<p><strong>中英文对比：</strong></p>
+<p>英文可能更侧重方法的复现性，需要对方法进行详细的描述，语言更直接。中文可能更侧重行文的逻辑性，比如这是一个在怎样的方法，主要怎么实现，实现的结果如何。</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/" rel="tag"># 图像处理</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/07/20/%E4%B8%AD%E7%A7%91%E9%99%A2%E5%AD%A6%E4%B9%A012/" rel="prev" title="中科院实习—— IP核的调用">
+      <i class="fa fa-chevron-left"></i> 中科院实习—— IP核的调用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/22/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="next" title="大模型概述">
+      大模型概述 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%9A%E5%A3%AB%E6%8E%A2%E7%B4%A2%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">博士探索题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%981-%E9%80%9A%E8%BF%87%E7%BD%91%E7%BB%9C%E7%AD%89%E6%89%8B%E6%AE%B5%E6%89%BE%E5%88%B0%E4%BB%BB%E6%84%8F%E6%9F%90%E9%A2%97%E9%81%A5%E6%84%9F%E5%8D%AB%E6%98%9F%E7%9A%84%E4%B8%80%E5%B9%85-%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E5%92%8C%E8%BE%85%E5%8A%A9%E6%95%B0%E6%8D%AE-%EF%BC%8C%E5%AE%8C%E6%88%90%E4%BB%A5%E4%B8%8B%E5%B7%A5%E4%BD%9C%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">题1 通过网络等手段找到任意某颗遥感卫星的一幅**图像数据和辅助数据**，完成以下工作：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AF%B9%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E5%92%8C%E8%BE%85%E5%8A%A9%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%A7%A3%E8%AF%91%EF%BC%8C%E8%A7%A3%E9%87%8A%E8%AF%B4%E6%98%8E%E5%9B%BE%E5%83%8F%E7%9A%84%E5%90%84%E4%B8%AA%E5%8F%82%E6%95%B0%E5%90%AB%E4%B9%89%EF%BC%88%E7%BC%96%E7%A8%8B%E5%AE%8C%E6%88%90%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.对图像数据和辅助数据进行解译，解释说明图像的各个参数含义（编程完成）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">1).数据来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E8%A7%A3%E8%AF%BB%EF%BC%88%E4%B8%8B%E8%BF%B0%E5%86%85%E5%AE%B9%E9%83%A8%E5%88%86%E5%8F%82%E8%80%83%E3%80%90Landsat-8%E3%80%91%E9%81%A5%E6%84%9F%E5%BD%B1%E5%83%8F%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E5%8F%8A%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99-landsat8%E5%BD%B1%E5%83%8F%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99-Uyoin%E7%9A%84%E5%8D%9A%E5%AE%A2-CSDN%E5%8D%9A%E5%AE%A2"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">2).数据解读（下述内容部分参考【Landsat 8】遥感影像文件内容及命名规则_landsat8影像命名规则_Uyoin的博客-CSDN博客</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E6%96%87%E4%BB%B6%E6%9E%84%E6%88%90"><span class="nav-number">1.1.1.2.1.</span> <span class="nav-text">a. 文件构成</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E6%96%87%E4%BB%B6%E8%A7%A3%E9%87%8A"><span class="nav-number">1.1.1.2.2.</span> <span class="nav-text">b. 文件解释</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%A7%A3%E8%AF%91%E8%BF%87%E7%A8%8B-%EF%BC%88%E4%B8%8B%E8%BF%B0%E9%83%A8%E5%88%86%E5%86%85%E5%AE%B9%E5%8F%82%E8%80%83Python-%E5%A4%84%E7%90%86%E9%81%A5%E6%84%9F%E5%BD%B1%E5%83%8F%E5%85%A5%E9%97%A8-%E7%9F%A5%E4%B9%8E-zhihu-com-%EF%BC%89"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">3).解译过程  （下述部分内容参考Python 处理遥感影像入门 - 知乎 (zhihu.com)）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E5%AF%BC%E5%85%A5%E5%BF%85%E9%A1%BB%E5%BA%93"><span class="nav-number">1.1.1.3.1.</span> <span class="nav-text">a. 导入必须库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E6%89%93%E5%8D%B0%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.1.3.2.</span> <span class="nav-text">b. 打印文件信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F"><span class="nav-number">1.1.1.3.3.</span> <span class="nav-text">c. 显示图像</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#d-%E6%B3%A2%E6%AE%B5%E7%BB%84%E5%90%88"><span class="nav-number">1.1.1.3.4.</span> <span class="nav-text">d. 波段组合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#e-%E8%AE%A1%E7%AE%97NDVI%EF%BC%88%E5%BD%92%E4%B8%80%E5%8C%96%E6%A4%8D%E8%A2%AB%E5%88%B6%E6%95%B0%EF%BC%89"><span class="nav-number">1.1.1.3.5.</span> <span class="nav-text">e. 计算NDVI（归一化植被制数）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#f-%E6%9B%B4%E5%A4%9A%E6%8C%87%E6%95%B0"><span class="nav-number">1.1.1.3.6.</span> <span class="nav-text">f. 更多指数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#g-%E4%BF%9D%E5%AD%98%E7%BB%93%E6%9E%9C-NDVI-%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-number">1.1.1.3.7.</span> <span class="nav-text">g. 保存结果(NDVI)到本地</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#h-%E7%A9%BA%E9%97%B4%E7%B4%A2%E5%BC%95%E5%8F%8A%E6%8F%90%E5%8F%96%E5%83%8F%E7%B4%A0%E5%80%BC"><span class="nav-number">1.1.1.3.8.</span> <span class="nav-text">h. 空间索引及提取像素值</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%88%A9%E7%94%A8STK%E4%BB%BF%E7%9C%9F%E8%BD%BD%E8%8D%B7%E6%88%90%E5%83%8F%E6%97%B6%E5%88%BB%E8%BD%A8%E9%81%93%E4%BD%8D%E7%BD%AE%E4%B8%8E%E8%A7%86%E5%9C%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 利用STK仿真载荷成像时刻轨道位置与视场</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%89%E8%81%94%E5%90%88python%E4%B8%8ESTK%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8%E8%8E%B7%E5%8F%96%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">1）联合python与STK创建应用获取接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%BC%89%E5%88%9B%E5%BB%BA%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">2）创建场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%EF%BC%89%E8%AE%BE%E7%BD%AE%E5%9C%BA%E6%99%AF%E6%97%B6%E9%97%B4"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">3）设置场景时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E5%88%9B%E5%BB%BA%E5%8D%AB%E6%98%9F%EF%BC%8C%E8%AE%BE%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">4) 创建卫星，设置参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5%EF%BC%89%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">1.1.2.5.</span> <span class="nav-text">5）结果展示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%A9%E7%94%A8%E8%BE%85%E5%8A%A9%E6%95%B0%E6%8D%AE%E5%AF%B9%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E8%BE%90%E5%B0%84%E5%AE%9A%E6%A0%87%EF%BC%88%E7%BC%96%E7%A8%8B%E5%AE%8C%E6%88%90%EF%BC%89"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 利用辅助数据对图像数据进行辐射定标（编程完成）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%89%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">1）简介</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E8%BE%90%E5%B0%84%E5%AE%9A%E6%A0%87%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.3.1.1.</span> <span class="nav-text">a. 辐射定标定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%BF%9B%E8%A1%8C%E8%BE%90%E5%B0%84%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.1.3.1.2.</span> <span class="nav-text">b. 为什么要进行辐射定位</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-%E8%BF%98%E5%8F%AF%E4%BB%A5%E8%BF%9B%E8%A1%8C%E5%93%AA%E4%BA%9B%E5%AE%9A%E6%A0%87"><span class="nav-number">1.1.3.1.3.</span> <span class="nav-text">c. 还可以进行哪些定标</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">2) 编程实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E5%9C%A8TXT%E6%96%87%E4%BB%B6%E4%B8%AD%E6%89%BE%E5%88%B0%E7%9B%B8%E5%85%B3%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.3.2.1.</span> <span class="nav-text">a. 在TXT文件中找到相关参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.3.2.2.</span> <span class="nav-text">b. 代码</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%EF%BC%89%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">3）结果展示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%A9%E7%94%A8%E8%BE%85%E5%8A%A9%E6%95%B0%E6%8D%AE%E5%AF%B9%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D%EF%BC%88%E7%BC%96%E7%A8%8B%E5%AE%8C%E6%88%90%EF%BC%89"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. 利用辅助数据对图像数据进行地理定位（编程完成）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%89%E7%AE%80%E4%BB%8B-1"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">1）简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%BC%89%E7%BC%96%E7%A8%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">2）编程实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E7%BB%93%E6%9E%9C%E5%B1%95%E7%A4%BA"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">3) 结果展示</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%80%9A%E8%BF%87%E5%87%A0%E4%BD%95%E5%8F%98%E6%8D%A2%EF%BC%8C%E5%88%A9%E7%94%A8%E8%AF%A5%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%E4%BB%BF%E7%9C%9F%E5%8F%A6%E4%B8%80%E8%A7%82%E6%B5%8B%E5%87%A0%E4%BD%95%E6%9D%A1%E4%BB%B6%E4%B8%8B%E7%9A%84%E5%9B%BE%E5%83%8F%E6%95%B0%E6%8D%AE%EF%BC%88%E8%A7%82%E6%B5%8B%E5%8C%BA%E5%9F%9F%E4%B8%8D%E5%8F%98%EF%BC%8C%E8%A7%82%E6%B5%8B%E8%A7%92%E5%BA%A6%E5%92%8C%E5%88%86%E8%BE%A8%E7%8E%87%E5%8F%91%E7%94%9F%E5%8F%98%E5%8C%96%EF%BC%8C%E7%BC%96%E7%A8%8B%E5%AE%8C%E6%88%90%EF%BC%89"><span class="nav-number">1.1.5.</span> <span class="nav-text">5. 通过几何变换，利用该图像数据仿真另一观测几何条件下的图像数据（观测区域不变，观测角度和分辨率发生变化，编程完成）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%89%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">1）概述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E5%87%A0%E4%BD%95%E5%8F%98%E6%8D%A2%E5%AE%9A%E4%B9%89%EF%BC%9A"><span class="nav-number">1.1.5.1.1.</span> <span class="nav-text">a. 几何变换定义：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%BF%9B%E8%A1%8C%E5%87%A0%E4%BD%95%E5%8F%98%E6%8D%A2%EF%BC%9A"><span class="nav-number">1.1.5.1.2.</span> <span class="nav-text">b. 为什么要进行几何变换：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%BC%89%E5%87%A0%E4%BD%95%E5%8F%98%E6%8D%A2%E5%B8%B8%E8%A7%81%E6%96%B9%E6%B3%95%EF%BC%88%E9%83%A8%E5%88%86%E5%86%85%E5%AE%B9%E5%8F%82%E8%80%83%E4%BA%86opencv%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E5%9B%BE%E5%83%8F%E5%87%A0%E4%BD%95%E5%8F%98%E6%8D%A2-%E7%9F%A5%E4%B9%8E-zhihu-com-%EF%BC%89"><span class="nav-number">1.1.5.2.</span> <span class="nav-text">2）几何变换常见方法（部分内容参考了opencv学习笔记（五）：图像几何变换 - 知乎 (zhihu.com)）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#a-%E8%A7%86%E8%A7%89%E6%95%88%E6%9E%9C%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.5.2.1.</span> <span class="nav-text">a.  视觉效果分类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-%E6%95%B0%E5%AD%A6%E5%8E%9F%E7%90%86%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.5.2.2.</span> <span class="nav-text">b.  数学原理分类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%EF%BC%89%E6%96%87%E7%8C%AE%E6%89%A9%E5%B1%95"><span class="nav-number">1.1.5.3.</span> <span class="nav-text">3）文献扩展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%A0%B9%E6%8D%AE%E8%8B%B1%E6%96%87%E7%A7%91%E6%8A%80%E8%AE%BA%E6%96%87%E7%9A%84%E5%86%99%E4%BD%9C%E8%A6%81%E6%B1%82%EF%BC%8C%E7%94%A81%E5%B0%8F%E8%8A%82%E5%AF%B9%E7%AC%AC5%E9%A2%98%E7%9A%84%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.根据英文科技论文的写作要求，用1小节对第5题的方法进行描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%A0%B9%E6%8D%AE%E4%B8%AD%E6%96%87%E7%A7%91%E6%8A%80%E8%AE%BA%E6%96%87%E7%9A%84%E5%86%99%E4%BD%9C%E8%A6%81%E6%B1%82%EF%BC%8C%E7%94%A81%E5%B0%8F%E8%8A%82%E5%AF%B9%E7%AC%AC5%E9%A2%98%E7%9A%84%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E6%8F%8F%E8%BF%B0%EF%BC%88%E6%B3%A8%E6%84%8F%E4%B8%AD%E8%8B%B1%E6%96%87%E8%AF%AD%E8%A8%80%E7%9A%84%E5%86%99%E4%BD%9C%E5%8C%BA%E5%88%AB%EF%BC%89"><span class="nav-number">1.1.7.</span> <span class="nav-text">7. 根据中文科技论文的写作要求，用1小节对第5题的方法进行描述（注意中英文语言的写作区别）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共83.4k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
