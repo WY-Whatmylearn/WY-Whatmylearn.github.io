@@ -29,21 +29,20 @@
 <meta property="og:site_name" content="WangYing&#39;s Blog">
 <meta property="og:description" content="Langchain是一种基于本地文库与大模型的问答架构。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704333345883.png">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704334625179.png">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704335375242.png">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704335390797.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/lang.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704333345883.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704334625179.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704335375242.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704335390797.png">
 <meta property="og:image" content="https://pic2.zhimg.com/v2-547cc064bf7bf505310472905c7e45e1_r.jpg">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704264516465.png">
-<meta property="og:image" content="https://github.com/MING-ZCH/langchain-ChatGLM-6B/raw/master/img/webui_0510_1.png">
-<meta property="og:image" content="f:/Blog/source/typora-user-images/1704267297212.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704264516465.png">
+<meta property="og:image" content="http://example.com/blog_image/typora-user-images/1704267297212.png">
 <meta property="article:published_time" content="2023-12-27T04:01:00.000Z">
-<meta property="article:modified_time" content="2024-01-04T08:16:24.923Z">
+<meta property="article:modified_time" content="2024-01-04T08:46:08.260Z">
 <meta property="article:author" content="Wang">
 <meta property="article:tag" content="大模型">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true">
+<meta name="twitter:image" content="http://example.com/blog_image/typora-user-images/lang.png">
 
 <link rel="canonical" href="http://example.com/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/">
 
@@ -218,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-04 16:16:24" itemprop="dateModified" datetime="2024-01-04T16:16:24+08:00">2024-01-04</time>
+                <time title="修改时间：2024-01-04 16:46:08" itemprop="dateModified" datetime="2024-01-04T16:46:08+08:00">2024-01-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,9 +244,9 @@
 <span id="more"></span>
 
 <h1 id="Langchain"><a href="#Langchain" class="headerlink" title="Langchain"></a>Langchain</h1><h2 id="Langchain原理介绍"><a href="#Langchain原理介绍" class="headerlink" title="Langchain原理介绍"></a>Langchain原理介绍</h2><p>LangChian 可以将 LLM 模型、向量数据库、交互层 Prompt、外部知识、外部工具整合到一起，进而可以自由构建 LLM 应用。LangChian 之所以称为Langchain，是因为他像一条链子一样串联起本地文库、用户需求和大模型。</p>
-<p><img src="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true" alt="langchain+chatglm.png"></p>
+<p><img src="/../blog_image/typora-user-images/lang.png" alt="langchain+chatglm.png"></p>
 <h3 id="数据接入层"><a href="#数据接入层" class="headerlink" title="数据接入层"></a>数据接入层</h3><p>打通外部数据的管道，包含文档加载，文档转换，文本嵌入，向量存储几个环节。就是把<strong>大量的数据组合</strong>起来，让LLM能够尽可能少地消耗计算力就能轻松地引用。它的工作原理是把一个大的数据源，比如一个50页的PDF文件，<strong>分成一块一块的，然后把它们嵌入到一个向量存储</strong>（Vector Store）里。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/656646499">小白入门大模型：LangChain - 知乎 (zhihu.com)</a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/636043995">LangChain：一个让你的LLM变得更强大的开源框架 - 知乎 (zhihu.com)</a></p>
-<p><img src="F:/Blog/source/typora-user-images/1704333345883.png" alt="1704333345883"></p>
+<p><img src="/../blog_image/typora-user-images/1704333345883.png" alt="1704333345883"></p>
 <h4 id="Step-1-文档加载"><a href="#Step-1-文档加载" class="headerlink" title="Step 1:文档加载"></a>Step 1:文档加载</h4><p>重点包括了csv（CSVLoader），html（UnstructuredHTMLLoader），json（JSONLoader），markdown（UnstructuredMarkdownLoader）以及pdf（因为pdf的格式比较复杂，提供了PyPDFLoader、MathpixPDFLoader、UnstructuredPDFLoader，PyMuPDF等多种形式的加载引擎）几种常用格式的内容解析。</p>
 <h4 id="Step-2-文档拆分"><a href="#Step-2-文档拆分" class="headerlink" title="Step 2:文档拆分"></a>Step 2:文档拆分</h4><p>这种方式会将语义最相关的文本片段放在一起。Langchain提供了多种文本分割器，包括CharacterTextSplitter()，MarkdownHeaderTextSplitter()，RecursiveCharacterTextSplitter()等。</p>
 <ul>
@@ -264,7 +263,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.text_splitter <span class="keyword">import</span> RecursiveCharacterTextSplitter, CharacterTextSplitter</span><br><span class="line"> </span><br><span class="line">chunk_size = <span class="number">20</span></span><br><span class="line">chunk_overlap = <span class="number">4</span></span><br><span class="line"> </span><br><span class="line">r_splitter = RecursiveCharacterTextSplitter(</span><br><span class="line">    chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line">c_splitter = CharacterTextSplitter(</span><br><span class="line">    chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line"> </span><br><span class="line">text = <span class="string">&quot;hello world, how about you? thanks, I am fine.  the machine learning class. So what I wanna do today is just spend a little time going over the logistics of the class, and then we&#x27;ll start to talk a bit about machine learning&quot;</span></span><br><span class="line">rs = r_splitter.split_text(text)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(rs))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(rs))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> rs:</span><br><span class="line">    <span class="built_in">print</span>(item)</span><br></pre></td></tr></table></figure>
 
 <p><strong>结果：</strong>分割后，得到的结果如下所示，每一段chunk尽量和chunk_size贴近，每个chunk之间也有overlap。RecursiveCharacterTextSplitter 将按不同的字符递归地分割(按照这个优先级[“\n\n”, “\n”, “ “, “”])，这样就能尽量把所有和语义相关的内容尽可能长时间地保留在同一位置.在项目中也推荐使用RecursiveCharacterTextSplitter来进行分割。</p>
-<p><img src="F:/Blog/source/typora-user-images/1704334625179.png" alt="1704334625179"></p>
+<p><img src="/../blog_image/typora-user-images/1704334625179.png" alt="1704334625179"></p>
 <h4 id="Step-3-文本嵌入（embedding-数据转向量）"><a href="#Step-3-文本嵌入（embedding-数据转向量）" class="headerlink" title="Step 3:文本嵌入（embedding,数据转向量）"></a>Step 3:文本嵌入（embedding,数据转向量）</h4><p><strong>文本嵌入原理：</strong>向量是一个有方向和长度的量，可以用数学中的坐标来表示。例如，可以用二维坐标系中的向量表示一个平面上的点，也可以用三维坐标系中的向量表示一个空间中的点。在机器学习中，<strong>向量</strong>通常用于表示<strong>数据的特征</strong>。而文本嵌入是一种<strong>将文本这种离散数据映射到连续向量空间的方法</strong>，嵌入技术可以<strong>将高维的离散数据降维到低维的连续空间中，并保留数据之间的语义关系，从而方便进行机器学习和深度学习的任务</strong>。</p>
 <p><strong>文本嵌入算法</strong>：是指将文本数据转化为向量表示的具体算法，通常包括以下几个步骤：</p>
 <ul>
@@ -286,9 +285,9 @@
 <h3 id="用户接入层"><a href="#用户接入层" class="headerlink" title="用户接入层"></a>用户接入层</h3><p>嵌入包含两个方法，一个用于嵌入文档，接受多个文本作为输入；一个用于嵌入查询，接受单个文本。数据接入层的嵌入属于第一种，而用户接入层的嵌入旨在将输入的问题嵌入到模型中作为查询。</p>
 <h3 id="向量相似度匹配"><a href="#向量相似度匹配" class="headerlink" title="向量相似度匹配"></a>向量相似度匹配</h3><p>例如：”机器学习”表示为 [1,2,3]<br>“深度学习”表示为[2,3,3]<br>“英雄联盟”表示为[9,1,3]<br>使用余弦相似度（余弦相似度是一种用于衡量向量之间相似度的指标，可以用于文本嵌入之间的相似度）在计算机中来判断文本之间的距离。</p>
 <p>“机器学习”与“深度学习”的距离：</p>
-<p><img src="F:/Blog/source/typora-user-images/1704335375242.png" alt="1704335375242"></p>
+<p><img src="/../blog_image/typora-user-images/1704335375242.png" alt="1704335375242"></p>
 <p>“机器学习”与“英雄联盟“的距离”：</p>
-<p><img src="F:/Blog/source/typora-user-images/1704335390797.png" alt="1704335390797"></p>
+<p><img src="/../blog_image/typora-user-images/1704335390797.png" alt="1704335390797"></p>
 <p>“机器学习”与“深度学习”两个文本之间的余弦相似度更高，表示它们在语义上更相似。</p>
 <h3 id="LLM终端输入构建"><a href="#LLM终端输入构建" class="headerlink" title="LLM终端输入构建"></a>LLM终端输入构建</h3><p>上述步骤通过将用户输入转为向量与上传文件的向量进行比较，得到文本库中较相似的文本块。但是为了更好匹配用户需求，使得模型回答的内容更为具体、更具条理、更高质量，就需要在LLM输入端进行Prompt工程。</p>
 <blockquote>
@@ -330,9 +329,8 @@
 </ul>
 <h3 id="Langchain核心模块架构图"><a href="#Langchain核心模块架构图" class="headerlink" title="Langchain核心模块架构图"></a>Langchain核心模块架构图</h3><p><img src="https://pic2.zhimg.com/v2-547cc064bf7bf505310472905c7e45e1_r.jpg" alt="img"></p>
 <h2 id="Langchain搭建个人专属知识库"><a href="#Langchain搭建个人专属知识库" class="headerlink" title="Langchain搭建个人专属知识库"></a>Langchain搭建个人专属知识库</h2><p>项目链接：<a target="_blank" rel="noopener" href="https://github.com/noteljj/langchain-ChatGLM">noteljj&#x2F;langchain-ChatGLM: langchain-ChatGLM, local knowledge based ChatGLM with langchain ｜ 基于本地知识的 ChatGLM 问答 (github.com)</a></p>
-<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><img src="F:/Blog/source/typora-user-images/1704264516465.png" alt="1704264516465"></p>
-<p><img src="https://github.com/MING-ZCH/langchain-ChatGLM-6B/raw/master/img/webui_0510_1.png" alt="img"></p>
-<p><img src="F:/Blog/source/typora-user-images/1704267297212.png" alt="1704267297212"></p>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><img src="/../blog_image/typora-user-images/1704264516465.png" alt="1704264516465"></p>
+<p><img src="/../blog_image/typora-user-images/1704267297212.png" alt="1704267297212"></p>
 <p>Web UI 可以实现如下功能：</p>
 <ol>
 <li>运行前自动读取<code>configs/model_config.py</code>中<code>LLM</code>及<code>Embedding</code>模型枚举及默认模型设置运行模型，如需重新加载模型，可在 <code>模型配置</code> Tab 重新选择后点击 <code>重新加载模型</code> 进行模型加载；</li>
@@ -377,8 +375,8 @@
       <i class="fa fa-chevron-left"></i> 大模型部署
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/01/04/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8/" rel="next" title="大模型的企业应用">
-      大模型的企业应用 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/01/03/%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1/" rel="next" title="大模型的未来前景">
+      大模型的未来前景 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
