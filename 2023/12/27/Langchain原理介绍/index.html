@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Langchain是一种基于本地文库与大模型的问答架构。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Langchain原理与使用">
+<meta property="og:url" content="http://example.com/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="Langchain是一种基于本地文库与大模型的问答架构。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704333345883.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704334625179.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704335375242.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704335390797.png">
+<meta property="og:image" content="https://pic2.zhimg.com/v2-547cc064bf7bf505310472905c7e45e1_r.jpg">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704264516465.png">
+<meta property="og:image" content="https://github.com/MING-ZCH/langchain-ChatGLM-6B/raw/master/img/webui_0510_1.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704267297212.png">
+<meta property="article:published_time" content="2023-12-27T04:01:00.000Z">
+<meta property="article:modified_time" content="2024-01-04T08:16:24.923Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Langchain原理与使用 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Langchain原理与使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-27 12:01:00" itemprop="dateCreated datePublished" datetime="2023-12-27T12:01:00+08:00">2023-12-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-04 16:16:24" itemprop="dateModified" datetime="2024-01-04T16:16:24+08:00">2024-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">大模型</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Langchain是一种基于本地文库与大模型的问答架构。</p>
+<span id="more"></span>
+
+<h1 id="Langchain"><a href="#Langchain" class="headerlink" title="Langchain"></a>Langchain</h1><h2 id="Langchain原理介绍"><a href="#Langchain原理介绍" class="headerlink" title="Langchain原理介绍"></a>Langchain原理介绍</h2><p>LangChian 可以将 LLM 模型、向量数据库、交互层 Prompt、外部知识、外部工具整合到一起，进而可以自由构建 LLM 应用。LangChian 之所以称为Langchain，是因为他像一条链子一样串联起本地文库、用户需求和大模型。</p>
+<p><img src="https://github.com/chatchat-space/Langchain-Chatchat/blob/master/img/langchain+chatglm.png?raw=true" alt="langchain+chatglm.png"></p>
+<h3 id="数据接入层"><a href="#数据接入层" class="headerlink" title="数据接入层"></a>数据接入层</h3><p>打通外部数据的管道，包含文档加载，文档转换，文本嵌入，向量存储几个环节。就是把<strong>大量的数据组合</strong>起来，让LLM能够尽可能少地消耗计算力就能轻松地引用。它的工作原理是把一个大的数据源，比如一个50页的PDF文件，<strong>分成一块一块的，然后把它们嵌入到一个向量存储</strong>（Vector Store）里。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/656646499">小白入门大模型：LangChain - 知乎 (zhihu.com)</a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/636043995">LangChain：一个让你的LLM变得更强大的开源框架 - 知乎 (zhihu.com)</a></p>
+<p><img src="F:/Blog/source/typora-user-images/1704333345883.png" alt="1704333345883"></p>
+<h4 id="Step-1-文档加载"><a href="#Step-1-文档加载" class="headerlink" title="Step 1:文档加载"></a>Step 1:文档加载</h4><p>重点包括了csv（CSVLoader），html（UnstructuredHTMLLoader），json（JSONLoader），markdown（UnstructuredMarkdownLoader）以及pdf（因为pdf的格式比较复杂，提供了PyPDFLoader、MathpixPDFLoader、UnstructuredPDFLoader，PyMuPDF等多种形式的加载引擎）几种常用格式的内容解析。</p>
+<h4 id="Step-2-文档拆分"><a href="#Step-2-文档拆分" class="headerlink" title="Step 2:文档拆分"></a>Step 2:文档拆分</h4><p>这种方式会将语义最相关的文本片段放在一起。Langchain提供了多种文本分割器，包括CharacterTextSplitter()，MarkdownHeaderTextSplitter()，RecursiveCharacterTextSplitter()等。</p>
+<ul>
+<li>RecursiveCharacterTextSplitter():按字符串分割文本，递归地尝试按不同的分隔符进行分割文本。</li>
+<li>CharacterTextSplitter()：按字符来分割文本。</li>
+<li>MarkdownHeaderTextSplitter()：基于指定的标题来分割markdown 文件。</li>
+<li>TokenTextSplitter()：按token来分割文本。</li>
+<li>SentenceTransformersTokenTextSplitter() : 按token来分割文本</li>
+<li>Language() - 用于 CPP、Python、Ruby、Markdown 等。</li>
+<li>NLTKTextSplitter()：使用 NLTK（自然语言工具包）按句子分割文本。</li>
+<li>SpacyTextSplitter() - 使用 Spacy按句子的切割文本。</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qiaotl/article/details/132715316">Langchain使用之 - 文本分割Splitter_recursivecharactertextsplitter-CSDN博客</a><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/644938147">让Langchain与你的数据对话(一)：数据加载与分割 - 知乎 (zhihu.com)</a><br><strong>示例：</strong>使用RecursiveCharacterTextSplitter对一段文字进行分割。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> langchain.text_splitter <span class="keyword">import</span> RecursiveCharacterTextSplitter, CharacterTextSplitter</span><br><span class="line"> </span><br><span class="line">chunk_size = <span class="number">20</span></span><br><span class="line">chunk_overlap = <span class="number">4</span></span><br><span class="line"> </span><br><span class="line">r_splitter = RecursiveCharacterTextSplitter(</span><br><span class="line">    chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line">c_splitter = CharacterTextSplitter(</span><br><span class="line">    chunk_size=chunk_size, chunk_overlap=chunk_overlap)</span><br><span class="line"> </span><br><span class="line">text = <span class="string">&quot;hello world, how about you? thanks, I am fine.  the machine learning class. So what I wanna do today is just spend a little time going over the logistics of the class, and then we&#x27;ll start to talk a bit about machine learning&quot;</span></span><br><span class="line">rs = r_splitter.split_text(text)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(rs))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">len</span>(rs))</span><br><span class="line"><span class="keyword">for</span> item <span class="keyword">in</span> rs:</span><br><span class="line">    <span class="built_in">print</span>(item)</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong>分割后，得到的结果如下所示，每一段chunk尽量和chunk_size贴近，每个chunk之间也有overlap。RecursiveCharacterTextSplitter 将按不同的字符递归地分割(按照这个优先级[“\n\n”, “\n”, “ “, “”])，这样就能尽量把所有和语义相关的内容尽可能长时间地保留在同一位置.在项目中也推荐使用RecursiveCharacterTextSplitter来进行分割。</p>
+<p><img src="F:/Blog/source/typora-user-images/1704334625179.png" alt="1704334625179"></p>
+<h4 id="Step-3-文本嵌入（embedding-数据转向量）"><a href="#Step-3-文本嵌入（embedding-数据转向量）" class="headerlink" title="Step 3:文本嵌入（embedding,数据转向量）"></a>Step 3:文本嵌入（embedding,数据转向量）</h4><p><strong>文本嵌入原理：</strong>向量是一个有方向和长度的量，可以用数学中的坐标来表示。例如，可以用二维坐标系中的向量表示一个平面上的点，也可以用三维坐标系中的向量表示一个空间中的点。在机器学习中，<strong>向量</strong>通常用于表示<strong>数据的特征</strong>。而文本嵌入是一种<strong>将文本这种离散数据映射到连续向量空间的方法</strong>，嵌入技术可以<strong>将高维的离散数据降维到低维的连续空间中，并保留数据之间的语义关系，从而方便进行机器学习和深度学习的任务</strong>。</p>
+<p><strong>文本嵌入算法</strong>：是指将文本数据转化为向量表示的具体算法，通常包括以下几个步骤：</p>
+<ul>
+<li>分词：将文本划分成一个个单词或短语。</li>
+<li>构建词汇表：将分词后的单词或短语建立词汇表，并为每个单词或短语赋予一个唯一的编号。</li>
+<li>计算词嵌入：使用预训练的模型或自行训练的模型，将每个单词或短语映射到向量空间中。</li>
+<li>计算文本嵌入：将文本中每个单词或短语的向量表示取平均或加权平均，得到整个文本的向量表示。</li>
+</ul>
+<p>常见的文本嵌入算法包括 Word2Vec、GloVe、FastText 等。这些算法通过预训练或自行训练的方式，将单词或短语映射到低维向量空间中，从而能够在计算机中方便地处理文本数据。</p>
+<p>文本嵌入常用于以下场合:</p>
+<ul>
+<li>搜索（结果按与查询字符串的相关性排序）</li>
+<li>聚类（其中文本字符串按相似性分组）</li>
+<li>推荐（推荐具有相关文本字符串的项目）</li>
+<li>异常检测（识别出相关性很小的异常值）</li>
+<li>多样性测量（分析相似性分布）</li>
+<li>分类（其中文本字符串按其最相似的标签分类）</li>
+</ul>
+<h3 id="用户接入层"><a href="#用户接入层" class="headerlink" title="用户接入层"></a>用户接入层</h3><p>嵌入包含两个方法，一个用于嵌入文档，接受多个文本作为输入；一个用于嵌入查询，接受单个文本。数据接入层的嵌入属于第一种，而用户接入层的嵌入旨在将输入的问题嵌入到模型中作为查询。</p>
+<h3 id="向量相似度匹配"><a href="#向量相似度匹配" class="headerlink" title="向量相似度匹配"></a>向量相似度匹配</h3><p>例如：”机器学习”表示为 [1,2,3]<br>“深度学习”表示为[2,3,3]<br>“英雄联盟”表示为[9,1,3]<br>使用余弦相似度（余弦相似度是一种用于衡量向量之间相似度的指标，可以用于文本嵌入之间的相似度）在计算机中来判断文本之间的距离。</p>
+<p>“机器学习”与“深度学习”的距离：</p>
+<p><img src="F:/Blog/source/typora-user-images/1704335375242.png" alt="1704335375242"></p>
+<p>“机器学习”与“英雄联盟“的距离”：</p>
+<p><img src="F:/Blog/source/typora-user-images/1704335390797.png" alt="1704335390797"></p>
+<p>“机器学习”与“深度学习”两个文本之间的余弦相似度更高，表示它们在语义上更相似。</p>
+<h3 id="LLM终端输入构建"><a href="#LLM终端输入构建" class="headerlink" title="LLM终端输入构建"></a>LLM终端输入构建</h3><p>上述步骤通过将用户输入转为向量与上传文件的向量进行比较，得到文本库中较相似的文本块。但是为了更好匹配用户需求，使得模型回答的内容更为具体、更具条理、更高质量，就需要在LLM输入端进行Prompt工程。</p>
+<blockquote>
+<p>**Prompt:**下游任务设计出来的一种输入形式或模板，能够帮助LLM“回忆”起自己在预训练时“学习”到的东西的方式。<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/399295895">NLP新宠——浅谈Prompt的前世今生 - 知乎 (zhihu.com)</a></p>
+<p>对于输入的文本x,有函数f_prompt(x),将x转化为prompt的形式x’。该函数通常会进行两步操作：</p>
+<p>一是使用一个模板，模板通常为一段自然语言，并且包含有两个空位置：用于填输入x的位置[X]和用于生成答案文本z的位置[Z]。二是把输入x填到[X]的位置。</p>
+<p>在文本情感分类的任务中，假设输入是 X &#x3D; “ I love this movie.” 。使用的模板是 “ [X] Overall, it was a [Z] movie.”</p>
+<p>那么得到的x′就应该是 “I love this movie. Overall it was a [Z] movie.”</p>
+<p>在实际的研究中，prompts应该有空位置来填充答案，这个位置一般在句中或者句末。如果在句中，一般称这种prompt为<strong>cloze prompt</strong>；如果在句末，一般称这种prompt为<strong>prefix prompt</strong>。[X]和[Z]的位置以及数量都可能对结果造成影响，因此可以根据需要灵活调整。</p>
+<p>下一步会进行<strong>答案搜索，顾名思义就是LM寻找填在[X]处可以使得分数最高的文本 z^ 。最后是答案映射</strong>。有时LM填充的文本并非任务需要的最终形式，因此要将此文本映射到最终的输出z^。例如，在文本情感分类任务中，”excellent”, “great”, “wonderful” 等词都对应一个种类 “++”，这时需要将词语映射到标签再输出。</p>
+</blockquote>
+<h4 id="Step-1-Prompt-Templates（提示模板，根据用户提示动态格式化输入）"><a href="#Step-1-Prompt-Templates（提示模板，根据用户提示动态格式化输入）" class="headerlink" title="Step 1:Prompt Templates（提示模板，根据用户提示动态格式化输入）"></a>Step 1:Prompt Templates（提示模板，根据用户提示动态格式化输入）</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41667743/article/details/129678577">LangChain：Prompt Templates介绍及应用_prompttemplate-CSDN博客</a></p>
+<p>在自然语言生成任务中，生成高质量的文本是非常困难的，尤其是当需要针对不同的主题、情境、问题或任务进行文本生成时，需要花费大量的时间和精力去设计、调试和优化模型，而这种方式并不是高效的解决方案。因此，Prompt Templates技术应运而生，可以大大降低模型设计、调试和优化的成本。</p>
+<p>Prompt Templates是一种可复制的生成Prompt的方式，它包含一个文本字符串，可以接受来自终端用户的一组参数并生成Prompt。Prompt Templates可以包含指令、少量示例和一个向语言模型提出的问题。Prompt Templates可以帮助我们指导语言模型生成更高质量的文本，从而更好地完成我们的任务。</p>
+<p>比如：帮我翻译以下文字{text}，采用{style}风格。</p>
+<p>在该模板内，prompt Templates包含两个变量，{text}{style}，因此用户在输入时可以指定这两个变量，比如帮我把<strong>。。。</strong>翻译成<strong>美式英语</strong>。</p>
+<p><strong>因此Prompt Templates一般包含：</strong></p>
+<ul>
+<li>对语言模型的指令；</li>
+<li>一组few-shot examples，以帮助语言模型生成更好的响应；</li>
+<li>对语言模型的问题。</li>
+</ul>
+<p>其中<strong>few-shot examples</strong>是一组可用于帮助语言模型生成更好响应的示例。要生成具有few-shot examples的prompt，可以使用FewShotPromptTemplate。该类接受一个PromptTemplate和一组few-shot examples。然后，它使用这些few-shot examples格式化prompt模板。</p>
+<h4 id="Step-2-output-parser（输出解析器-规范输出）"><a href="#Step-2-output-parser（输出解析器-规范输出）" class="headerlink" title="Step 2:output parser（输出解析器,规范输出）"></a>Step 2:output parser（输出解析器,规范输出）</h4><p>LLM模型生成的都是文本，但是我们通常期望能够获取到一些结构化的输出，以便后续进一步处理。而Output Parsers的主要作用是将LLM的文本解析为结构化的数据。</p>
+<p>在LangChain的Output Parsers中，必须要实现两个方法：</p>
+<ul>
+<li><code>getFormatInstructions(): str</code> 该方法返回一个包含语言模型输出格式说明的字符串，简单来说就是告诉LLM模型应该以何种格式返回数据。</li>
+<li><code>parse(raw: string): any</code> 该方法是将一个原始字符串raw解析为一个特定结构的数据</li>
+</ul>
+<h4 id="Step-3-Example-Selectors（示例选择器）"><a href="#Step-3-Example-Selectors（示例选择器）" class="headerlink" title="Step 3:Example Selectors（示例选择器）"></a>Step 3:Example Selectors（示例选择器）</h4><p>为了让LLM的输出符合自己期望的文本，可以通过<strong>Few-shot</strong>（少样本）的方式，即给出一些示例，让LLM生成与示例相似的文本。<strong>Few-shot</strong>这种方式可以一定程度上避免LLM输出质量波动过大的问题，但是同样也会引入一些其他问题例如，过于遵循示例的风格，导致有时候会有种强行拼凑的感觉。Example Selector就是负责帮助你构建一个<strong>Few-shot</strong>的Prompt。ExampleSelector接受一个最大长度的参数，可以根据用户的输入长度，动态的选择示例的个数，以保证最终的Prompt不会超过LLM模型对于Prompt的长度限制。</p>
+<h2 id="Langchain组件"><a href="#Langchain组件" class="headerlink" title="Langchain组件"></a>Langchain组件</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/651151321">一文详解最热的 LLM 应用框架 LangChain - 知乎 (zhihu.com)</a></p>
+<h3 id="Langchain主要组件"><a href="#Langchain主要组件" class="headerlink" title="Langchain主要组件"></a>Langchain主要组件</h3><ul>
+<li>Model I&#x2F;O：管理大语言模型（Models），及其输入（Prompts）和格式化输出（Output Parsers）</li>
+<li>Data connection：管理主要用于建设私域知识（库）的向量数据存储（Vector Stores）、内容数据获取（Document Loaders）和转化（Transformers），以及向量数据查询（Retrievers）</li>
+<li>Memory：用于存储和获取 对话历史记录 的功能模块</li>
+<li>Chains：用于串联 Memory ↔️ Model I&#x2F;O ↔️ Data Connection，以实现 串行化 的连续对话、推测流程</li>
+<li>Agents：基于 Chains 进一步串联工具（Tools），从而将大语言模型的能力和本地、云服务能力结合</li>
+<li>Callbacks：提供了一个回调系统，可连接到 LLM 申请的各个阶段，便于进行日志记录、追踪等数据导流</li>
+</ul>
+<h3 id="Langchain核心模块架构图"><a href="#Langchain核心模块架构图" class="headerlink" title="Langchain核心模块架构图"></a>Langchain核心模块架构图</h3><p><img src="https://pic2.zhimg.com/v2-547cc064bf7bf505310472905c7e45e1_r.jpg" alt="img"></p>
+<h2 id="Langchain搭建个人专属知识库"><a href="#Langchain搭建个人专属知识库" class="headerlink" title="Langchain搭建个人专属知识库"></a>Langchain搭建个人专属知识库</h2><p>项目链接：<a target="_blank" rel="noopener" href="https://github.com/noteljj/langchain-ChatGLM">noteljj&#x2F;langchain-ChatGLM: langchain-ChatGLM, local knowledge based ChatGLM with langchain ｜ 基于本地知识的 ChatGLM 问答 (github.com)</a></p>
+<h3 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h3><p><img src="F:/Blog/source/typora-user-images/1704264516465.png" alt="1704264516465"></p>
+<p><img src="https://github.com/MING-ZCH/langchain-ChatGLM-6B/raw/master/img/webui_0510_1.png" alt="img"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704267297212.png" alt="1704267297212"></p>
+<p>Web UI 可以实现如下功能：</p>
+<ol>
+<li>运行前自动读取<code>configs/model_config.py</code>中<code>LLM</code>及<code>Embedding</code>模型枚举及默认模型设置运行模型，如需重新加载模型，可在 <code>模型配置</code> Tab 重新选择后点击 <code>重新加载模型</code> 进行模型加载；</li>
+<li>可手动调节保留对话历史长度、匹配知识库文段数量，可根据显存大小自行调节；</li>
+<li><code>对话</code> Tab 具备模式选择功能，可选择 <code>LLM对话</code> 与 <code>知识库问答</code> 模式进行对话，支持流式对话；</li>
+<li>添加 <code>配置知识库</code> 功能，支持选择已有知识库或新建知识库，并可向知识库中<strong>新增</strong>上传文件&#x2F;文件夹，使用文件上传组件选择好文件后点击 <code>上传文件并加载知识库</code>，会将所选上传文档数据加载至知识库中，并基于更新后知识库进行问答；</li>
+<li>新增 <code>知识库测试 Beta</code> Tab，可用于测试不同文本切分方法与检索相关度阈值设置，暂不支持将测试参数作为 <code>对话</code> Tab 设置参数。</li>
+<li>后续版本中将会增加对知识库的修改或删除，及知识库中已导入文件的查看</li>
+</ol>
+<p><strong>Note: Langchain的知识库检索本质就是AI理解所给的文本内容，然后根据要求进行回答。所以如果问到与知识库无关的内容会出现答非所问的情况。</strong></p>
+<p><strong>因此，如果像完美的适应下游任务，需要进行微调或者prompt。</strong></p>
+<p>微调是指在已有的预训练语言模型基础上，通过少量的数据来对模型进行进一步的训练，使得模型能够更好地适应新的任务或领域。微调的目的是利用已有的语言模型，尽量减少训练新模型的时间和资源消耗。因此，微调是一种快速迁移学习的方法。</p>
+<p>而prompt是指为了训练特定类型的语言模型而设计的一系列文本或代码提示。prompt可以看作是一种能够帮助语言模型更好地理解特定任务或领域的“指令”。prompt通常包括一个问题、任务描述或预定义的文本片段，用于指导模型生成合适的文本结果。融入了Prompt的新模式大致可以归纳成”pre-train, prompt, and predict“。在该模式中，下游任务被重新调整成类似预训练任务的形式。例如，通常的预训练任务有Masked Language Model，在文本情感分类任务中，对于 “I love this movie.” 这句输入，可以在后面加上prompt “The movie is ___” 这样的形式，然后让PLM用表示情感的答案填空如 “great”、“fantastic” 等等，最后再将该答案转化成情感分类的标签，这样以来，通过选取合适的prompt，我们可以控制模型预测输出，从而一个完全无监督训练的PLM可以被用来解决各种各样的下游任务。（原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_44324007/article/details/129687988%EF%BC%89">https://blog.csdn.net/qq_44324007/article/details/129687988）</a></p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"># 大模型</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/25/%E5%A4%A7%E6%A8%A1%E5%9E%8B2/" rel="prev" title="大模型部署">
+      <i class="fa fa-chevron-left"></i> 大模型部署
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/01/04/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8/" rel="next" title="大模型的企业应用">
+      大模型的企业应用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Langchain"><span class="nav-number">1.</span> <span class="nav-text">Langchain</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">Langchain原理介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%8E%A5%E5%85%A5%E5%B1%82"><span class="nav-number">1.1.1.</span> <span class="nav-text">数据接入层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-1-%E6%96%87%E6%A1%A3%E5%8A%A0%E8%BD%BD"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">Step 1:文档加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-2-%E6%96%87%E6%A1%A3%E6%8B%86%E5%88%86"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">Step 2:文档拆分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-3-%E6%96%87%E6%9C%AC%E5%B5%8C%E5%85%A5%EF%BC%88embedding-%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%90%91%E9%87%8F%EF%BC%89"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">Step 3:文本嵌入（embedding,数据转向量）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E6%8E%A5%E5%85%A5%E5%B1%82"><span class="nav-number">1.1.2.</span> <span class="nav-text">用户接入层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%91%E9%87%8F%E7%9B%B8%E4%BC%BC%E5%BA%A6%E5%8C%B9%E9%85%8D"><span class="nav-number">1.1.3.</span> <span class="nav-text">向量相似度匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LLM%E7%BB%88%E7%AB%AF%E8%BE%93%E5%85%A5%E6%9E%84%E5%BB%BA"><span class="nav-number">1.1.4.</span> <span class="nav-text">LLM终端输入构建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-1-Prompt-Templates%EF%BC%88%E6%8F%90%E7%A4%BA%E6%A8%A1%E6%9D%BF%EF%BC%8C%E6%A0%B9%E6%8D%AE%E7%94%A8%E6%88%B7%E6%8F%90%E7%A4%BA%E5%8A%A8%E6%80%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%85%A5%EF%BC%89"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">Step 1:Prompt Templates（提示模板，根据用户提示动态格式化输入）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-2-output-parser%EF%BC%88%E8%BE%93%E5%87%BA%E8%A7%A3%E6%9E%90%E5%99%A8-%E8%A7%84%E8%8C%83%E8%BE%93%E5%87%BA%EF%BC%89"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">Step 2:output parser（输出解析器,规范输出）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Step-3-Example-Selectors%EF%BC%88%E7%A4%BA%E4%BE%8B%E9%80%89%E6%8B%A9%E5%99%A8%EF%BC%89"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">Step 3:Example Selectors（示例选择器）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Langchain%E7%BB%84%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">Langchain组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Langchain%E4%B8%BB%E8%A6%81%E7%BB%84%E4%BB%B6"><span class="nav-number">1.2.1.</span> <span class="nav-text">Langchain主要组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Langchain%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-number">1.2.2.</span> <span class="nav-text">Langchain核心模块架构图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Langchain%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E4%B8%93%E5%B1%9E%E7%9F%A5%E8%AF%86%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text">Langchain搭建个人专属知识库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用方法</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共93.4k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

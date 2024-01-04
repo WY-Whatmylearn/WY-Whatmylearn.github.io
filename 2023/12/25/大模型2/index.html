@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="有关于大模型部署的一些补充.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型部署">
+<meta property="og:url" content="http://example.com/2023/12/25/%E5%A4%A7%E6%A8%A1%E5%9E%8B2/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="有关于大模型部署的一些补充.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1703467879294.png">
+<meta property="og:image" content="c:\Users\wangying\AppData\Roaming\Typora\typora-user-images\1703468031387.png">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-b254c5a30894f4743c522291f8f4eb4a_r.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-11cad90da17b32fb8154e68afae48fea_r.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-9918b5d3004fd9dc1e646062e4b2e85a_r.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-143b93f44c4d5b7232670dc6d848428e_r.jpg">
+<meta property="og:image" content="https://pic4.zhimg.com/v2-c04a872b52f12143c385ea7247aedb9b_r.jpg">
+<meta property="og:image" content="https://pic3.zhimg.com/v2-8df906ef8734a4a019953bb552b08836_r.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-76798f58291dc83f1dcbf00469a74a68_r.jpg">
+<meta property="og:image" content="https://pic1.zhimg.com/v2-d3ccc0489314c650352e82bd5330942c_r.jpg">
+<meta property="og:image" content="https://picx.zhimg.com/v2-e3a1746a1c3abd91a62fc6560f4559dc_r.jpg?source=1def8aca">
+<meta property="og:image" content="https://picx.zhimg.com/80/v2-803a962c3d0cf423d949a3750ef71afb_1440w.webp?source=1def8aca">
+<meta property="og:image" content="https://picx.zhimg.com/v2-d2eaef9f32465898dc5d49041eb360ce_r.jpg?source=1def8aca">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1703470071692.png">
+<meta property="article:published_time" content="2023-12-25T04:01:00.000Z">
+<meta property="article:modified_time" content="2024-01-04T08:11:52.076Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="f:/Blog/source/typora-user-images/1703467879294.png">
+
+<link rel="canonical" href="http://example.com/2023/12/25/%E5%A4%A7%E6%A8%A1%E5%9E%8B2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>大模型部署 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/25/%E5%A4%A7%E6%A8%A1%E5%9E%8B2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大模型部署
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-25 12:01:00" itemprop="dateCreated datePublished" datetime="2023-12-25T12:01:00+08:00">2023-12-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-04 16:11:52" itemprop="dateModified" datetime="2024-01-04T16:11:52+08:00">2024-01-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">大模型</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>有关于大模型部署的一些补充.</p>
+<span id="more"></span>
+
+
+
+<h2 id="大模型的界面显示"><a href="#大模型的界面显示" class="headerlink" title="大模型的界面显示"></a>大模型的界面显示</h2><p>一种基于gradio库的方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> gradio <span class="keyword">as</span> gr</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gray</span>(<span class="params">input_img, text, progress_demo=gr.Progress(<span class="params"></span>)</span>):</span><br><span class="line">    <span class="comment"># 灰度转换</span></span><br><span class="line">    progress_demo(<span class="number">0</span>, desc=<span class="string">&quot;Starting...&quot;</span>)</span><br><span class="line">    estimated_time = <span class="number">1</span>  <span class="comment"># 假设任务大约需要5秒钟</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">        time.sleep(estimated_time / <span class="number">100</span>)  <span class="comment"># 在估计的总时间内等待一小部分时间   </span></span><br><span class="line">    gray = np.dot(input_img[..., :<span class="number">3</span>], [<span class="number">0.2989</span>, <span class="number">0.5870</span>, <span class="number">0.1140</span>])</span><br><span class="line">    gray = gray.astype(np.uint8)</span><br><span class="line">    <span class="keyword">return</span> gray</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">demo = gr.Interface(fn=gray, inputs=[gr.inputs.Image(), gr.Textbox(lines=<span class="number">2</span>, placeholder=<span class="string">&quot;请输入想要完成的任务...&quot;</span>)], outputs=<span class="string">&quot;image&quot;</span>).queue().launch(server_port=<span class="number">7872</span>)</span><br><span class="line"><span class="comment"># 该处可以根据需要，设置多输入单输出、单输入单输出各种情况</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>效果图：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1703467879294.png" alt="1703467879294"></p>
+<p><img src="C:\Users\wangying\AppData\Roaming\Typora\typora-user-images\1703468031387.png" alt="1703468031387"></p>
+<h2 id="微调"><a href="#微调" class="headerlink" title="微调"></a>微调</h2><h3 id="为什么微调"><a href="#为什么微调" class="headerlink" title="为什么微调"></a>为什么微调</h3><p>通常，要对大模型进行微调，有以下一些原因：</p>
+<ol>
+<li>因为大模型的参数量非常大，<strong>训练成本非常高</strong>，每家公司都去从头训练一个自己的大模型，这个事情的性价比非常低；</li>
+<li><strong>Prompt Engineering的方式是一种相对来说容易上手的使用大模型的方式，但是它的缺点也非常明显</strong>。因为通常大模型的实现原理，都会对输入序列的长度有限制，Prompt Engineering 的方式会把Prompt搞得很长。越长的Prompt，大模型的推理成本越高，因为推理成本是跟Prompt长度的平方正向相关的。另外，Prompt太长会因超过限制而被截断，进而导致大模型的输出质量打折口，这也是一个非常严重的问题。对于个人使用者而言，如果是解决自己日常生活、工作中的一些问题，直接用Prompt Engineering的方式，通常问题不大。但对于对外提供服务的企业来说，要想在自己的服务中接入大模型的能力，推理成本是不得不要考虑的一个因素，微调相对来说就是一个更优的方案。</li>
+<li>Prompt Engineering的效果达不到要求，企业又有比较好的自有数据，能够<strong>通过自有数据，更好的提升大模型在特定领域的能力</strong>。这时候微调就非常适用。</li>
+<li><strong>要在个性化的服务中使用大模型的能力</strong>，这时候针对每个用户的数据，训练一个轻量级的微调模型，就是一个不错的方案。</li>
+<li><strong>数据安全的问题</strong>。如果数据是不能传递给第三方大模型服务的，那么搭建自己的大模型就非常必要。通常这些开源的大模型都是需要用自有数据进行微调，才能够满足业务的需求，这时候也需要对大模型进行微调。</li>
+</ol>
+<h3 id="如何微调"><a href="#如何微调" class="headerlink" title="如何微调"></a>如何微调</h3><p>1）一条是对全量的参数，进行全量的训练，这条路径叫<strong>全量微调FFT(Full Fine Tuning)。</strong></p>
+<p>FFT的原理，就是用特定的数据，对大模型进行训练，将W变成W<code>，W</code>相比W ，最大的优点就是上述特定数据领域的表现会好很多。</p>
+<p>但FFT也会带来一些问题，影响比较大的问题，主要有以下两个：</p>
+<ul>
+<li>一个是训练的成本会比较高，因为微调的参数量跟预训练的是一样的多的；</li>
+<li>一个是叫灾难性遗忘(Catastrophic Forgetting)，用特定训练数据去微调可能会把这个领域的表现变好，但也可能会把原来表现好的别的领域的能力变差。</li>
+</ul>
+<p>2）一条是只对部分的参数进行训练，这条路径叫<strong>PEFT(Parameter-Efficient Fine Tuning)。</strong></p>
+<p>主要针对解决FFT的两个问题，主要方法在前面已经介绍。</p>
+<h3 id="微调前后变化"><a href="#微调前后变化" class="headerlink" title="微调前后变化"></a>微调前后变化</h3><p>微调一般分为两种：</p>
+<ul>
+<li>一种是改变大模型原有任务，即原来是文本翻译、图像生成等回归任务，借助原本模型对文本的理解、语言的结构理解，通过微调改成分类任务。比如Bert模型原本是自然语言理解的任务，可以微调改为文本分类、情感分析的分类任务。这类任务对于他前后的效果无法比较；</li>
+<li>另一种就是还是原来的任务，原本是Question and answer的任务，通过微调，添加当前领域特有的数据集使得它更适用于当前的任务。</li>
+</ul>
+<p>以下为两个案例对应两种类型的微调：</p>
+<h4 id="案例2："><a href="#案例2：" class="headerlink" title="案例2："></a>案例2：</h4><p>该案列为<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/641047705">ChatGLM2微调保姆级教程~ - 知乎 (zhihu.com)</a>中进行的一个微调，主要任务是基于ChatGLM2-6b，使用外卖评论数据集来实施微调，让ChatGLM2-6b来对一段外卖评论区分是好评还是差评。</p>
+<p>数据集格式是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">味道真不错 -&gt; 好评</span><br><span class="line">太辣了，吃不下都  -&gt; 差评</span><br></pre></td></tr></table></figure>
+
+<p>拿外卖数据集测试一下未经微调，纯粹的 6-shot prompt 的准确率：</p>
+<p><img src="https://pic3.zhimg.com/v2-b254c5a30894f4743c522291f8f4eb4a_r.jpg" alt="img"></p>
+<p>改为分类任务，微调后跌准确率：0.903</p>
+<p><strong>用6000条数据，训练了一个小时左右，准确率到了90.3%，比未经微调的prompt方案的87.8%相比涨了两个多点~</strong></p>
+<h4 id="案例1："><a href="#案例1：" class="headerlink" title="案例1："></a>案例1：</h4><p><strong>Jina AI Finetuner</strong>，使用如下3种数据集探索在VIT模型中的提升：</p>
+<p><img src="https://pic3.zhimg.com/v2-11cad90da17b32fb8154e68afae48fea_r.jpg" alt="img"></p>
+<p>微调结果如下：</p>
+<p><img src="https://pic3.zhimg.com/v2-9918b5d3004fd9dc1e646062e4b2e85a_r.jpg" alt="img"></p>
+<p><img src="https://pic3.zhimg.com/v2-143b93f44c4d5b7232670dc6d848428e_r.jpg" alt="img"></p>
+<p>Finetuner 给那些使用 CLIP 模型预训练得到的图像召回率最差的数据集带来了最大的改进。对于 Flickr8k 数据集，微调前的召回率在 0.5 到 0.65 之间，微调后的召回率可以达到 0.85 或者更高，这代表通过微调，召回率增加了 36% 到 63%。</p>
+<p><img src="https://pic4.zhimg.com/v2-c04a872b52f12143c385ea7247aedb9b_r.jpg" alt="img"></p>
+<p><img src="https://pic3.zhimg.com/v2-8df906ef8734a4a019953bb552b08836_r.jpg" alt="img"></p>
+<p><img src="https://pic1.zhimg.com/v2-76798f58291dc83f1dcbf00469a74a68_r.jpg" alt="img"></p>
+<p>对于 Flickr30k 数据集，相比于仅使用预训练的模型，使用微调后模型的召回率更高，但提升不明显：三个模型的召回率提升都在 10% 以下。这说明，当预训练模型的性能已经很好的情况下，微调模型的提升空间并不大。尽管 Finetuner 在提升 Flickr30k 数据集的召回率方面效果并不明显，但它仍然可以显著提高所有模型的性能。</p>
+<p><img src="https://pic1.zhimg.com/v2-d3ccc0489314c650352e82bd5330942c_r.jpg" alt="img"></p>
+<p>对于 MS-COCO 数据集，虽然预训练模型的召回率略高于 Flickr8k 数据集，但微调后的提升比 Flickr8k 数据集小得多：从 7% 提升到 17%，具体取决于模型。由于 MS-COCO 是一个更大、更多样化的数据集，所以可以预知给定相同的训练超参数时，改进会更小，但这依然比 Flickr30k 数据集的提升大得多。</p>
+<h3 id="微调需要多少数据"><a href="#微调需要多少数据" class="headerlink" title="微调需要多少数据"></a>微调需要多少数据</h3><p>关于微调需要多大数据集一般是就任务复杂度而言，目前并没有明确的规定。但关于数据集构成这里给出以下调研结果：</p>
+<p><strong>调研1：</strong></p>
+<p>《LIMA：Less Is More for Alignment》、《MAYBE ONLY 0.5% DATA IS NEEDED》两篇文章，在说明小数据量上，提出了更新颖的结论。</p>
+<p>《LIMa：Less Is More for Alignment》一文的消融实验显示，<strong>当扩大数据量而不同时扩大提示多样性时，收益会大大减少，而在优化数据质量时，收益会大大增加。</strong></p>
+<p>《MAYBE ONLY 0.5% DATA IS NEEDED》一文的实验表明，<strong>特定任务的模型可能从固定的任务类型中获益，以获得更高的性能； 指令格式的多样性可能对特定任务模型的性能影响很小；即使是少量的数据（1.9M tokens）也能为特定任务模型的指令调整带来可喜的结果。</strong></p>
+<p><strong>多样性，高质量这两个数据上的问题一直被认定是决定模型性能的天花板。</strong></p>
+<p><strong>调研2(案例可参考调研3的内容)：</strong></p>
+<p>和ChatGLM的作者的QA。</p>
+<p>Q：如果要基于chatGLM微调出一个具备<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E5%9E%82%E7%9B%B4%E9%A2%86%E5%9F%9F&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:3116062017%7D">垂直领域</a>知识的模型，这个数据集大致需要多大的规模呢？几万条问答对吗？</p>
+<p>A：<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E7%9B%B4%E6%8E%A5%E5%8A%A0&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:3116062017%7D">直接加</a>一小部分做监督的话，可能会让小模型原有的通用能力丧失。所以最好的策略，应该是不要太去动这个模型，除非你有很多、很好的微调数据，否则直接<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E5%BE%AE%E8%B0%83&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:3116062017%7D">微调</a>，在你只有几万条以下的数据的情况下，你想要靠微调取得一个很理想的效果是有点困难的。更好的方式应该是，针对一个具体的问题，给他找一些参考资料，把它拼接到你给模型的<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=prompt&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:3116062017%7D">prompt</a>中，通过模型本身的能力来解决。</p>
+<p><strong>调研3<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/596950521/answer/3109759716%EF%BC%9A">https://www.zhihu.com/question/596950521/answer/3109759716：</a></strong></p>
+<p>summary:</p>
+<p>(1) 只需要1条样本，很少的训练时间，就可以通过微调给LLM注入知识。</p>
+<p>(2) <strong>LLM是一种类似Key-Value形式的知识数据库，支持增删改查</strong>。通过微调可以增删修改知识，通过条件生成可以查询提取知识。</p>
+<p>(3) <strong>LoRA微调是一种高效的融入学习算法。类似人类把新知识融入现有知识体系的学习过程。</strong>学习时无需新知识特别多的样本，学习后原有的庞大知识和能力可以基本不受影响。</p>
+<p>before:</p>
+<p><img src="https://picx.zhimg.com/v2-e3a1746a1c3abd91a62fc6560f4559dc_r.jpg?source=1def8aca" alt="img"></p>
+<p>after:</p>
+<p><img src="https://picx.zhimg.com/80/v2-803a962c3d0cf423d949a3750ef71afb_1440w.webp?source=1def8aca" alt="img"></p>
+<p><img src="https://picx.zhimg.com/v2-d2eaef9f32465898dc5d49041eb360ce_r.jpg?source=1def8aca" alt="img"></p>
+<p>方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#定义一条知识样本~</span></span><br><span class="line"></span><br><span class="line">keyword = <span class="string">&#x27;梦中情炉&#x27;</span></span><br><span class="line"></span><br><span class="line">description = <span class="string">&#x27;&#x27;&#x27;梦中情炉一般指的是炼丹工具torchkeras。</span></span><br><span class="line"><span class="string">这是一个通用的pytorch模型训练模版工具。</span></span><br><span class="line"><span class="string">torchkeras是一个三好炼丹炉：好看，好用，好改。</span></span><br><span class="line"><span class="string">她有torch的灵动，也有keras的优雅，并且她的美丽，无与伦比。</span></span><br><span class="line"><span class="string">所以她的作者一个有毅力的吃货给她取了一个别名叫做梦中情炉。&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#对prompt使用一些简单的数据增强的方法，以便更好地收敛。</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_prompt_list</span>(<span class="params">keyword</span>):</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">f&#x27;<span class="subst">&#123;keyword&#125;</span>&#x27;</span>, </span><br><span class="line">            <span class="string">f&#x27;你知道<span class="subst">&#123;keyword&#125;</span>吗?&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;<span class="subst">&#123;keyword&#125;</span>是什么？&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;介绍一下<span class="subst">&#123;keyword&#125;</span>&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;你听过<span class="subst">&#123;keyword&#125;</span>吗?&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;啥是<span class="subst">&#123;keyword&#125;</span>？&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;<span class="subst">&#123;keyword&#125;</span>是何物？&#x27;</span>,</span><br><span class="line">            <span class="string">f&#x27;何为<span class="subst">&#123;keyword&#125;</span>？&#x27;</span>,</span><br><span class="line">           ]</span><br><span class="line"></span><br><span class="line">data =[&#123;<span class="string">&#x27;prompt&#x27;</span>:x,<span class="string">&#x27;response&#x27;</span>:description&#125; <span class="keyword">for</span> x <span class="keyword">in</span> get_prompt_list(keyword) ]</span><br><span class="line">dfdata = pd.DataFrame(data)</span><br><span class="line">display(dfdata) </span><br></pre></td></tr></table></figure>
+
+<h3 id="微调需要的算力"><a href="#微调需要的算力" class="headerlink" title="微调需要的算力"></a>微调需要的算力</h3><p>微调需要多少算力，取决于两点，一是模型原来有多大，二是采用何种微调方法。</p>
+<p>如以下案例：</p>
+<p><img src="F:/Blog/source/typora-user-images/1703470071692.png" alt="1703470071692"></p>
+<ul>
+<li>效果为PT&gt;Freeze&gt;Lora&gt;PT-Only-Embedding;</li>
+<li>速度为PT-Only-Embedding&gt;Lora&gt;Freeze&gt;PT;</li>
+<li><strong>PT-Only-Embedding效果很不理想，发现在训练时，最后的loss仅能收敛到2.几，而其他机制可以收敛到0.几。分析原因为，输出内容形式与原有语言模型任务相差很大，仅增加额外Embedding参数，不足以改变复杂的下游任务</strong>;</li>
+<li>PT方法占用显存更大，因为也增加了很多而外参数;</li>
+<li>测试耗时，采用float16进行模型推理，由于其他方法均增加了额外参数，因此其他方法的推理耗时会比Freeze方法要高。当然由于是生成模型，所以生成的长度也会影响耗时;</li>
+<li>模型在指定任务上微调之后，并没有丧失原有能力，例如生成“帮我写个快排算法”，依然可以生成-快排代码;</li>
+<li><strong>由于大模型微调都采用大量instruction进行模型训练，仅采用单一的指令进行微调时，对原来其他的指令影响不大，因此并没导致原来模型的能力丧失</strong>;</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"># 大模型</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/22/%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%BE%AE%E8%B0%83/" rel="prev" title="大模型的使用与下游任务的微调">
+      <i class="fa fa-chevron-left"></i> 大模型的使用与下游任务的微调
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/" rel="next" title="Langchain原理与使用">
+      Langchain原理与使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E7%95%8C%E9%9D%A2%E6%98%BE%E7%A4%BA"><span class="nav-number">1.</span> <span class="nav-text">大模型的界面显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83"><span class="nav-number">2.</span> <span class="nav-text">微调</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BE%AE%E8%B0%83"><span class="nav-number">2.1.</span> <span class="nav-text">为什么微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%BE%AE%E8%B0%83"><span class="nav-number">2.2.</span> <span class="nav-text">如何微调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E5%89%8D%E5%90%8E%E5%8F%98%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">微调前后变化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B2%EF%BC%9A"><span class="nav-number">2.3.1.</span> <span class="nav-text">案例2：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B1%EF%BC%9A"><span class="nav-number">2.3.2.</span> <span class="nav-text">案例1：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E9%9C%80%E8%A6%81%E5%A4%9A%E5%B0%91%E6%95%B0%E6%8D%AE"><span class="nav-number">2.4.</span> <span class="nav-text">微调需要多少数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E9%9C%80%E8%A6%81%E7%9A%84%E7%AE%97%E5%8A%9B"><span class="nav-number">2.5.</span> <span class="nav-text">微调需要的算力</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共93.4k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

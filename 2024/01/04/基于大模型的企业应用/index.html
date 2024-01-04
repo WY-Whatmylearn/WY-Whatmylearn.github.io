@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这是目前大模型国内的部分应用案例。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型的企业应用">
+<meta property="og:url" content="http://example.com/2024/01/04/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="WangYing&#39;s Blog">
+<meta property="og:description" content="这是目前大模型国内的部分应用案例。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704347006485.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704347230656.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704347320383.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704349260518.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704349274758.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704349286757.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704352748863.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704351702587.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704351746226.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704351781064.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704351813555.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704351894437.png">
+<meta property="og:image" content="c:\Users\wangying\AppData\Roaming\Typora\typora-user-images\1704348656852.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704348463927.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704350212911.png">
+<meta property="og:image" content="f:/Blog/source/typora-user-images/1704350171001.png">
+<meta property="og:image" content="https://inews.gtimg.com/om_bt/OlNAnUJGy7j-zI9bHSdtQ1mxCXwpvRFI1Blfc3BTvQYwgAA/641">
+<meta property="article:published_time" content="2024-01-04T04:01:00.000Z">
+<meta property="article:modified_time" content="2024-01-04T08:24:56.873Z">
+<meta property="article:author" content="Wang">
+<meta property="article:tag" content="大模型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="f:/Blog/source/typora-user-images/1704347006485.png">
+
+<link rel="canonical" href="http://example.com/2024/01/04/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>大模型的企业应用 | WangYing's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">WangYing's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="download fa-fw"></i>资源</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/04/%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/1.png">
+      <meta itemprop="name" content="Wang">
+      <meta itemprop="description" content="勤于记录，乐于重温，敢于自嘲，善于修正">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WangYing's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          大模型的企业应用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-01-04 12:01:00 / 修改时间：16:24:56" itemprop="dateCreated datePublished" datetime="2024-01-04T12:01:00+08:00">2024-01-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" itemprop="url" rel="index"><span itemprop="name">大模型</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这是目前大模型国内的部分应用案例。</p>
+<span id="more"></span>
+
+<h1 id="基于大模型的企业应用"><a href="#基于大模型的企业应用" class="headerlink" title="基于大模型的企业应用"></a>基于大模型的企业应用</h1><h2 id="日常应用"><a href="#日常应用" class="headerlink" title="日常应用"></a>日常应用</h2><h3 id="AskBot员工AI助手（基于大规模语言模型训练的AI助理——果然智汇科技）"><a href="#AskBot员工AI助手（基于大规模语言模型训练的AI助理——果然智汇科技）" class="headerlink" title="AskBot员工AI助手（基于大规模语言模型训练的AI助理——果然智汇科技）"></a>AskBot员工AI助手（基于大规模语言模型训练的AI助理——果然智汇科技）</h3><p><strong>口号：问题咨询、数据查询，业务办理，知识搜索一站式智能解决</strong>。</p>
+<p><strong>本质：一种集成了多个大模型的针对公司日常管理的软件</strong>。</p>
+<p><strong>体验链接：</strong><a target="_blank" rel="noopener" href="https://portal.askbot.cn/#/index">AskBot管理中心</a></p>
+<p><strong>应用展示：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704347006485.png" alt="1704347006485"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704347230656.png" alt="1704347230656"></p>
+<p><strong>客户企业：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704347320383.png" alt="1704347320383"></p>
+<h3 id="智己生成式大模型（Beta版）（智己汽车）"><a href="#智己生成式大模型（Beta版）（智己汽车）" class="headerlink" title="智己生成式大模型（Beta版）（智己汽车）"></a>智己生成式大模型（Beta版）（智己汽车）</h3><p><strong>口号：以智能改写驾控，以智能创造场景让驾驶从未如此简单、有趣。</strong></p>
+<p><strong>本质：融合千亿参级参数+机器学习能力+自然语言处理的大模型。</strong></p>
+<p><strong>应用展示：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704349260518.png" alt="1704349260518"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704349274758.png" alt="1704349274758"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704349286757.png" alt="1704349286757"></p>
+<h2 id="社会管理"><a href="#社会管理" class="headerlink" title="社会管理"></a>社会管理</h2><p><a target="_blank" rel="noopener" href="https://www.thepaper.cn/newsDetail_forward_23417251">2023安博会五大看点：大模型应用扎堆，AI摄像头满场，海思低调参展_澎湃号·湃客_澎湃新闻-The Paper</a></p>
+<h3 id="商汤AI安全治理开放平台（商汤科技）"><a href="#商汤AI安全治理开放平台（商汤科技）" class="headerlink" title="商汤AI安全治理开放平台（商汤科技）"></a>商汤AI安全治理开放平台（商汤科技）</h3><p><strong>口号：充分发挥商汤多年在AI安全领域的技术沉淀和实践经验，为行业健康可持续发展打造互操作的AI安全技术公益平台，推动建设开放、可信的人工智能创新生态。</strong></p>
+<p><strong>本质：多模态大模型。</strong></p>
+<p><strong>体验链接：<a target="_blank" rel="noopener" href="http://aisafe.sensetime.com/login">商汤AI安全治理开放平台 (sensetime.com)</a></strong></p>
+<p><strong>应用展示：</strong></p>
+<p><strong>AIGC技术强大的图像生成、声纹合成、图文对话等能力，也使得人们对虚假内容的甄别更加困难。商汤科技构建网络内容安全大模型来实现深度伪造检测、声音合成检测、敏感内容检测等，通过大模型本身强大的认知内容来识别AIGC生成的内容。</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704352748863.png" alt="1704352748863"></p>
+<h3 id="欧姆AI-2-0视觉应用平台（联汇科技）"><a href="#欧姆AI-2-0视觉应用平台（联汇科技）" class="headerlink" title="欧姆AI 2.0视觉应用平台（联汇科技）"></a>欧姆AI 2.0视觉应用平台（联汇科技）</h3><p><strong>口号：新一代的多模态智能体平台构建通用人工智能应用新范式，赋予数字化产品认知智能，发起AI生产力革新。</strong></p>
+<p><strong>本质：多模态大模型的微调。</strong></p>
+<p><strong>应用链接：</strong><a target="_blank" rel="noopener" href="https://om.linker.cc/omopen/#/home"><a target="_blank" rel="noopener" href="https://om.linker.cc/hub/#/home">OmVision机器视觉平台 (linker.cc)</a></a></p>
+<p><strong>应用展示：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704351702587.png" alt="1704351702587"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704351746226.png" alt="1704351746226"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704351781064.png" alt="1704351781064"></p>
+<p><strong>客户企业：</strong></p>
+<p><img src="F:/Blog/source/typora-user-images/1704351813555.png" alt="1704351813555"></p>
+<h3 id="多模态BioCV（熵基科技）"><a href="#多模态BioCV（熵基科技）" class="headerlink" title="多模态BioCV（熵基科技）"></a>多模态BioCV（熵基科技）</h3><p><strong>口号：以多模态BioCV 共创美好智慧世界</strong>。</p>
+<p><strong>本质：仍然是多模态大模型。</strong></p>
+<p><strong>应用链接：</strong><a target="_blank" rel="noopener" href="https://www.zkteco.com/cn/scheme_detail/39.html">智慧社区解决方案-熵基科技 (zkteco.com)</a></p>
+<p><strong>应用展示：</strong></p>
+<p>致力于将指纹、掌静脉、面部、静脉、虹膜等生物识别核心技术与计算机视觉、射频、物联网等技术相融合，以多模态BioCV技术为核心，深耕智慧出入口、智慧身份核验、智慧办公及智慧零售等垂直行业领域。</p>
+<p><img src="F:/Blog/source/typora-user-images/1704351894437.png" alt="1704351894437"></p>
+<h2 id="金融应用"><a href="#金融应用" class="headerlink" title="金融应用"></a>金融应用</h2><h3 id="LightGPT-光子大模型系列产品（恒生科技）"><a href="#LightGPT-光子大模型系列产品（恒生科技）" class="headerlink" title="LightGPT + 光子大模型系列产品（恒生科技）"></a>LightGPT + 光子大模型系列产品（恒生科技）</h3><p><strong>口号：刷新金融科技想象力</strong>。</p>
+<p><strong>本质：基于海量金融数据微调而成的金融大模型。</strong></p>
+<p><strong>体验链接：<a target="_blank" rel="noopener" href="https://www.hs.net/lightgpt/#/index">恒生金融行业大模型LightGPT+光子 (hs.net)</a></strong></p>
+<p><strong>应用展示：</strong></p>
+<p>多个大模型的分类，构建的多个子模块</p>
+<p><img src="C:\Users\wangying\AppData\Roaming\Typora\typora-user-images\1704348656852.png" alt="1704348656852"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704348463927.png" alt="1704348463927"></p>
+<p><strong>Note:金融行业目前时大模型运用的热门板块，多家企业均出版了自己的金融大模型，但需相应数据。并且金融投资大模型有着较强的实时性</strong>。</p>
+<h3 id="DeepInsight-一站式大数据分析平台（阿里巴巴）"><a href="#DeepInsight-一站式大数据分析平台（阿里巴巴）" class="headerlink" title="DeepInsight 一站式大数据分析平台（阿里巴巴）"></a>DeepInsight 一站式大数据分析平台（阿里巴巴）</h3><p><strong>口号：让数据开发更简单，让数据服务更便捷，让数据应用更智能，让数据资产更清晰，让数据运营更高效</strong></p>
+<p><strong>让数据真正驱动业务，让人人成为数据分析师</strong>。</p>
+<p><strong>本质：多模态大模型，处理数据、文本、图片信息。</strong></p>
+<p><strong>体验链接：</strong><a target="_blank" rel="noopener" href="http://221.237.162.142:13631/login/?redirectTo=~2F">欢迎使用DeepInsight数据分析平台 | DeepInsight</a></p>
+<p><strong>应用展示：</strong></p>
+<p>DeepInsight致力于为数据开发者、数据分析师、数据资产管理者、业务人员，打造一个低使用门槛的、具备自主开发与全栈数据研发能力的一站式、标准化、可视化、透明化的大数据全生命周期研发平台。DeepInsight赋予用户仅通过单一平台，即可实现数据集成、数据开发、数据治理、数据可视化、机器学习、数据服务化等各类复杂组合场景的能力。同时，DeepInsight持续打造符合数据中台、企业级数仓构建要求的功能模块，为企业业务数字化转型提供强有力支持。</p>
+<p><img src="F:/Blog/source/typora-user-images/1704350212911.png" alt="1704350212911"></p>
+<p><img src="F:/Blog/source/typora-user-images/1704350171001.png" alt="1704350171001"></p>
+<h2 id="工业应用"><a href="#工业应用" class="headerlink" title="工业应用"></a>工业应用</h2><h3 id="工业多模态大模型IndustryGPT-V1-0（思谋科技）"><a href="#工业多模态大模型IndustryGPT-V1-0（思谋科技）" class="headerlink" title="工业多模态大模型IndustryGPT V1.0（思谋科技）"></a>工业多模态大模型IndustryGPT V1.0（思谋科技）</h3><p><strong>口号：打破传统人机交互的界限，将大模型技术与工业软、硬件相结合，为用户提供了更加直观、便捷的使用体验。无论是工程师、生产管理者，还是产线工作人员，均可以轻松上手、“开箱即用”。</strong></p>
+<p><strong>本质：以思谋在工业制造中多年的专业知识、数据积累和对客户需求为基础（数据来源）实现的工业大模型。</strong></p>
+<p><strong>应用展示：</strong></p>
+<p><img src="https://inews.gtimg.com/om_bt/OlNAnUJGy7j-zI9bHSdtQ1mxCXwpvRFI1Blfc3BTvQYwgAA/641" alt="图片"></p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+    	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:24px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      </div>
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B/" rel="tag"># 大模型</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/27/Langchain%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D/" rel="prev" title="Langchain原理与使用">
+      <i class="fa fa-chevron-left"></i> Langchain原理与使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/01/04/%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1/" rel="next" title="大模型的企业应用">
+      大模型的企业应用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%81%E4%B8%9A%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">基于大模型的企业应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%B8%B8%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.</span> <span class="nav-text">日常应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AskBot%E5%91%98%E5%B7%A5AI%E5%8A%A9%E6%89%8B%EF%BC%88%E5%9F%BA%E4%BA%8E%E5%A4%A7%E8%A7%84%E6%A8%A1%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E7%9A%84AI%E5%8A%A9%E7%90%86%E2%80%94%E2%80%94%E6%9E%9C%E7%84%B6%E6%99%BA%E6%B1%87%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">AskBot员工AI助手（基于大规模语言模型训练的AI助理——果然智汇科技）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%99%BA%E5%B7%B1%E7%94%9F%E6%88%90%E5%BC%8F%E5%A4%A7%E6%A8%A1%E5%9E%8B%EF%BC%88Beta%E7%89%88%EF%BC%89%EF%BC%88%E6%99%BA%E5%B7%B1%E6%B1%BD%E8%BD%A6%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">智己生成式大模型（Beta版）（智己汽车）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BE%E4%BC%9A%E7%AE%A1%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">社会管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%95%86%E6%B1%A4AI%E5%AE%89%E5%85%A8%E6%B2%BB%E7%90%86%E5%BC%80%E6%94%BE%E5%B9%B3%E5%8F%B0%EF%BC%88%E5%95%86%E6%B1%A4%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.2.1.</span> <span class="nav-text">商汤AI安全治理开放平台（商汤科技）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AC%A7%E5%A7%86AI-2-0%E8%A7%86%E8%A7%89%E5%BA%94%E7%94%A8%E5%B9%B3%E5%8F%B0%EF%BC%88%E8%81%94%E6%B1%87%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">欧姆AI 2.0视觉应用平台（联汇科技）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81BioCV%EF%BC%88%E7%86%B5%E5%9F%BA%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.2.3.</span> <span class="nav-text">多模态BioCV（熵基科技）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%91%E8%9E%8D%E5%BA%94%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">金融应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LightGPT-%E5%85%89%E5%AD%90%E5%A4%A7%E6%A8%A1%E5%9E%8B%E7%B3%BB%E5%88%97%E4%BA%A7%E5%93%81%EF%BC%88%E6%81%92%E7%94%9F%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">LightGPT + 光子大模型系列产品（恒生科技）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DeepInsight-%E4%B8%80%E7%AB%99%E5%BC%8F%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B9%B3%E5%8F%B0%EF%BC%88%E9%98%BF%E9%87%8C%E5%B7%B4%E5%B7%B4%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">DeepInsight 一站式大数据分析平台（阿里巴巴）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%B8%9A%E5%BA%94%E7%94%A8"><span class="nav-number">1.4.</span> <span class="nav-text">工业应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%B8%9A%E5%A4%9A%E6%A8%A1%E6%80%81%E5%A4%A7%E6%A8%A1%E5%9E%8BIndustryGPT-V1-0%EF%BC%88%E6%80%9D%E8%B0%8B%E7%A7%91%E6%8A%80%EF%BC%89"><span class="nav-number">1.4.1.</span> <span class="nav-text">工业多模态大模型IndustryGPT V1.0（思谋科技）</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Wang"
+      src="/images/1.png">
+  <p class="site-author-name" itemprop="name">Wang</p>
+  <div class="site-description" itemprop="description">勤于记录，乐于重温，敢于自嘲，善于修正</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2023-06 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共93.4k字</span>
+</div
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
